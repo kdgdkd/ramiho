@@ -23,7 +23,7 @@ ramiho's main features are:
 
 ## Dependencies
 ramiho main functionalities require only ALSA; that's enough to use it for connexion management (aconnect) and MIDI monitor (aseqdump).  
-For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), by Geert Bevin. These provide a second monitor, and the send midi test. You may download them into the ramiho's srmidi directory, or define their location in the fCONF function.   
+For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), by Geert Bevin. These provide a second monitor, and the send midi test. You may download them into ramiho's srmidi directory, or define their location in the fCONF function.   
 For advanced connexion routings you may use [midish](https://midish.org/); ramiho embeds a front for it.  
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
@@ -35,31 +35,33 @@ Just copy these files under your user directory (typically under /home/pi/ramiho
 There are a number of elements that are expected to be changed in order to customize ramiho to the user's setup and preferences. These are organized in a rather clumsy way.  
 
 **Locale**  
-ramiho comes Spanish and English interfaces. You are very wellcome if you want to create your own locales. Choose which to use below the locale functions (change fLOCALE_EN for fLOCALE_ES to turn ramiho's interface to Spanish).
+ramiho comes with Spanish and English interfaces. You are very wellcome if you want to create your own locales. Choose which to use below the locale functions (change fLOCALE_EN for fLOCALE_ES to turn ramiho's interface to Spanish).
 
 **Favorite Connexions**  
 ramiho allows to load preferred connexion configurations in batch, using the Favorite Connexions submenu. You should update the corresponding section of the code to have an easy way of loading alternative configurations for your setups.  
 
 The Favorite Connexions menu currently uses three ways of saving connexions. 
 - embedded in ramiho's code as aconnect commands (fSET_x functions)
-- in one of three svdcnx files under favcnx directory; these can also be used to save current configurations in form of aconnect commands
-- in one of three midishcnx under favcnx directory, that allow for advanced routing configuration using midish
+- in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands
+- in one of three midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
+
 You should then adapt the header (fSETX_HEADER) to display some description of the connexions to choose from.
 
 Obviously, you are invited to modify whatever itches you most, please share!
 
 ## Usage
 
-The normal setup for ramiho would be on a headless Raspberry Pi, connected to a network with LAN or WIFI and operated through SSH, and a number of musical devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
-- habilitate ssh connexion to your Raspberry Pi (**sudo raspi-config**).
+The normal setup for ramiho would be on a headless Raspberry Pi, connected to a network with LAN or WIFI and operated through SSH... plus a number of musical devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
+- create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); I use **111**, so I can use it with an external numeric pad
+- habilitate ssh connexion to your Raspberry Pi (**sudo raspi-config**)
 - auto-connect to WIFI network (**sudo nano /etc/wpa_supplicant/wpa_supplicant.conf**)
 - define a static IP address for the Raspberry Pi (**nano /etc/dhcpcd.conf**)
 - set File System Overlay to be able to turn the device on and off with a switch without corrupting the SD card(**sudo raspi-config** then Performance/Overlay File System)  
 
-All of these steps are properly documented and out of this README's scope.
+All of these steps are properly documented [somewhere](https://google.com).
 
 ### with terminal front
-When you launch ramiho without arguments, ramiho's terminal front will open. It should look like this:  
+When you launch ramiho without arguments, it will open ramiho's terminal front. In English, it should look like this:  
 ![ramiho_terminal](https://edpanfleto.com/kdgdkd/assets/ramiho_term_en.png "ramiho terminal front" )  
 Numbers 4, 7 and 8 will open submenus.  
 
@@ -73,7 +75,7 @@ ramiho h
 ![ramiho_cli](https://edpanfleto.com/kdgdkd/assets/ramiho_cli_en.png "ramiho cli" )  
 
 ### offline and headless
-For some strange reasons, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, and receiving audio feedback through a small speaker connected to the device's mini-jack.  
+For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, and receiving audio feedback through a small speaker connected to the device's mini-jack.  
 This is achieved through a text-to-sound engine, my preference is for festival.  
 To configure a different tts engine and to activate sound by default, edit these lines in the fCONFIG function of the script:  
 ```bash
@@ -85,12 +87,11 @@ If you are using an external numberic pad, this mode works better deactivating B
 
 
 ## Epilogue
-I have spent a significant amount of time in this, and I am very happy that it works for me. I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch. 
+I have spent a significant amount of time coding ramiho, but I am very happy that it solves issues that we, as a band, found when tring to properly configure our DAW-less techno setup. Connecting devices, or loading previously used sets of connexions, is now easily done with ramiho for my very personal joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
 
 ## Contributing
 
-I am stubborn, but I am no programmer. This script very likely contains a significant amount of bugs, and most of the code could be polished and modified. So pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+I am stubborn, but I am no programmer. This script is likely to contain a significant amount of bugs, and most of the code could be polished and modified. So pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 
 ## License
