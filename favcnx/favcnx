@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# ramiho - fichero de soporte con la definición de los aparatos y las conexiones favoritas
+
+# Esta es una lista de los dispositivos que se verificarán al lanzar Chequear Favoritos desde la interface principal de ramiho
+# Verifica si el nombre (o parte del nombre) de un dispositivo aparece en la lista de conexiones de aconnect -l
+# Puedes modificar los dispositivos que quieres que chequee
+fLST_FAV () { 
+clfav=
+_bold
+echo "Chequea clientes favoritos:"
+_norm
+iconnection=`aconnect -i -l`
+	[[ "$iconnection" == *"Virus"* ]] && clfav="$clfav 
+  Access Virus TI on"
+	[[ "$iconnection" == *"BCR"* ]] && clfav="$clfav 
+  BCR2000 on"
+	[[ "$iconnection" == *"UC-33"* ]] && clfav="$clfav 
+  Evolution UC-33 on"
+	[[ "$iconnection" == *"KeyStep"* ]] && clfav="$clfav 
+  Arturia KeyStep on"
+	[[ "$iconnection" == *"BeatStep"* ]] && clfav="$clfav 
+  Arturia BeatStep on"
+	[[ "$iconnection" == *"AR-96"* ]] && clfav="$clfav 
+  Zoom ARQ AR-96 on"
+	[[ "$iconnection" == *"USB Uno MIDI"* ]] && clfav="$clfav 
+  USB Uno MIDI Interface on"
+	[[ "$iconnection" == *"X-TOUCH"* ]] && clfav="$clfav 
+  X-Touch Mini on"
+	[[ "$iconnection" == *"QUNEO"* ]] && clfav="$clfav 
+  QuNeo on"
+if [[ $clfav == '' ]]; then
+	echo "No favorites connected" | $tts > /dev/null 2>&1 &
+	echo "  No se encontraron dispositivos favoritos conectados a ramiho"
+else
+	echo "$clfav" | $tts > /dev/null 2>&1 &
+	echo "$clfav"
+fi
+}
+
+# Aquí puedes determinar algunas acciones del menu de conexiones favoritas
+# para una conexión favorita, añade la descripción y el código en la función correspondiente
+# input 1, 2 y 3 lanzan las funcinoes fSET_1, fSET_2 y fSET_3, pensadas para conexiones aconnect 
+# input 4, 5 y 6 para guardar las conexiones actuales, o cargar configuraciones anteriores - No modificar
+# input 7 y 8 lanzan las funciones fMSH_1 y fMSH_2, pensadas para conexiones con midish
+# imput 9 abre la interface para midish
+fSETX_HEADER () {
+echo "ramiho >> Menu de conexiones favoritas
+********************************************************************
+     /     volver a ramiho
+    FUNC   Leer puerto N
+	
+     0     Guardar conexiones actuales
+     1     Cargar conexiones guardadas
+     2     Cargar conexiones guardadas (2)
+     3     Cargar conexiones guardadas (3)
+	 
+     4     Conectar KeyStep y UC33 a Virus TI & Blofeld
+     5     Conectar Beatstep (clock), UC33 y QuNeo a Uno MIDI (Virus) y AR96
+     6     Conectar Beatstep (clock), UC-33 y QuNeo a Virus por USB
+	  
+     7     Ruteo canales y puertos con midish
+     8     Ruteo Virus 2x4
+     9     Ruteo QuNeo - Minilogue 2x4
+	 
+     .     Desconectar todo
+     *     Conectar / Desconectar todo
+     +     Conectar puertos
+     -     Desconectar puertos
+********************************************************************"
+}
+fSET_1 () { 
+aconnect -x
+_bold
+echo " Conectar KeyStep & UC-33 a Uno MIDI (Kenton -> Virus TI)"
+echo "  Conectar Beatstep, UC33, QuNeo a Uno MIDI (Virus TI)"
+_norm
+aconnect 'UC-33 USB MIDI Controller':0 'USB Uno MIDI Interface':0
+aconnect 'KeyStep Pro':0 'USB Uno MIDI Interface':0 
+aconnect 'KeyStep Pro':0 'Blofeld':0 
+aconnect 'USB Uno MIDI Interface':0 'Blofeld':0
+}
+fSET_2 () { 
+aconnect -x
+_bold
+echo " Conectar Beatstep (clock), UC33, QuNeo a Uno MIDI (Virus) y AR96"
+_norm
+aconnect 'UC-33 USB MIDI Controller:0' 'USB Uno MIDI Interface' 
+aconnect 'Arturia BeatStep Pro:0' 'USB Uno MIDI Interface'
+aconnect 'QUNEO' 'USB Uno MIDI Interface'
+aconnect 'Arturia BeatStep Pro:0' 'AR-96'
+}
+fSET_3 () { 
+aconnect -x
+_bold
+echo " Conectar Beatstep (clock), UC-33, QuNeo a Virus por USB"
+_norm
+aconnect 'UC-33 USB MIDI Controller:0' 'Virus TI:1' 
+aconnect 'Arturia BeatStep Pro:0' 'Virus TI:1'
+aconnect 'QUNEO' 'Virus TI:1'
+aconnect 'Arturia BeatStep Pro:0' 'AR-96'
+}
+fMSH_1 () { 
+fMSH_DEL
+_bold
+echo
+echo " Cargar ruteo Virus 2x4"
+echo "    Ctrl + C para salir"
+_norm
+source "$SCRIPT_DIR/favcnx/midishcnx1.stp" #2>/dev/null
+}
+fMSH_2 () { 
+fMSH_DEL
+_bold
+echo
+echo " Cargar ruteo QuNeo-Minilogue 2x4"
+echo "    Ctrl + C para salir"
+_norm
+source "$SCRIPT_DIR/favcnx/midishcnx2.stp" #2>/dev/null
+}

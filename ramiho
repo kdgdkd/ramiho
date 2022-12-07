@@ -1,0 +1,1736 @@
+#!/bin/bash
+# ramiho - raspi midi host
+# Cliente de Teclado Numérico Raspi MIDI host
+
+# RECURSOS
+	# RASPBERRY PI AS USB/BLUETOOTH MIDI HOST
+	# https://neuma.studio/rpi-midi-complete.html
+	#
+	# LINUX MIDI CHEATSHEET 
+	# https://mclarenlabs.com/blog/2018/07/03/linux-midi-cheatsheet/
+	#
+	# the ALSA system exposes many of its details through the /proc/asound filesystem
+	# cat /proc/asound/seq/clients
+	#
+	# dmesg to see messages about USB devices being plugged and unplugged. Use this if you are unsure if your equipment is being recognized by your system. The [-w] option makes dmesg wait for new messages.
+	#
+	# lsusb to list the USB devices currently connected to your system. Use this if you are unsure if your keyboard or controller is being recognized as a USB device.
+	#
+# HERRAMIENTAS
+	# CREAR puertos virtuales:
+	# sudo modprobe snd-virmidi snd_index=1
+	# o
+	# sudo modprobe snd-virmidi enable=1,1 midi_devs=4,1
+	# BORRAR los puertos virtuales:
+	# sudo modprobe -r snd-virmidi
+	#
+
+_bold () { 
+tput bold
+}
+_norm () { 
+tput sgr0
+}
+_blanco () { 
+tput setaf 7 
+}
+_amarillo () {
+tput setaf 3
+}
+_verde () {
+tput setaf 2
+}
+
+# CONFIGURATION***********************************************************
+# Para simplificar la tarea, todos los ficheros para personalizar las conexiones favoritas están en la carpeta /ramiho/favcnx/
+# Este fichero no tendría por qué tocarse, excepto si te apetece
+fCONF () {
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
+savedconnexions1="$SCRIPT_DIR/favcnx/svdcnx1"
+savedconnexions2="$SCRIPT_DIR/favcnx/svdcnx2"
+savedconnexions3="$SCRIPT_DIR/favcnx/svdcnx3"
+savedconnexions=$savedconnexions1
+sendmidi="$SCRIPT_DIR/srmidi/sendmidi"
+receivemidi="$SCRIPT_DIR/srmidi/receivemidi"
+midiseq="$SCRIPT_DIR/srmidi/sendmidifile"
+tts_on="festival --tts"  #define text-to-sound engine
+tts= # $tts_on # to enable sound by default
+}
+fCONF
+
+# LOCALE************************************************
+fLOCALE_ES () {
+tx_checkfavdev="Chequea dispositivos favoritos:"
+tx_errnofavdev="  No se encontraron dispositivos favoritos conectados a ramiho"
+tx_retrmh="Volver a ramiho"
+tx_errsel="Error introduciendo selección"
+tx_cnx="Conexión> "
+tx_svcnx="  Guardar conexiones actuales"
+tx_svpos="Elegir posición (1, 2 o 3)> "
+tx_svd="Conexiones guardadas:"
+tx_ldcnx="  Cargar conexiones guardadas "
+tx_midishfront=" Rutear canales y puertos"
+tx_ctlc="    Ctrl + C para salir"
+tx_mdshdel="9 Borrar ruteos MIDI"
+tx_rdport="Leer puerto N"
+tx_rdportprmpt="N del puerto> "
+tx_errnpt1="     El puerto número "
+tx_errnpt2=" no existe"
+tx_lstcnx="Lista de conexiones"
+tx_err0cnx=" ! No hay conexiones activas"
+tx_lstcnxprt="Lista de puertos y conexiones"
+tx_lstprt="Lista de puertos disponibles"
+tx_hdprt="     N   Puerto Nombre"
+tx_lstusb="Lista de dispositivos USB conectados"
+tx_cnxinp1="Introduce puertos usando N del puerto o el formato .14.0"
+tx_cnxinppr1="Primer puerto> "
+tx_cnxinppr2="Segundo puerto> "
+tx_errprt=" !! Error introduciendo puertos"
+tx_midicnx="Conexión MIDI entre dos puertos"
+tx_errcnx="Error, no se ha podido conectar"
+tx_midicnxex="Conectar dos puertos de forma exclusiva"
+tx_mididcnt="Desconectar dos puertos"
+tx_cnctall="Conectando todos los clientes entre sí"
+tx_clsall="Cerrando todas las conexiones MIDI"
+tx_monfrhd="Enter para comenzar monitor de "
+tx_montyp="Tipo de Monitor"
+tx_monclt="Cliente "
+tx_arrtyphd="Seleccionar puerto (arriba / abajo)"
+tx_arrtphd2="Sel  N   [puerto]  Cliente"
+tx_arrtphd3="Seleccionar tipo de monitor (RePag / AvPag)"
+tx_anyky="Pulsa cualquier tecla para salir del monitor"
+tx_mondeac="Desactivando monitor de "
+tx_errcli="Error, no se identificó el cliente"
+tx_monhd2="Monitor MIDI de puerto N"
+tx_lstprthd="Sel  N    Cliente  [puerto]    Canal ch    Nota n"
+tx_detcnxprt="Detalle de conexiones y puertos"
+tx_exitsl="  /   para salir> "
+tx_exitout="  Saliendo..." 
+tx_frshhlp="      9 para leer ayuda> "
+tx_hlptermhd1='ramiho Rpi MIDI Host - AYUDA
+**********************************
+     //    Para salir
+     +     Conectar puertos
+     -     Desconectar puertos
+    BSp    Conectar puertos en modo exclusivo
+     *     Conectar / Desconectar todo
+     .     Desconectar todo
+     0     Conectar todo
+
+     1     Lista de puertos y conexiones
+     2     Detalles ALSA MIDI
+     3     Detalles dispositivos USB
+
+     4     Menú conexiones favoritas
+     5     Leer puerto N
+     6     Chequea favoritos
+
+     7     Monitor puerto MIDI
+     8     Enviar señal MIDI'
+tx_hlptermhd2='     9     Mostrar IP y Ayuda, activar sonido'
+tx_hlptermhd3='     9     Mostrar IP y Ayuda, desactivar sonido'
+tx_hlptermhd4='     99    Leer IP y Ayuda
+    FNC    Leer el puerto n
+**********************************'
+tx_hlptermhdmini1='ramiho - 9 para mostrar ayuda y activar sonido'
+tx_hlptermhdmini2='ramiho - 9 para mostrar ayuda y desactivar sonido'
+txhlpcli='ramiho Rpi MIDI Host - Ayuda
+**********************************
+Uso:
+rpimidihost                     cliente interactivo
+rpimidihost arg1 arg2arg3       argumentos para uso en línea de comandos
+
+arg: 
+ -N  > Información sobre cliente N
+ 
+ . & q> Desconectar todo
+ 0 & a> Conectar todos los clientes entre sí
+ 1 & l> Lista de puertos y conexiones
+ 2 & t> Mostrar detalles de las conexiones MIDI
+ 3 & u> Lista de dispositivos USB conectados
+ 4 & f> Menú conexiones favoritas
+ 5 & e> Enviar señal MIDI
+ 6 & m> Monitorizar puerto MIDI
+ 7 & c> Conectar puertos
+ 8 & d> Desconectar puertos
+ 9 & h> Esta ayuda e IP'
+
+tx_monhd="ramiho >> Elegir puerto y tipo de monitor MIDI
+********************************************************************"
+
+tx_smhdr="ramiho >> Enviar señal MIDI
+************************************************
+   Enter   envía nota
+    + -    cambiar nota
+    3 9    cambiar octava
+    4 6    cambiar canal MIDI
+    2 8    cambiar cliente
+    0 .    panic
+     1     alternar tipo de cliente (hw o virtual)
+     7     cargar valores por defecto
+     5     enviar secuencia
+     /     volver
+   FUNC    leer el puerto n
+************************************************"
+
+}
+fLOCALE_EN () {
+tx_checkfavdev="Check favorite devices:"
+tx_errnofavdev="  No favorite devices connected"
+tx_retrmh="Return to ramiho"
+tx_errsel="Error introducing selection"
+tx_cnx="Connexion> "
+tx_svcnx="  Save current connexions"
+tx_svpos="Choose position (1, 2 o 3)> "
+tx_svd="Saved connexions:"
+tx_ldcnx="  Load saved connexions "
+tx_midishfront=" Reroute ports and channels"
+tx_ctlc="    Ctrl + C to exit"
+tx_mdshdel="9 delete MIDI routings"
+tx_rdport="Reed port N"
+tx_rdportprmpt="Port N> "
+tx_errnpt1="     Port number "
+tx_errnpt2=" does not exist"
+tx_lstcnx="List of connexions"
+tx_err0cnx=" No active connexions!"
+tx_lstcnxprt="List of ports and connexions"
+tx_lstprt="List of available ports"
+tx_hdprt="     N   Port   Name"
+tx_lstusb="List of USB devices"
+tx_cnxinp1="Enter ports using the position (N) of the port, or format .14.0 (for port 14:0)"
+tx_cnxinppr1="First port> "
+tx_cnxinppr2="Second port> "
+tx_errprt=" Error entering ports"
+tx_midicnx="MIDI connexion between two ports"
+tx_errcnx="Error, couldn't connect"
+tx_midicnxex="Exclusive MIDI connexion between two ports"
+tx_mididcnt="Disconnect ports"
+tx_cnctall="Connect all ports with each other"
+tx_clsall="Close all MIDI connexions"
+tx_monfrhd="Enter to start monitor for "
+tx_montyp="Type of Monitor"
+tx_monclt="Client "
+tx_arrtyphd="Choose port (up / down)"
+tx_arrtphd2="Sel  N   [port]   Client"
+tx_arrtphd3="Choose type of monitor (RePag / AvPag)"
+tx_anyky="Press any key to exit the monitor"
+tx_mondeac="Closing monitor for "
+tx_errcli="Error, client not identified"
+tx_monhd2="MIDI monitor for port N"
+tx_lstprthd="Sel  N    Client   [port]       Channel    Note n"
+tx_detcnxprt="Detailed ports and connexions"
+tx_exitsl="  /   to exit> "
+tx_exitout="  Bye..." 
+tx_frshhlp="      9 to read help> "
+tx_hlptermhd1='ramiho Rpi MIDI Host - HELP
+**********************************
+     //    To Exit
+     +     Connect ports
+     -     Disconnect ports
+    BSp    Connect ports on exclusive mode
+     *     Connect / Disconnect all
+     .     Disconnect all
+     0     Connect all
+
+     1     List of ports and connexions
+     2     ALSA MIDI details
+     3     USB devices details
+
+     4     Favorite Connexions menu
+     5     Read port N
+     6     Check Favorite devices
+
+     7     Monitor MIDI port
+     8     Send MIDI signal to port'
+tx_hlptermhd2='     9     Show IP and Help, enable sound'
+tx_hlptermhd3='     9     Show IP and Help, disable sound'
+tx_hlptermhd4='     99    Read IP and Help
+    FNC    Read port N
+**********************************'
+tx_hlptermhdmini1='ramiho - 9 to show Help and enable sound'
+tx_hlptermhdmini2='ramiho - 9 to show Help and disable sound'
+txhlpcli='ramiho Rpi MIDI Host - HELP
+**********************************
+Usage:
+rpimidihost                     terminal front
+rpimidihost arg1 arg2arg3       arguments for command line usage
+
+arg: 
+ -N  > Information about port N
+ 
+ . & q> Disconnect all
+ 0 & a> Connect all
+ 1 & l> List of ports and connexions
+ 2 & t> ALSA MIDI details
+ 3 & u> USB devices details
+ 4 & f> Favorite Connexions menu
+ 5 & e> Send MIDI signal to port
+ 6 & m> Monitor MIDI port
+ 7 & c> Connect ports
+ 8 & d> Disconnect ports
+ 9 & h> This help and IP'
+
+tx_monhd="ramiho >> Choose port and type of monitor
+********************************************************************"
+
+tx_smhdr="ramiho >> Send MIDI signal
+************************************************
+   Enter   send note
+    + -    change note
+    3 9    change octave
+    4 6    change MIDI channel
+    2 8    change client
+    0 .    panic
+     1     change type of client (hw o virtual)
+     7     reload default values
+     5     send sequence
+     /     exit
+   FUNC    read port n
+************************************************"
+
+}
+fLOCALE_EN # Change this function to change the locale used by ramiho
+
+# FAVORITE DEVICES*****************************************************
+# Esta es una lista de los dispositivos que se verificarán al lanzar Chequear Favoritos desde la interface principal de ramiho
+# Verifica si el nombre (o parte del nombre) de un dispositivo aparece en la lista de conexiones de aconnect -l
+# Puedes modificar los dispositivos que quieres que chequee
+fLST_FAV () { 
+clfav=
+_bold
+echo $tx_checkfavdev
+_norm
+iconnection=`aconnect -i -l`
+	[[ "$iconnection" == *"Virus"* ]] && clfav="$clfav 
+  Access Virus TI on"
+	[[ "$iconnection" == *"BCR"* ]] && clfav="$clfav 
+  BCR2000 on"
+	[[ "$iconnection" == *"UC-33"* ]] && clfav="$clfav 
+  Evolution UC-33 on"
+	[[ "$iconnection" == *"KeyStep"* ]] && clfav="$clfav 
+  Arturia KeyStep on"
+	[[ "$iconnection" == *"BeatStep"* ]] && clfav="$clfav 
+  Arturia BeatStep on"
+	[[ "$iconnection" == *"AR-96"* ]] && clfav="$clfav 
+  Zoom ARQ AR-96 on"
+	[[ "$iconnection" == *"USB Uno MIDI"* ]] && clfav="$clfav 
+  USB Uno MIDI Interface on"
+	[[ "$iconnection" == *"X-TOUCH"* ]] && clfav="$clfav 
+  X-Touch Mini on"
+	[[ "$iconnection" == *"QUNEO"* ]] && clfav="$clfav 
+  QuNeo on"
+if [[ $clfav == '' ]]; then
+	echo "No favorites connected" | $tts > /dev/null 2>&1 &
+	echo $tx_errnofavdev 
+else
+	echo "$clfav" | $tts > /dev/null 2>&1 &
+	echo "$clfav"
+fi
+}
+# CONEXIONES*FAVORITAS*********************************************
+# Aquí puedes determinar algunas acciones del menu de conexiones favoritas
+# para una conexión favorita, añade la descripción y el código en la función correspondiente
+# input 1, 2 y 3 lanzan las funcinoes fSET_1, fSET_2 y fSET_3, pensadas para conexiones aconnect 
+# input 4, 5 y 6 para guardar las conexiones actuales, o cargar configuraciones anteriores - No modificar
+# input 7 y 8 lanzan las funciones fMSH_1 y fMSH_2, pensadas para conexiones con midish
+# imput 9 abre la interface para midish
+fSETX_HEADER () {
+echo "ramiho >> Menu de conexiones favoritas
+********************************************************************
+     /     volver a ramiho
+    FUNC   Leer puerto N
+	
+     0     Guardar conexiones actuales
+     1     Cargar conexiones guardadas
+     2     Cargar conexiones guardadas (2)
+     3     Cargar conexiones guardadas (3)
+	 
+     4     Conectar KeyStep y UC33 a Virus TI
+     5     Conectar Beatstep (clock), UC33 y QuNeo a Uno MIDI (Virus) y AR96
+     6     Conectar Beatstep (clock), UC-33 y QuNeo a Virus por USB
+	  
+     7     Ruteo canales y puertos con midish
+     8     Ruteo Virus 2x4
+     9     Ruteo QuNeo - Minilogue 2x4
+	 
+     .     Desconectar todo
+     *     Conectar / Desconectar todo
+     +     Conectar puertos
+     -     Desconectar puertos
+********************************************************************"
+}
+fSET_1 () { 
+aconnect -x
+_bold
+echo " Conectar KeyStep & UC-33 a Uno MIDI (Kenton -> Virus TI)"
+_norm
+aconnect 'UC-33 USB MIDI Controller':0 'USB Uno MIDI Interface':0
+aconnect 'KeyStep Pro':0 'USB Uno MIDI Interface':0 
+}
+fSET_2 () { 
+aconnect -x
+_bold
+echo " Conectar Beatstep (clock), UC33, QuNeo a Uno MIDI (Virus) y AR96"
+_norm
+aconnect 'UC-33 USB MIDI Controller:0' 'USB Uno MIDI Interface' 
+aconnect 'Arturia BeatStep Pro:0' 'USB Uno MIDI Interface'
+aconnect 'QUNEO' 'USB Uno MIDI Interface'
+aconnect 'Arturia BeatStep Pro:0' 'AR-96'
+}
+fSET_3 () { 
+aconnect -x
+_bold
+echo " Conectar Beatstep (clock), UC-33, QuNeo a Virus por USB"
+_norm
+aconnect 'UC-33 USB MIDI Controller:0' 'Virus TI:1' 
+aconnect 'Arturia BeatStep Pro:0' 'Virus TI:1'
+aconnect 'QUNEO' 'Virus TI:1'
+aconnect 'Arturia BeatStep Pro:0' 'AR-96'
+}
+fMSH_1 () { 
+fMSH_DEL
+_bold
+echo
+echo " Cargar ruteo Virus 2x4"
+echo "    Ctrl + C para salir"
+_norm
+source "$SCRIPT_DIR/favcnx/midishcnx1.stp" #2>/dev/null
+}
+fMSH_2 () { 
+fMSH_DEL
+_bold
+echo
+echo " Cargar ruteo QuNeo-Minilogue 2x4"
+echo "    Ctrl + C para salir"
+_norm
+source "$SCRIPT_DIR/favcnx/midishcnx2.stp" #2>/dev/null
+}
+
+fSETX_FRONT () { # menu para elegir el setup preferido / utiliza midish para configuraciones avanzadas con ruteo de puertos y canales
+# Utiliza tres métodos:
+# Ficheros aconnect
+# 	0 para guardar con aconnect en los ficheros de conexiones 1, 2 o 3
+#		1,2,3 para cargar los ficheros de conexiones aconnect
+# Script aconnect
+#	4,5,6 para cargar con aconnect desde los scripts fSET_x
+# interface y ficheros midish
+#	7 para abrir la interface de midish
+#	8,9 para cargar conexiones midish
+setup=
+ci_err1=false
+ci_err2=false
+echo "Choose setup number" | $tts > /dev/null 2>&1 &
+	clear
+	_bold
+	fSETX_HEADER
+	fLST_CONNEX
+while true; do
+	_amarillo
+	read -n 1 -p $tx_cnx setup 
+	read -t 0.01 resto
+	_norm
+	if [[ $setup != "" ]]; then  # si no (vacio)=ENTER
+		if [[ $setup = "" ]]; then # si borrar (Backspace) entonces
+			echo $tx_retrmh
+			break
+		else
+			echo
+			case $setup in
+				[/q]) echo $tx_retrmh; break;;
+				[.]) fMSH_DEL; fCNX_DISCONNECTALL;;
+				[0]) fSET_SAVEFILE;; 
+				[1]) savedconnexions=$savedconnexions1; fSET_LOADFILE; fLST_CONNEX;; 
+				[2]) savedconnexions=$savedconnexions2; fSET_LOADFILE; fLST_CONNEX;;  
+				[3]) savedconnexions=$savedconnexions3; fSET_LOADFILE; fLST_CONNEX;;  
+				[4]) fSET_1; fLST_CONNEX;;  
+				[5]) fSET_2; fLST_CONNEX;; 
+				[6]) fSET_3; fLST_CONNEX;;   
+				[7]) fMSH_FRONT;; 
+				[8]) fMSH_1;;   
+				[9]) fMSH_2;;    
+				[+]) fCNX_CONNECT
+					fLST_CONNEX;; 
+				[-]) fCNX_DISCONNECT
+					fLST_CONNEX;;   
+				[*]) if [[ $connectall == 'true' ]]; then
+						fCNX_DISCONNECTALL
+					else
+						fCNX_CONNECTALL
+						fLST_CONNEX
+					fi
+					;; 
+				*) ci_err1=true;;
+			esac
+		fi
+	[[ $ci_err1 == true ]] && echo $tx_errsel && echo "Error, no setup selected" | $tts > /dev/null 2>&1 &
+	fi
+done
+}
+fSET_SAVEFILE () { # guarda un fichero con las conexiones actuales
+fREAD_ARRPORTS
+_bold
+echo  $tx_svcnx
+_norm
+savedconnexions=$savedconnexions1
+read -n 1 -p $tx_svpos fichern
+case $fichern in # comprobar si el primer caracter de la respuesta coincide
+	[1]) savedconnexions=$savedconnexions1;;
+	[2]) savedconnexions=$savedconnexions2;;
+	[3]) savedconnexions=$savedconnexions3;;
+esac
+echo > "$savedconnexions"
+_bold
+echo "  en $savedconnexions"
+_norm
+Puerto1=
+Puerto2=
+Clientes=
+Clientesn=
+Clientesn0=
+Clienter=
+puertoto=
+arrpuertoto=()
+let iconnex=0
+let ilinea=0
+TAB="$(printf '\t')"
+while IFS= read -r line; do
+	if [[ $ilinea -ge 5 ]]; then
+			arrayline=($line)
+		if [[ ${arrayline[0]} == "client" ]]; then
+			Puerto1=${arrayline[1]}
+			Puerto1=$(echo "${Puerto1//:/}")
+			let icliente=$icliente+1
+		elif [[ ${arrayline[0]} =~ ^-?[0-9]+$ ]]; then #SI ES UN NUMERO
+			Puerto2=${arrayline[0]}
+			puertofr="$Puerto1:$Puerto2"
+		elif [[ ${arrayline[0]} == "Connecting" ]]; then
+			for puertoto in ${line:15}
+			do
+				puertoto=$(echo "${puertoto//,/}")
+				puertoto=$(echo "${puertoto//'[ex]'/}")
+				arrpuertoto+=("$puertoto")
+			done
+
+			for i in "${!arrPuerto[@]}";
+			do
+				if [[ "${arrPuerto[$i]}" == "$puertofr" ]];
+				then
+					Clientes="${arrCliente[$i]}" && Clientesn="$i"
+				fi
+			done
+
+			for i in "${!arrPuerto[@]}";
+			do
+				for y in "${!arrpuertoto[@]}";
+				do
+					if [[ "${arrPuerto[$i]}" == "${arrpuertoto[$y]}" ]];
+					then
+						Clienter="${arrCliente[$i]}" && Clientern="$i"
+						Clienterpt="${arrPuerto[$i]}"
+						puertox2=$(echo "${Clienterpt//*:/}")
+						let iconnex=$iconnex+1
+						[[ $iconnex == 1 ]] && echo && echo $tx_svd
+						echo  "aconnect "\'"$Clientes"\'":$Puerto2 "\'"$Clienter"\'":$puertox2"
+						echo  "aconnect "\'"$Clientes"\'":$Puerto2 "\'"$Clienter"\'":$puertox2" >> "$savedconnexions"
+					
+					fi
+				done
+			done
+		fi
+	fi
+	let ilinea=$ilinea+1
+puertoto=
+arrpuertoto=()
+done <<< `aconnect -l`
+}
+fSET_LOADFILE () { # carga el fichero con las conexiones guardadas
+_bold	
+echo $tx_ldcnx $savedconnexions
+_norm
+aconnect -x
+source "$savedconnexions"
+}
+fMSH_FRONT () { 
+_bold
+echo
+echo $tx_midishfront
+echo $tx_ctlc 
+_norm
+fLST_PORTS
+fMSH_INPUT
+if [[ $ci_err == 'false' ]]; then
+	echo "Enviando...
+$midishout"
+	fMSH_SND
+fi
+}
+fMSH_INPUT () { #utilidad para recibir input de puertos y canales para operar con midish
+fREAD_ARRPORTS
+puertos=
+puertor=
+canalS=()
+canalR=()
+portS=()
+portR=()
+pSalida=
+pRecep=
+lstportE=
+lstportR=
+ci_err=false
+let icontN=0
+let icontS=1
+let icontR=1
+let icontC=0
+for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+do
+	if [[ $icontN -gt 0 ]]; then
+		midishout="$midishout
+ dnew $icontN ${arrPuerto[$i]} rw"
+	fi
+	let icontN=$icontN+1
+done
+echo "$midishout"
+_bold
+echo
+echo "Introduce puertos de envío, puertos de recepción y conexiones"
+_norm
+while [[ $ci_err == false ]]; do
+	echo "Enter input port number" | $tts > /dev/null 2>&1 &
+	read -p "N de puerto de envío> " res1
+	if [[ $res1 = '' ]]; then
+			tput cuu 1
+			tput el 1
+		if [[ $icontS -eq 1 ]]; then
+			ci_err=true
+		else
+			echo
+			break
+		fi
+	elif [[ $res1 =~ ^-?[0-9]+$ ]] && [[ $res1 -gt 0 ]]; then
+		echo "Enter midi channel" | $tts > /dev/null 2>&1 &
+		read -n 2 -p "    Canal MIDI envío> " resch1
+		echo
+		if [[ $resch1 = '' ]]; then
+			resch1=any
+		elif [[ $resch1 =~ ^-?[0-9]+$ ]] && [[ $resch1 -gt 0 ]] && [[ $resch1 -le 16 ]]; then
+			let resch1=$resch1-1
+		else
+			ci_err=true
+		fi
+	else
+		ci_err=true
+	fi
+	if [[ $ci_err == false ]]; then
+		midishout="$midishout
+ inew puertoE$icontS {$res1 $resch1}"
+		lstportE="$lstportE    inew puertoE$icontS {$res1 $resch1}
+"
+	fi
+	let icontS=$icontS+1
+done
+while [[ $ci_err == false ]]; do
+	echo "Enter output port number" | $tts > /dev/null 2>&1 &
+	read -n 2 -p "N de puerto recepción> " res2
+	if [[ $res2 = '' ]]; then
+			tput cuu 1
+			tput el 1
+		if [[ $icontR -eq 1 ]]; then
+			ci_err=true
+		else
+			echo
+			break
+		fi
+	elif [[ $res2 =~ ^-?[0-9]+$ ]] && [[ $res2 -gt 0 ]]; then
+		echo "Enter midi channel" | $tts > /dev/null 2>&1 &
+		read -n 2 -p "    Canal MIDI recepción> " resch2
+		echo
+		if [[ $resch2 = '' ]]; then
+			resch2=any
+		elif [[ $resch2 =~ ^-?[0-9]+$ ]] && [[ $resch2 -gt 0 ]] && [[ $resch2 -le 16 ]]; then
+			let resch2=$resch2-1
+		else
+			ci_err=true
+		fi
+	else
+		ci_err=true
+	fi
+	if [[ $ci_err == false ]]; then
+		midishout="$midishout
+ onew puertoR$icontR {$res2 $resch2}"
+		lstportR="$lstportR    onew puertoR$icontR {$res2 $resch2}
+    "
+	fi
+	let icontR=$icontR+1
+done	
+if [[ $ci_err == false ]]; then
+	midishout="$midishout
+ fnew midishfilter"
+	_bold
+	echo Lista puertos de envío
+	echo "$lstportE"
+	echo Lista puertos de recepción
+	echo "$lstportR"
+	_norm
+	while [[ $ci_err == false ]]; do
+		echo "Connect input and export clients" | $tts > /dev/null 2>&1 &
+		read -n 2 -p "Conectar puerto de envío> " res3
+		if [[ $res3 = '' ]] && [[ $icontC -gt 0 ]]; then
+			break 2
+		elif [[ $res3 =~ ^-?[0-9]+$ ]]; then
+			read -n 2 -p "Conectar puerto de recepción> " res4
+			if [[ $res4 =~ ^-?[0-9]+$ ]]; then
+				midishout="$midishout
+ fmap {any puertoE$res3} {any puertoR$res4}"
+			else
+				ci_err=true
+			fi
+		else
+			ci_err=true
+		fi
+
+		let icontC=$icontC+1
+	done	
+fi
+if [[ $ci_err == true ]]; then
+	_bold
+	echo
+	echo "Error introduciendo puertos"
+	midishout=
+else
+	midishout="$midishout
+i"
+# END"
+fi
+}
+fMSH_SND () { 
+echo "$midishout" | midish -b
+}
+fMSH_DEL () { 
+_bold
+echo
+echo $tx_mdshdel
+_norm
+aconnect -x
+echo s | midish -b
+echo fdel | midish -b
+echo freset | midish -b
+}
+
+# UTILIDADES****************************************************
+fREAD_ARRPORTS () { # genera unos arrays con la lista de puertos y nombres de los clientes conectados
+puerto1=
+puerto2=
+puertoc=
+arrPuerto=()
+arrCliente=()
+arrClienteN=()
+arrPuerto+=('')
+arrCliente+=('')
+arrClienteN+=('')
+let totpuertos=0
+let ilinea=0
+TAB="$(printf '\t')"
+while IFS= read -r line; do # leemos cada línea de aconnect -l
+	if [[ $ilinea -ge 5 ]]; then # nos saltamos las cuatro primeras
+			arrayline=($line)
+		if [[ ${arrayline[0]} == "client" ]]; then # si la línea comienza con client
+			puerto1=${arrayline[1]}
+			puerto1=$(echo "${puerto1//:/}")
+			nombrepuerto="${arrayline[@]:2}"
+			nombrepuerto=$(echo "${nombrepuerto//' ['*/}")
+			nombrepuerto=$(echo "${nombrepuerto//\'/}")
+			
+		elif [[ ${arrayline[0]} =~ ^-?[0-9]+$ ]]; then # si la línea comienza con un número
+			puerto2=${arrayline[0]}
+			puertoc="$puerto1:$puerto2" # puerto de envío en formato 14:0
+			arrPuerto+=("$puertoc")
+			arrCliente+=("$nombrepuerto")
+			if [[ "$puerto2" == '0' ]]; then
+				arrClienteN+=("$nombrepuerto")
+			else
+				arrClienteN+=("$nombrepuerto:$puerto2")
+			fi
+			let totpuertos=$totpuertos+1
+		fi
+	fi
+	let ilinea=$ilinea+1
+done <<< `aconnect -l`
+}
+fREAD_PORTINFO () { # utilidad para leer el puerto N que llega como argumento
+fREAD_ARRPORTS
+if [[ -z "$1" ]]; then
+	echo "Read port's number " | $tts > /dev/null 2>&1 &
+	_bold
+	echo "$tx_rdport"
+	_norm
+	fLST_PORTS
+	read -n 1 -p "$tx_rdportprmpt" resp
+	if [[ $resp =~ ^-?[0-9]+$ ]]; then
+		_norm
+		echo
+		fREAD_PORTINFO $resp
+	else
+		echo
+	fi
+else
+	if [[ -z "${arrPuerto[$1]}" ]]; then
+		echo "$tx_errnpt1 $1 $tx_errnpt2"
+		echo "Error. Port number $1 does not exist" | $tts > /dev/null 2>&1 &
+	else
+		echo "device number $1. client ${arrCliente[$1]}, port ${arrPuerto[$1]}"  | $tts > /dev/null 2>&1 &
+		echo "     $1   ${arrCliente[$1]} [${arrPuerto[$1]}]" 
+		fREAD_CONEXINFO "$1"
+	fi
+fi
+}
+fREAD_CONEXINFO () { # imprime la lista de conexiones
+fREAD_ARRPORTS
+texreco=
+Puerto1=
+Puerto2=
+Clientes=
+Clientesp=
+Clientesn=
+Clientesn0=
+Clienter=
+aClienterp=()
+puertoto=
+let ipuerto=0
+[[ ! -z "$1" ]] && let ipuerto=$1
+let iconnex=0
+let ilinea=0
+_bold
+[[ $ipuerto -eq 0 ]] && echo "$tx_lstcnx"
+_norm
+TAB="$(printf '\t')"
+while IFS= read -r line; do # leemos cada línea de aconnect -l
+	if [[ $ilinea -ge 5 ]]; then # nos saltamos las cuatro primeras
+			arrayline=($line)
+		if [[ ${arrayline[0]} == "client" ]]; then # si la línea comienza con client
+			Puerto1=${arrayline[1]}
+			Puerto1=$(echo "${Puerto1//:/}")
+		elif [[ ${arrayline[0]} =~ ^-?[0-9]+$ ]]; then # si la línea comienza con un número
+			Puerto2=${arrayline[0]}
+			Clientesp="$Puerto1:$Puerto2" # puerto de envío en formato 14:0
+			for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+			do
+				if [[ "${arrPuerto[$i]}" == "$Clientesp" ]]; # si es el puerto de envío, recuperamos su nombre y N
+				then
+					Clientes="${arrCliente[$i]}" && Clientesn="$i"
+				fi
+			done
+		elif [[ ${arrayline[0]} == "Connecting" ]]; then # si la línea comienza con Connecting entonces...			
+			for puertoto in ${line:15}
+			do
+				puertoto=$(echo "${puertoto//,/}")
+				puertoto=$(echo "${puertoto//'[ex]'/}")
+				aClienterp+=("$puertoto") # array de puertos de recepción
+			done			
+			if [[ $ipuerto -eq 0 ]] || [[ $Clientesn -eq "$ipuerto" ]]; then
+				for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+				do
+					for y in "${!aClienterp[@]}";
+					do
+						if [[ "${arrPuerto[$i]}" == "${aClienterp[$y]}" ]]; # si es el puerto de destino, recuperamos su nombre y N
+						then
+							Clienter="${arrCliente[$i]}" && Clientern="$i"
+							let iconnex=$iconnex+1
+							[[ $ipuerto -eq 0 ]] && [[ $iconnex == 1 ]] && _bold && echo "     N   cliente [puerto] conectado  a  N  cliente [puerto]" && _norm
+							if [[ "$Clientesn" != "$Clientesn0" ]]; then # generamos la línea que se va a imprimir
+								[[ $ipuerto -eq 0 ]] && echo "     $Clientesn   $Clientes [$Clientesp]"
+								echo "            a   $Clientern  $Clienter [${aClienterp[$y]}]"
+								Clientesn0=$Clientesn
+							else
+								echo  "            a   $Clientern  $Clienter [${aClienterp[$y]}]"
+							fi
+						fi
+					done
+				done
+			fi
+			texreco=$texreco". Connexion $iconnex. $Clientes connected to $Clienter"
+		fi
+	fi
+	let ilinea=$ilinea+1
+	puertoto=
+	aClienterp=()
+done <<< `aconnect -l`
+if [[ $ipuerto -eq 0 ]] && [[ $iconnex -eq 0 ]]; then
+	tput cuu1
+	tput el
+	_bold
+	echo "$tx_err0cnx"
+	_norm
+fi
+}
+fREAD_ARRCON () { 
+fREAD_ARRPORTS
+Puerto1=
+Puerto2=
+Clientes=
+Clientesp=
+Clientesn=
+Clientesn0=
+Clienter=
+aClienterp=()
+puertoto=
+aconenviop=()
+aconenvionu=()
+aconenviono=()
+aconrecepp=()
+aconrecepnu=()
+aconrecepno=()
+let iconnex=0
+let ilinea=0
+TAB="$(printf '\t')"
+while IFS= read -r line; do # leemos cada línea de aconnect -l
+	if [[ $ilinea -ge 5 ]]; then # nos saltamos las cuatro primeras
+			arrayline=($line)
+		if [[ ${arrayline[0]} == "client" ]]; then # si la línea comienza con client
+			Puerto1=${arrayline[1]}
+			Puerto1=$(echo "${Puerto1//:/}")
+		elif [[ ${arrayline[0]} =~ ^-?[0-9]+$ ]]; then # si la línea comienza con un número
+			Puerto2=${arrayline[0]}
+			Clientesp="$Puerto1:$Puerto2" # puerto de envío en formato 14:0
+				for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+				do
+					if [[ "${arrPuerto[$i]}" == "$Clientesp" ]]; # si es el puerto de envío, recuperamos su nombre y N
+					then
+						Clientes="${arrCliente[$i]}" && Clientesn="$i"
+					fi
+				done
+				aconenviop+=("$Clientesp")
+				aconenvionu+=("$Clientesn")
+				aconenviono+=("$Clientes")
+				aconrecepp+=("")
+				aconrecepnu+=("")
+				aconrecepno+=("")
+		elif [[ ${arrayline[0]} == "Connecting" ]]; then # si la línea comienza con Connecting entonces...
+			for puertoto in ${line:15}
+			do
+				puertoto=$(echo "${puertoto//,/}")
+				puertoto=$(echo "${puertoto//'[ex]'/}")
+				aClienterp+=("$puertoto") # array de puertos de recepción
+			done
+			if [[ $ipuerto -eq 0 ]] || [[ $Clientesn -eq "$ipuerto" ]]; then
+				for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+				do
+					for y in "${!aClienterp[@]}";
+					do
+						if [[ "${arrPuerto[$i]}" == "${aClienterp[$y]}" ]]; # si es el puerto de destino, recuperamos su nombre y N
+						then
+							Clienter="${arrCliente[$i]}" && Clientern="$i"
+							let iconnex=$iconnex+1
+							aconenviop+=("$Clientesp")
+							aconenvionu+=("$Clientesn")
+							aconenviono+=("$Clientes")
+							aconrecepp+=("${aClienterp[$y]}")
+							aconrecepnu+=("$Clientern")
+							aconrecepno+=("$Clienter")
+						fi
+					done
+				done
+			fi
+		fi
+	fi
+	let ilinea=$ilinea+1
+	puertoto=
+	aClienterp=()
+done <<< `aconnect -l`
+}
+fLST_CONNEX () { # imprime la lista de conexiones
+fREAD_ARRCON
+_bold
+echo "$tx_lstcnxprt "
+_norm
+let icontador=1
+puerto0=
+for i in "${!aconenviop[@]}"; 
+do
+	[[ "$puerto0" != "${aconenviop[$i]}" ]] && _bold && echo "     ${aconenvionu[$i]}   ${aconenviono[$i]}   [${aconenviop[$i]}]" && _norm
+	[[ "${aconrecepnu[$i]}" != '' ]] && echo "            "$'\U2192'"   ${aconrecepnu[$i]}   ${aconrecepno[$i]}   [${aconrecepp[$i]}]"
+	let icontador=$icontador+1
+	puerto0="${aconenviop[$i]}"
+done
+}
+fLST_PORTS () { # imprime la lista de clientes
+fREAD_ARRPORTS
+texrecl=
+_bold
+echo "$tx_lstprt"
+_norm
+let ipuerto=0
+for i in "${arrPuerto[@]}"
+do
+   [[ $ipuerto == 0 ]] && _bold && echo "$tx_hdprt" && _norm
+   [[ $ipuerto != 0 ]] && echo "     $ipuerto   $i   ${arrClienteN[$ipuerto]}" && texrecl=$texrecl". Device number $ipuerto. client ${arrCliente[$ipuerto]}, port ${i:0:2}, ${i:3:1}"
+   let ipuerto=$ipuerto+1
+done
+}
+fLST_USB () { # imprime la lista de dispositivos USB conectados
+_bold
+echo "$tx_lstusb"
+_norm
+lsusb
+_bold
+echo "$tx_lstprt"
+_norm
+aplaymidi -l
+}
+
+# CONEXIONES**************************************************
+fCNX_INPUT () { #utilidad para recibir input de índices o puertos para operar con aconnect. Si se usan las FUNC del NumPad se envían los índices
+fREAD_ARRPORTS
+puertos=
+puertor=
+nombres=
+nombrer=
+ci_err=false
+_bold
+echo "Enter first port " | $tts > /dev/null 2>&1 &
+echo
+echo "$tx_cnxinp1"
+_norm
+read -n 1 -p "$tx_cnxinppr"  res1
+if [[ $res1 =~ ^-?[0-9]+$ ]]; then
+	if [[ $res1 -le ${#arrPuerto[@]} ]]; then
+		puertos=${arrPuerto[res1]}
+		nombres=${arrClienteN[res1]}
+	else
+		ci_err=true
+	fi
+elif [[ $res1 == '' ]]; then
+	ci_err=true
+elif [[ $res1 == '.' ]]; then
+	read res1
+	res1=$(echo "${res1//../:}")
+	puertos=$res1
+	# nombres=${arrClienteN[res1]}
+else # si res1 no está vacío ni empieza por un número (N) o un punto, asumimos que se están usando las FUNC del NumPad y comparamos el 3er caracter
+	read -n 1 resp2 
+	read -n 1 resp3
+	read -t 0.01 resto
+	case $resp3 in
+		[4F]) let res1=1;; # End
+		[B]) let res1=2;;  # Flecha Dn
+		[6]) let res1=3;;  # Pg Dn / Av Pag
+		[D]) let res1=4;; # Flecha Lft
+		[EG]) let res1=5;; # (5) en el centro de las flechas
+		[C]) let res1=6;; # Flecha Rgt
+		[1H]) let res1=7;; # Home
+		[A]) let res1=8;; # Flecha Up
+		[5]) let res1=9;;  # Pg Up / Re Pag
+		*) ci_err=true;;
+	esac
+	if [[ $res1 =~ ^-?[0-9]+$ ]]; then
+		puertos=${arrPuerto[res1]}
+		nombres=${arrClienteN[res1]}
+	else
+		ci_err=true
+		res1=
+	fi
+fi
+if [[ $ci_err == false ]]; then
+	echo "Enter second port" | $tts > /dev/null 2>&1 &
+	echo
+	read -n 1 -p "$tx_cnxinppr2" res2
+	if [[ $res2 =~ ^-?[0-9]+$ ]]; then
+		if [[ $res1 -le ${#arrPuerto[@]} ]]; then
+			puertor=${arrPuerto[res2]}
+			nombrer=${arrClienteN[res2]}
+		else
+			ci_err=true
+		fi
+	elif [[ $res2 == '' ]]; then
+		ci_err=true
+		echo "Error"
+	elif [[ $res2 == '.' ]]; then
+		read res2
+		res2=$(echo "${res2//../:}")
+		puertor=$res2
+		nombrer=${arrClienteN[res2]}
+	else
+		read -n 1 resp2 # se guardan los primeros tres caracteres de la respuesta para buscar equivalencias
+		read -n 1 resp3
+		read -t 0.01 resto
+		case $resp3 in
+			[4F]) let res2=1;; # End
+			[B]) let res2=2;;  # Flecha Dn
+			[6]) let res2=3;;  # Pg Dn / Av Pag
+			[D]) let res2=4;; # Flecha Lft
+			[EG]) let res2=5;; # (5) en el centro de las flechas
+			[C]) let res2=6;; # Flecha Rgt
+			[1H]) let res2=7;; # Home
+			[A]) let res2=8;; # Flecha Up
+			[5]) let res2=9;;  # Pg Up / Re Pag
+			*) ci_err=true;;
+		esac
+		if [[ $res2 =~ ^-?[0-9]+$ ]]; then
+			puertor=${arrPuerto[res2]}
+			nombrer=${arrClienteN[res2]}
+		else
+			ci_err=true
+			res2=
+		fi
+	fi
+fi
+if [[ $ci_err == true ]]; then
+	_bold
+	echo
+	echo "$tx_errprt"
+fi
+}
+fCNX_CONNECT () { # conectar dos puertos MIDI 
+fREAD_ARRPORTS
+_bold
+echo "$tx_midicnx"
+_norm
+fLST_CONNEX
+fCNX_INPUT
+if [[ $ci_err == false ]]; then
+	echo
+	echo "aconnect $puertos $puertor"
+	aconnect $puertos $puertor
+	[[ $? != 0 ]] && echo "$tx_errcnx"
+fi
+}
+fCNX_EXCLU () { # conectar dos puertos MIDI en modo exclusivo 
+fREAD_ARRPORTS
+_bold
+echo "$tx_midicnxex"
+_norm
+fLST_CONNEX
+fCNX_INPUT
+if [[ $ci_err == false ]]; then
+	echo	
+	echo "aconnect -e $puertos $puertor"
+	aconnect -e $puertos $puertor
+	[[ $? != 0 ]] && echo "$tx_errcnx"
+fi
+}
+fCNX_DISCONNECT () { # desconectar dos puertos MIDI 
+fREAD_ARRPORTS
+_bold
+echo "$tx_mididcnt "
+_norm
+fLST_CONNEX
+fCNX_INPUT
+if [[ $ci_err == false ]]; then
+	echo
+	echo "aconnect -d $puertos $puertor"
+	aconnect -d $puertos $puertor
+	[[ $? != 0 ]] && echo "$tx_errdcnx"
+fi
+}
+fCNX_CONNECTALL() { # conectar todos los puertos MIDI entre si
+fREAD_ARRPORTS
+connectall=true
+arrConPE=()
+arrConPR=()
+arrConCE=()
+arrConCR=()
+let icuentax=0
+let icuentay=0
+aconnect -x
+_bold
+echo "$tx_cnctall" 
+echo
+_norm
+for i in "${arrPuerto[@]}"
+do
+	for n in "${arrPuerto[@]}"
+	do
+		if [[ "$i" != "$n" ]] && [[ "${arrCliente[icuentax]}" != "${arrCliente[icuentay]}" ]] && [[ $icuentax -ge 1 ]] && [[ $icuentay -ge 1 ]]; then 
+			aconnect $i $n 
+				if [[ $? == 0 ]]; then 
+					arrConPE+=("$i") && arrConPR+=("$n") && arrConCE+=("${arrCliente[icuentax]}") && arrConCR+=("${arrCliente[icuentay]}")
+				else
+					echo Error en el intento de conectar ${arrCliente[icuentax]} -> ${arrCliente[icuentay]}
+				fi
+		fi
+	let icuentay=$icuentay+1
+	done
+	let icuentay=0
+	let icuentax=$icuentax+1
+done
+}
+fCNX_DISCONNECTALL () { # desconectar todos los puertos MIDI entre si
+connectall=false
+_bold
+echo "$tx_clsall"
+_norm
+aconnect -x
+}
+
+# MONITOR*MIDI**************************************************
+fMON_FRONT () { # interface del monitor de puertos MIDI
+let montipnum=1
+let iportout=1
+fMON_LISTPORT
+montipo=${arrtipomonitor[$montipnum]}
+devicename=${arrClienteN[$iportout]}
+tout="monitor $devicename $montipo"
+while true; do
+	errorc=
+	clear
+	_bold
+	_norm
+	fMON_LISTPORT
+	echo
+	_bold
+	echo "$tx_monfrhd [${arrPuerto[$iportout]}] ${arrCliente[$iportout]} ($montipo)"
+	if [[ $send == true ]]; then
+		send=false
+		if [[ $montipo == 'aseqdump' ]]; then
+			fMON_ASEQ
+		else
+			fMON_RM $montipo
+		fi
+	fi
+	_amarillo
+	read -s -n 1 -p "Monitor>  " resp
+	read -n 1 -t 0.05 caracter2
+	read -n 1 -t 0.01 caracter3
+	read -t 0.01 resto
+	# echo -en "\r\033[K" # borra la línea anterior (prompt de read y respuesta)
+	_norm
+	_blanco
+	if [[ $resp == '' ]]; then
+		send=true
+		tout="monitor $devicename $montipo"
+	elif [[ $resp = "" ]]; then # si borrar (Backspace) entonces
+		echo "$tx_retrmh"
+		break
+	else
+		case $resp in # comprobar si el primer caracter de la respuesta coincide
+			[/q]) echo "$tx_retrmh"
+				break;;
+			[9]) montipo0=${arrtipomonitor[$montipnum]}
+				let montipnum=$montipnum-1
+				[[ $montipnum -eq 0 ]] && let montipnum=9
+				montipo=${arrtipomonitor[$montipnum]}
+				tout=$tx_montyp" $montipo0 > $montipo";;
+			[3]) montipo0=${arrtipomonitor[$montipnum]}
+				let montipnum=$montipnum+1
+				[[ $montipnum -eq 10 ]] && let montipnum=1
+				montipo=${arrtipomonitor[$montipnum]}
+				tout=$tx_montyp" $montipo0 > $montipo";;
+			[2]) let iportout0=$iportout
+				let iportout=$iportout+1
+				[[ $iportout -ge ${#arrCliente[@]} ]] && let iportout=$iportout-1
+				tout=$tx_monclt"${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
+				devicename=${arrClienteN[$iportout]};;
+			[8]) let iportout0=$iportout
+				let iportout=$iportout-1
+				[[ $iportout -le 1 ]] && let iportout=1
+				tout=$tx_monclt"${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
+				devicename=${arrClienteN[$iportout]};;
+			*) #si no se encuentran coincidencias para $resp
+				errorc=true;;
+		esac
+		case $caracter3 in # para usar con flechas
+			[6]) montipo0=${arrtipomonitor[$montipnum]}
+				let montipnum=$montipnum-1
+				[[ $montipnum -eq 0 ]] && let montipnum=9
+				montipo=${arrtipomonitor[$montipnum]}
+				tout=$tx_montyp" $montipo0 > $montipo";; # Flecha Lft
+			[5]) montipo0=${arrtipomonitor[$montipnum]}
+				let montipnum=$montipnum+1
+				[[ $montipnum -eq 10 ]] && let montipnum=1
+				montipo=${arrtipomonitor[$montipnum]}
+				tout=$tx_montyp" $montipo0 > $montipo";; # Flecha Rgt
+			[B]) let iportout0=$iportout
+				let iportout=$iportout+1
+				[[ $iportout -ge ${#arrCliente[@]} ]] && let iportout=$iportout-1
+				tout=$tx_monclt"${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
+				devicename=${arrClienteN[$iportout]};;  # Flecha Dn¡
+			[A]) let iportout0=$iportout
+				let iportout=$iportout-1
+				[[ $iportout -le 1 ]] && let iportout=1
+				tout=$tx_monclt"${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
+				devicename=${arrClienteN[$iportout]};; # Flecha Up
+			*) ci_err2=true;;
+		esac
+		[[ $ci_err2 == true ]] && echo $tx_errsel && echo "Error on selection" | $tts > /dev/null 2>&1 &
+	fi
+done
+}
+fMON_ARRTYP () {
+arrtipomonitor=()
+arrtipomonitor+=("aseqdump")
+arrtipomonitor+=("aseqdump")
+arrtipomonitor+=("note")
+arrtipomonitor+=("cc")
+arrtipomonitor+=("start stop cont")
+arrtipomonitor+=("pc")
+arrtipomonitor+=("syx")
+arrtipomonitor+=("rpn")
+arrtipomonitor+=("sr")
+arrtipomonitor+=("sc")
+}
+fMON_LISTPORT () {
+fREAD_ARRPORTS
+_bold
+echo "
+aseqdump   completo
+note       notas
+cc         control change
+psc        transport
+pc         program change
+syx        sysex
+rpn        rpn
+sr         all System Real-Time messages
+sc         all System Common messages"
+echo "$tx_arrtyphd"
+_norm
+let icontador=0
+for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+do
+	if [[ $icontador == 0 ]]; then
+		_bold
+		echo "$tx_arrtphd2"
+		_norm
+	elif [[ $icontador -eq $iportout ]]; then
+		_bold
+		echo " X   $icontador    [${arrPuerto[$icontador]}]   ${arrCliente[$icontador]} "
+		_norm
+	else
+		echo "     $icontador    [${arrPuerto[$icontador]}]   ${arrCliente[$icontador]}  "
+
+	fi
+	let icontador=$icontador+1
+done
+let icontador=0
+echo
+_bold
+echo "$tx_arrtphd3"
+_norm
+TAB="$(printf '\t')"
+while IFS= read -r line; do # por cada puerto MIDI existente
+	if [[ $icontador -eq 0 ]]; then
+		_bold
+		echo "Sel   Monitores"
+		_norm
+	elif [[ $icontador -eq $montipnum ]]; then
+		_bold
+		echo " ->  $icontador    $line"
+		_norm
+	else
+		echo "     $icontador    $line"
+	fi
+	let icontador=$icontador+1
+done <<< "$monheader"
+}
+fMON_ASEQ () { # monitor MIDI usando aseqdump
+puertom=${arrPuerto[$iportout]}
+if [[ $puertom != '' ]]; then
+	echo 
+	echo aseqdump -p $puertom
+	aseqdump -p $puertom &
+	PID=$!
+	echo
+	echo "Monitor de $devicename ($PID)"
+	sleep 1
+	_bold
+	echo "$tx_anyky" # se cancela la monitorización tocando cualquier tecla
+	_norm
+	read -n 1 resto
+		echo 
+		echo "$tx_mondeac $devicename ($PID)"
+		kill -INT $PID && PID=
+else
+	echo
+	echo "$tx_errcli" 
+fi
+}
+fMON_RM () { # monitor MIDI usando receivemidi
+tipomonit=$1
+puertom=${arrPuerto[$iportout]}
+clientem=${arrClienteN[npm]}
+_bold
+echo "$tx_monhd2" 
+echo
+_norm
+if [[ $puertom != '' ]]; then
+	echo 
+	echo receivemidi dev $devicename $tipomonit
+	_bold
+	echo $tx_ctlc
+	_norm
+	echo
+	$receivemidi dev $devicename $tipomonit
+	echo
+else
+	echo
+	echo "$tx_errcli"
+fi
+
+}
+fMON_ARRTYP
+
+# SEND*MIDI***********************************************************
+fSM_FRONT () { # enviar señal midi a los puertos con sendmidi
+let iportout=1
+let smch=1
+let smoct=0
+let smnot=48
+let iportout0=0
+let smch0=1
+let smoct0=3
+let smnot0=48
+send=false
+devicename=
+clienttyp='dev'
+clienttypout=
+fSM_LISTPORT
+devicename=${arrClienteN[$iportout]}
+tout="sendmidi $clienttyp $devicename ch $smch on $smnot 127 clock 120 off $smnot 127"
+while true; do
+	errorc=
+	clear
+	_bold
+	echo "$tx_smhdr "
+	_norm
+	fSM_LISTPORT
+	echo
+	echo "$tout"
+	[[ $send == true ]] && send=false && $("$sendmidi" $clienttyp $devicename ch $smch on $smnot 127 clock 120 off $smnot 127)
+	_bold
+	_amarillo
+	read -s -n 1 -p "SendMIDI>  " resp
+	read -n 1 -t 0.05 caracter2
+	read -n 1 -t 0.01 caracter3
+	read -t 0.01 resto
+	_norm
+	# echo -en "\r\033[K" # borra la línea anterior (prompt de read y respuesta)
+	_norm
+	_blanco
+	if [[ $resp == '' ]]; then
+		send=true
+		tout="sendmidi $clienttyp $devicename ch $smch on $smnot 127 clock 120 off $smnot 127"
+	elif [[ $resp = "" ]]; then # si borrar (Backspace) entonces
+		echo "$tx_retrmh"
+		break
+	else
+		case $resp in # comprobar si el primer caracter de la respuesta coincide
+			[/q]) echo $tx_retrmh 
+				break;;
+			[5]) tout="Mandar secuencia"
+				x=$("$sendmidi" $clienttyp $devicename ch $smch file "$midiseq" );;
+			[0..]) echo "Panic!"
+				x=$("$sendmidi" $clienttyp $devicename panic) ;;
+			[1]) if [[ $clienttyp == 'dev' ]]; then
+					clienttyp='virt'
+					clienttypout='[vir]'
+				else
+					clienttyp='dev'
+					clienttypout=
+				fi
+				tout="Tipo de cliente $clienttyp";;
+			[7]) let smch=1
+				let smoct=0
+				let smnot=48
+				tout="Cargar valores por defecto";;
+			[+]) let smnot0=$smnot
+				let smnot=$smnot+1
+				[[ $smnot -ge 128 ]] && let smnot=127
+				tout="Nota $smnot0 > $smnot";;
+			[-]) let smnot0=$smnot
+				let smnot=$smnot-1
+				[[ $smnot -le 0 ]] && let smnot=0
+				tout="Nota $smnot0 > $smnot";;
+			[8]) let iportout0=$iportout
+				let iportout=$iportout-1
+				[[ $iportout -le 1 ]] && let iportout=1
+				tout="Cliente ${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
+				devicename=${arrClienteN[$iportout]}
+				;;
+			[2]) let iportout0=$iportout
+				let iportout=$iportout+1
+				[[ $iportout -ge ${#arrCliente[@]} ]] && let iportout=$iportout-1
+				tout="Cliente ${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
+				devicename=${arrClienteN[$iportout]}
+				;;
+			[3]) let smoct=-1
+				let smnot0=$smnot
+				let smnot=$smnot+$smoct*12
+				[[ $smnot -ge 128 ]] && let smnot=127
+				tout="(-Oct) Nota $smnot0 > $smnot"
+				let smoct=0;; 
+			[9]) let smoct=1
+				let smnot0=$smnot
+				let smnot=$smnot+$smoct*12
+				[[ $smnot -ge 128 ]] && let smnot=127
+				tout="(+Oct) Nota $smnot0 > $smnot"
+				let smoct=0;;
+			[4]) let smch0=$smch
+				let smch=$smch-1
+				[[ $smch -eq 0 ]] && let smch=16
+				echo "Canal MIDI $smch0 > $smch";;
+			[6]) let smch0=$smch
+				let smch=$smch+1
+				[[ $smch -eq 17 ]] && let smch=1
+				tout="Canal MIDI $smch0 > $smch";;
+			*) #si no se encuentran coincidencias para $resp
+				errorc=true;;
+		esac
+		case $caracter3 in # para usar con flechas
+			[B]) let iportout0=$iportout
+				let iportout=$iportout+1
+				[[ $iportout -ge ${#arrCliente[@]} ]] && let iportout=$iportout-1
+				tout="Cliente ${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
+				devicename=${arrClienteN[$iportout]};;  # Flecha Dn¡
+			[D]) let smch0=$smch
+				let smch=$smch-1
+				[[ $smch -eq 0 ]] && let smch=16
+				echo "Canal MIDI $smch0 > $smch";; # Flecha Lft
+			[C]) let smch0=$smch
+				let smch=$smch+1
+				[[ $smch -eq 17 ]] && let smch=1
+				tout="Canal MIDI $smch0 > $smch";; # Flecha Rgt
+			[A]) let iportout0=$iportout
+				let iportout=$iportout-1
+				[[ $iportout -le 1 ]] && let iportout=1
+				tout="Cliente ${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
+				devicename=${arrClienteN[$iportout]};; # Flecha Up
+			*)	#si no se encuentran coincidencias para $resp
+				errorc=true;;
+		esac
+	fi
+done
+}
+fSM_LISTPORT () {
+fREAD_ARRPORTS
+let icontador=0
+for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+do
+	if [[ $icontador == 0 ]]; then
+		_bold
+		echo "$tx_lstprthd"
+		_norm
+	elif [[ $icontador -eq $iportout ]]; then
+		_bold
+		echo " X   $icontador    [${arrPuerto[$icontador]}]   ${arrCliente[$icontador]}    ch$smch    n$smnot"
+		_norm
+
+	else
+		echo  "     $icontador    [${arrPuerto[$icontador]}]   ${arrCliente[$icontador]}  "
+
+	fi
+	let icontador=$icontador+1
+done
+}
+
+
+# CABECERAS*AYUDA******************************************************
+fHLP_HEADER () { # pantalla de ayuda
+_norm
+_bold	
+echo "$tx_hlptermhd1"
+if [[ $tts == '' ]]; then
+	echo "$tx_hlptermhd2"
+else
+	echo "$tx_hlptermhd3"
+fi
+echo "$tx_hlptermhd4"
+}
+fHLP_HEADERMINI () { # pantalla reducida
+_norm
+_bold	
+if [[ $tts == '' ]]; then
+	echo "$tx_hlptermhdmini1"
+else
+	echo "$tx_hlptermhdmini2"
+fi
+}
+fHLP_CLI () { # pantalla de ayuda para usar en terminal
+echo "$txhlpcli"
+}
+fHLP_READ () { # lector con tts de la ayuda
+texthelp="Raspi Midi Host.
+slash to exit.
+plus to connect ports.
+minus to disconnect ports.
+dot to disconnect all.
+0 to connect all.
+9 to read raspi's IP number"
+echo $texthelp | $tts_on > /dev/null 2>&1 &
+}
+
+# RAMIHO*FRONT***********************************************************
+fRMH_FRONT () { # loop del entorno interactivo RMH
+while true; do
+	errorc=
+	_verde
+	_bold
+	read -n 1 -p "ramiho> " caracter1 # usamos el primer y tercer caracteres de la respuesta para buscar equivalencias
+	read -n 1 -t 0.05 caracter2
+	read -n 1 -t 0.01 caracter3
+	read -t 0.01 resto
+	echo
+	_blanco
+		if [[ $caracter1 = "" ]]; then # si borrar (Backspace) entonces
+			fCNX_EXCLU
+		else
+			case $caracter1 in # comprobar si el primer caracter de la respuesta coincide
+				[*]) if [[ $connectall == 'true' ]]; then
+						fCNX_DISCONNECTALL
+					else
+						fCNX_CONNECTALL
+						fLST_CONNEX
+					fi;;
+				[/q]) fRMH_EXIT;;
+				[+]) fCNX_CONNECT
+					fLST_CONNEX;; 
+				[-]) fCNX_DISCONNECT
+					fLST_CONNEX;;
+				[.]) fCNX_DISCONNECTALL;;
+				[.]) fCNX_DISCONNECTALL;;
+				[0]) if [[ $caracter2 == 0 ]]; then # para los teclados numéricos con botón para 00 o 000
+						if [[ $connectall == 'true' ]]; then
+							fCNX_DISCONNECTALL
+						else
+							fCNX_CONNECTALL
+							fLST_CONNEX
+						fi
+					else
+						fCNX_CONNECTALL
+						fLST_CONNEX
+					fi;;
+				[1]) fLST_CONNEX; echo "$texrecl. $texreco" | $tts > /dev/null 2>&1 &;;
+				[2]) _bold		
+					echo "$tx_detcnxprt"
+					_norm
+					aconnect -l;;
+				[3]) fLST_USB;;
+				[4]) fSETX_FRONT;;
+				[5]) fREAD_PORTINFO ;;
+				[6]) fLST_FAV;;
+				[7]) fMON_FRONT;;
+				[8]) fSM_FRONT;;
+				[9]) read -n 1 -t 1 -p $tx_frshhlp dosnueve
+					leerIP=`hostname -I`
+					clear
+					fHLP_HEADER
+					echo $leerIP
+					if [[ $dosnueve -eq 9 ]]; then
+						clear
+						echo $leerIP
+						fHLP_HEADER
+						echo $leerIP | $tts_on > /dev/null 2>&1
+						fHLP_READ
+					else
+						if [[ $tts != '' ]]; then
+							tts=''
+						else
+							tts=$tts_on
+							echo "Sound on" | $tts > /dev/null 2>&1 &
+						fi
+						clear
+						echo $leerIP
+						fHLP_HEADER
+					fi
+					dosnueve=;;
+				*) #si no se encuentran coincidencias para $caracter1
+					errorc=true;;
+			esac
+			case $caracter3 in # para teclas especiales como flechas, Inicio, Fin, etc. comprobamos el tercer caracter guardado
+				[2]) fCNX_CONNECTALL
+					fLST_CONNEX;; # Ins
+				[3]) fCNX_DISCONNECTALL;;  # Del
+				[4F]) fREAD_PORTINFO 1;; # End
+				[B]) fREAD_PORTINFO 2;;  # Flecha Dn
+				[6]) fREAD_PORTINFO 3;;  # Pg Dn / Av Pag
+				[D]) fREAD_PORTINFO 4;; # Flecha Lft
+				[EG]) fREAD_PORTINFO 5;; # (5) en el centro de las flechas
+				[C]) fREAD_PORTINFO 6;; # Flecha Rgt
+				[1H]) fREAD_PORTINFO 7;; # Home
+				[A]) fREAD_PORTINFO 8;; # Flecha Up
+				[5]) fREAD_PORTINFO 9;;  # Pg Up / Re Pag
+				*)	[[ $errorc == true  ]] && echo "..."  && fHLP_HEADERMINI;;
+			esac
+		fi
+done
+}
+fRMH_START () {
+echo "Welcome to Raspi MIDI host" | $tts > /dev/null 2>&1 &
+clear
+fHLP_HEADER
+fLST_CONNEX
+fRMH_FRONT
+}
+fRMH_EXIT () { # menu para salir
+echo "slash to exit" | $tts > /dev/null 2>&1 &
+_bold
+_amarillo
+# tput cuu 1
+read -n 1 -p "$tx_exitsl" iexit
+if [[ $iexit == '/' ]]; then
+	echo "$tx_exitout"
+	echo "Good vibe" | $tts > /dev/null 2>&1 &
+	_norm
+	exit 0
+fi
+_blanco
+echo
+}
+
+# COMIENZO
+if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
+	for arg in "$@"; do 
+		if [[ $arg == s ]]; then
+				tts=
+				fRMH_START
+		elif [[ $arg == -* ]]; then
+			inumcli=${arg:1}
+			tts=
+			fREAD_PORTINFO $inumcli
+		else
+			if [[ $arg == *'.'* ]] || [[ $arg == *q* ]]; then
+				fCNX_DISCONNECTALL
+				fLST_CONNEX
+			fi
+			if [[ $arg == *0* ]] || [[ $arg == *a* ]]; then
+				fCNX_CONNECTALL
+				fLST_CONNEX
+			fi
+			if [[ $arg == *1* ]] || [[ $arg == *l* ]]; then
+				fLST_CONNEX
+			fi
+			if [[ $arg == *2* ]] || [[ $arg == *t* ]]; then
+				_bold
+				echo "$tx_detcnxprt"
+				_norm
+				aconnect -l
+			fi
+			if [[ $arg == *3* ]] || [[ $arg == *u* ]]; then
+				fLST_USB
+			fi
+			if [[ $arg == *4* ]] || [[ $arg == *f* ]]; then
+				fSETX_FRONT
+			fi
+			if [[ $arg == *5* ]] || [[ $arg == *e* ]]; then
+				fSM_FRONT
+			fi
+			if [[ $arg == *6* ]] || [[ $arg == *m* ]]; then
+				fMON_FRONT
+			fi
+			if [[ $arg == *7* ]] || [[ $arg == *c* ]]; then
+				fCNX_CONNECT
+				fLST_CONNEX
+			fi
+			if [[ $arg == *8* ]] || [[ $arg == *d* ]]; then
+				fCNX_DISCONNECT
+				fLST_CONNEX
+			fi
+			if [[ $arg == *9* ]] || [[ $arg == *h* ]]; then
+				hostIP=`hostname -I`
+				fHLP_CLI
+				echo $hostIP
+			fi
+		fi
+	done
+else # si se ejecutó sin argumentos, entrar en el loop
+	fRMH_START
+fi
+exit 0
+	

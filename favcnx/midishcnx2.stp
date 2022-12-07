@@ -1,0 +1,12 @@
+#!/bin/sh
+midish -b <<END
+dnew 1 "QUNEO" rw
+dnew 2 "minilogue xd:1" rw
+inew QUNEO1 {1 0}
+onew Minilogue2 {2 1}
+onew Minilogue3 {2 2}
+fnew artvirus
+fmap {any QUNEO1} {any Minilogue2}
+fmap {any QUNEO1} {any Minilogue3}
+i
+END

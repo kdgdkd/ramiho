@@ -1,0 +1,13 @@
+on 38 127 
+clock 120 
+off 38 127
+clock 120 
+on 45 127
+clock 120 
+off 45 127
+on 43 127 
+clock 120 
+off 43 127
+on 45 127 
+clock 120 
+off 45 127
