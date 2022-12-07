@@ -83,9 +83,9 @@ tts=$tts_on
 
 If you are using an external numberic pad, this mode works better deactivating BloqNum (so the buttons send functions, like END or PgDn, instead of numbers). This way, when you press one of the buttons (1-9) you'll hear the name of the device on that position. 
 
+
 ## Epilogue
-
-
+I have spent a significant amount of time in this, and I am very happy that it works for me. I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch. 
 
 ## Contributing
 
@@ -95,4 +95,4 @@ to discuss what you would like to change.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+GNU General Public License v3.0
