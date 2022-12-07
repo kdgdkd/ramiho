@@ -60,7 +60,7 @@ All of these steps are properly documented and out of this README's scope.
 
 ### with terminal front
 When you launch ramiho without arguments, ramiho's terminal front will open. It should look like this:  
-![ramiho_terminal](https://edpanfleto.com/kdgdkd/assets/ramiho_terminal.png "ramiho terminal front" )  
+![ramiho_terminal](https://edpanfleto.com/kdgdkd/assets/ramiho_term_en.png "ramiho terminal front" )  
 Numbers 4, 7 and 8 will open submenus.  
 
 
@@ -70,7 +70,7 @@ You can access the main features through the command line interface. To show all
 ```bash
 ramiho h
 ```  
-![ramiho_cli](https://edpanfleto.com/kdgdkd/assets/ramiho_cli.png "ramiho cli" )  
+![ramiho_cli](https://edpanfleto.com/kdgdkd/assets/ramiho_cli_en.png "ramiho cli" )  
 
 ### offline and headless
 For some strange reasons, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, and receiving audio feedback through a small speaker connected to the device's mini-jack.  

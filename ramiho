@@ -252,8 +252,8 @@ tx_hlptermhdmini2='ramiho - 9 to show Help and disable sound'
 txhlpcli='ramiho Rpi MIDI Host - HELP
 **********************************
 Usage:
-rpimidihost                     terminal front
-rpimidihost arg1 arg2arg3       arguments for command line usage
+ramiho                     terminal front
+ramiho arg1 arg2arg3       arguments for command line usage
 
 arg: 
  -N  > Information about port N
