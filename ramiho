@@ -126,11 +126,11 @@ tx_hlptermhd1='ramiho Rpi MIDI Host - AYUDA
      6     Chequea favoritos
 
      7     Monitor puerto MIDI
-     8     Enviar señal MIDI'
-tx_hlptermhd2='     9     Mostrar IP y Ayuda, activar sonido'
-tx_hlptermhd3='     9     Mostrar IP y Ayuda, desactivar sonido'
-tx_hlptermhd4='     99    Leer IP y Ayuda
-    FNC    Leer el puerto n
+     8     Enviar señal MIDI
+     9     Mostrar IP y Ayuda'
+tx_hlptermhd2='     99    Leer IP y Ayuda, y activar sonido'
+tx_hlptermhd3='     99    Leer IP y Ayuda, y desactivar sonido'
+tx_hlptermhd4='    FNC    Leer el puerto n
 **********************************'
 tx_hlptermhdmini1='ramiho - 9 para mostrar ayuda y activar sonido'
 tx_hlptermhdmini2='ramiho - 9 para mostrar ayuda y desactivar sonido'
@@ -146,8 +146,8 @@ arg:
  . & q> Desconectar todo
  0 & a> Conectar todos los clientes entre sí
  1 & l> Lista de puertos y conexiones
- 2 & t> Mostrar detalles de las conexiones MIDI
- 3 & u> Lista de dispositivos USB conectados
+ 2 & t> Mostrar detalles ALSA MIDI
+ 3 & u> Mostrar dispositivos USB conectados
  4 & f> Menú conexiones favoritas
  5 & e> Enviar señal MIDI
  6 & m> Monitorizar puerto MIDI
@@ -241,11 +241,11 @@ tx_hlptermhd1='ramiho Rpi MIDI Host - HELP
      6     Check Favorite devices
 
      7     Monitor MIDI port
-     8     Send MIDI signal to port'
-tx_hlptermhd2='     9     Show IP and Help, enable sound'
-tx_hlptermhd3='     9     Show IP and Help, disable sound'
-tx_hlptermhd4='     99    Read IP and Help
-    FNC    Read port N
+     8     Send MIDI signal to port
+     9     Show IP and Help'
+tx_hlptermhd2='     99    Read IP and Help, enable sound'
+tx_hlptermhd3='     99    Read IP and Help, disable sound'
+tx_hlptermhd4='    FNC    Read port N
 **********************************'
 tx_hlptermhdmini1='ramiho - 9 to show Help and enable sound'
 tx_hlptermhdmini2='ramiho - 9 to show Help and disable sound'
@@ -337,7 +337,7 @@ fi
 fSETX_HEADER () {
 echo "ramiho >> Menu de conexiones favoritas
 ********************************************************************
-     /     volver a ramiho
+     /     Volver a ramiho
     FUNC   Leer puerto N
 	
      0     Guardar conexiones actuales
@@ -345,9 +345,9 @@ echo "ramiho >> Menu de conexiones favoritas
      2     Cargar conexiones guardadas (2)
      3     Cargar conexiones guardadas (3)
 	 
-     4     Conectar KeyStep y UC33 a Virus TI
-     5     Conectar Beatstep (clock), UC33 y QuNeo a Uno MIDI (Virus) y AR96
-     6     Conectar Beatstep (clock), UC-33 y QuNeo a Virus por USB
+     4     Conectar KeyStep y UC33 a Uno MIDI
+     5     Conectar KeyStep & UC-33 a Blofeld y Uno MIDI
+     6     Conectar KeyStep, UC-33, USB Uno MIDI a Virus por USB
 	  
      7     Ruteo canales y puertos con midish
      8     Ruteo Virus 2x4
@@ -362,7 +362,7 @@ echo "ramiho >> Menu de conexiones favoritas
 fSET_1 () { 
 aconnect -x
 _bold
-echo " Conectar KeyStep & UC-33 a Uno MIDI (Kenton -> Virus TI)"
+echo " Conectar KeyStep & UC-33 a Uno MIDI"
 _norm
 aconnect 'UC-33 USB MIDI Controller':0 'USB Uno MIDI Interface':0
 aconnect 'KeyStep Pro':0 'USB Uno MIDI Interface':0 
@@ -370,22 +370,23 @@ aconnect 'KeyStep Pro':0 'USB Uno MIDI Interface':0
 fSET_2 () { 
 aconnect -x
 _bold
-echo " Conectar Beatstep (clock), UC33, QuNeo a Uno MIDI (Virus) y AR96"
+echo " Conectar KeyStep & UC-33 a Blofeld y Uno MIDI"
 _norm
-aconnect 'UC-33 USB MIDI Controller:0' 'USB Uno MIDI Interface' 
-aconnect 'Arturia BeatStep Pro:0' 'USB Uno MIDI Interface'
-aconnect 'QUNEO' 'USB Uno MIDI Interface'
-aconnect 'Arturia BeatStep Pro:0' 'AR-96'
+aconnect 'UC-33 USB MIDI Controller':0 'USB Uno MIDI Interface':0
+aconnect 'KeyStep Pro':0 'USB Uno MIDI Interface':0 
+aconnect 'UC-33 USB MIDI Controller':0 'Blofeld':0
+aconnect 'KeyStep Pro':0 'Blofeld':0 
 }
 fSET_3 () { 
 aconnect -x
 _bold
-echo " Conectar Beatstep (clock), UC-33, QuNeo a Virus por USB"
+echo " Conectar KeyStep, UC-33, USB Uno MIDI a Virus por USB"
 _norm
-aconnect 'UC-33 USB MIDI Controller:0' 'Virus TI:1' 
-aconnect 'Arturia BeatStep Pro:0' 'Virus TI:1'
-aconnect 'QUNEO' 'Virus TI:1'
-aconnect 'Arturia BeatStep Pro:0' 'AR-96'
+aconnect 'UC-33 USB MIDI Controller':0 'Virus TI':1
+aconnect 'KeyStep Pro':0 'Virus TI':1
+aconnect 'Arturia BeatStep Pro':0 'Virus TI':1
+aconnect 'USB Uno MIDI Interface':0 'Virus TI':1
+aconnect 'QUNEO' 'Virus TI':1
 }
 fMSH_1 () { 
 fMSH_DEL
@@ -407,15 +408,6 @@ source "$SCRIPT_DIR/favcnx/midishcnx2.stp" #2>/dev/null
 }
 
 fSETX_FRONT () { # menu para elegir el setup preferido / utiliza midish para configuraciones avanzadas con ruteo de puertos y canales
-# Utiliza tres métodos:
-# Ficheros aconnect
-# 	0 para guardar con aconnect en los ficheros de conexiones 1, 2 o 3
-#		1,2,3 para cargar los ficheros de conexiones aconnect
-# Script aconnect
-#	4,5,6 para cargar con aconnect desde los scripts fSET_x
-# interface y ficheros midish
-#	7 para abrir la interface de midish
-#	8,9 para cargar conexiones midish
 setup=
 ci_err1=false
 ci_err2=false
@@ -1553,7 +1545,7 @@ minus to disconnect ports.
 dot to disconnect all.
 0 to connect all.
 9 to read raspi's IP number"
-echo $texthelp | $tts_on > /dev/null 2>&1 &
+echo $texthelp | $tts > /dev/null 2>&1 &
 }
 
 # RAMIHO*FRONT***********************************************************
@@ -1607,24 +1599,21 @@ while true; do
 				[6]) fLST_FAV;;
 				[7]) fMON_FRONT;;
 				[8]) fSM_FRONT;;
-				[9]) read -n 1 -t 1 -p $tx_frshhlp dosnueve
+				[9]) read -n 1 -t 1 -p "$tx_frshhlp" dosnueve
 					leerIP=`hostname -I`
-					clear
-					fHLP_HEADER
-					echo $leerIP
 					if [[ $dosnueve -eq 9 ]]; then
 						clear
-						echo $leerIP
-						fHLP_HEADER
-						echo $leerIP | $tts_on > /dev/null 2>&1
-						fHLP_READ
-					else
 						if [[ $tts != '' ]]; then
 							tts=''
 						else
 							tts=$tts_on
 							echo "Sound on" | $tts > /dev/null 2>&1 &
 						fi
+						echo $leerIP
+						fHLP_HEADER
+						echo $leerIP | $tts > /dev/null 2>&1
+						fHLP_READ
+					else
 						clear
 						echo $leerIP
 						fHLP_HEADER
