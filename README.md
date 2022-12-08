@@ -9,7 +9,7 @@ ramiho is a script written in bash that was conceived to run on a headless Raspb
 It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect every MIDI device on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. My needs are rather more complex, so I wrote ramiho mainly as a front for aconnect.   
 ramiho generates a list of connected devices and allows to operate (connect, disconnect, etc) referring to them only by their position in the list. This allows for very lean commands; for example,   
 - press **1** to see the list of connected devices  
-- press 0 to connect all devices to each other  
+- press **0** to connect all devices to each other  
 - **+21** will send the MIDI Out signal from device number 2 to the MIDI In port of device number 1.  
 - **-31** will disconnect device number 3 from device number 1   
 
