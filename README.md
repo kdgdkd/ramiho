@@ -17,7 +17,7 @@ ramiho's main features are:
 - it talks, it may be alive
   
 ramiho generates a list of ports for the connected devices, and allows to operate (connect, disconnect, etc) referring to them only by their position in the list. This results in very lean commands; for example,   
-- press **1** to see the list of connected devices  
+- press **1** to see the list of ports and connexions  
 - press **0** to connect all devices to each other  
 - press **.** to close all connexions between ports  
 - **+21** will send the MIDI Out signal from device number 2 to the MIDI In port of device number 1.  
