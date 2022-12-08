@@ -6,33 +6,33 @@ For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgd
 ## Features
 
 ramiho is a script written in bash conceived to run on a headless Raspberry Pi.  
-It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. For something more complex, like when you add a sequencer, but you don't want it to share any data with the controller, you need to use aconnect. I wrote ramiho initially as an accesible front-end for aconnect.   
+It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. For more complex setups, like when you add a sequencer, but you don't want it to share any data with the controller, you need to use aconnect. I wrote ramiho initially as an accesible front-end for aconnect.   
 
 
 ramiho's main features are:
-- easy interface to manage MIDI connexions between devices  
+- simple interface to manage MIDI connexions between devices  
 - connexion testing tools (MIDI monitors and SendMidi)
 - it allows to save current connexion configuration, and define alternative favorite setups that can be easily loaded
 - all of ramiho's commands can be accessed using a numeric pad (only numbers and mathematical operators)
 - it talks, it may be alive
   
-ramiho generates a list of MIDI ports from the connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
+ramiho generates a list of available MIDI ports from the connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
 - press **1** to see the list of ports and connexions  
 - **+21** will send the MIDI Out signal from device number 2 to the MIDI In port of device number 1.  
 - **-31** will disconnect device number 3 from device number 1   
 
 ## Dependencies
 ramiho main functionalities require only ALSA; that's enough to use it for connexion management and MIDI monitor (using aconnect and aseqdump).  
-For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), by Geert Bevin. These provide a second monitor, and the send midi test. You may download them into ramiho's srmidi directory, or define their location in the fCONF function.   
-For advanced connexion routings (like routing MIDI channels or notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
+For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), by Geert Bevin. These tools provide a second monitor, and the send midi test. You may download them into ramiho's srmidi directory, or define their location in the fCONF function.   
+For advanced connexion routings (like routing individual MIDI channels or ranges of notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
 
 ## Installation
-Copy the files and directories in this repository in your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. You may also download the programs mentioned on the previous section. I believe that should be it.
+Copy the files and directories in this repository to your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. You may also download the programs mentioned on the previous section. I believe that should be it.
 
 ## Customization
-There are a number of elements that are expected to be changed in order to customize ramiho to the user's setup and preferences. These are organized in a rather clumsy way. To edit ramiho  
+There are a number of elements that are expected to be changed in order to customize ramiho to the user's setup and preferences. I fear these are organized in a rather clumsy way. To edit ramiho  
 
 ```bash
 nano /home/pi/ramiho/ramiho
@@ -42,19 +42,19 @@ nano /home/pi/ramiho/ramiho
 ramiho comes with Spanish and English interfaces. ramiho would like to speak your language, so please consider creating new locales. Choose which to use below the locale functions (change fLOCALE_EN for fLOCALE_ES to turn ramiho's interface to Spanish).
 
 **Favorite Connexions**  
-ramiho allows to load preferred connexion configurations in batch, using the Favorite Connexions submenu. You should customize this section of the code to have an easy way of loading alternative configurations for your setup.  
+ramiho allows to load preferred connexion configurations in batch, using the Favorite Connexions submenu. You should customize this section of the code to have an easy way of loading your own favorite setup configurations.  
 
 The Favorite Connexions menu currently uses three ways of saving connexions. 
 - embedded in ramiho's code as aconnect commands (fSET_x functions)
 - in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands
 - in one of two midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
 
-You should then adapt the header (fSETX_HEADER) to display some description of the connexions you've set up. 
+You should then adapt the header of the menu (fSETX_HEADER) to display some description of the connexions you've set up. 
 
 
 ## Usage
 
-The normal setup for ramiho would be on a headless Raspberry Pi, connected to a network with LAN or WIFI and operated through SSH... plus a number of MIDI devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
+The normal use of ramiho would be on a headless Raspberry Pi, connected to a WIFI network and operated through an SSH client... plus a number of MIDI devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
 - create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); mine is **111**, so I can launch it with an external numeric pad 
 - enable ssh connexions in your Raspberry Pi (**sudo raspi-config**)
 - auto-connect your Raspberry Pi to WIFI network (**sudo nano /etc/wpa_supplicant/wpa_supplicant.conf**)
@@ -88,6 +88,15 @@ tts=$tts_on
 
 You can also turn the sound on and off by sending **99** to ramiho.   
 If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now, instead of commands, what lies below the numbers are the devices in the list. If you press 3 (PgDn), you'll hear the name of the third device in the list. You may dis/connect them normall using the operators.
+
+### testing tools
+Imagine a situation in which you connect two MIDI devices with ramiho (say a sequencer sending notes to a synth), but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?". But that may not be it.   
+ramiho proposes two testing tools:   
+- MIDI monitor - it tests the sending device. It will print any MIDI information (for example the MIDI channel) coming from the sending ports.   
+- Send MIDI - it tests the receiving device. Use ramiho's front-end for SendMidi to send a sequence of notes directly from the Raspberry Pi to your receiving device.   
+
+If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI.  
+
 
 
 ## Epilogue
