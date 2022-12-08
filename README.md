@@ -46,37 +46,37 @@ The Favorite Connexions menu currently uses three ways of saving connexions.
 - in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands
 - in one of three midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
 
-You should then adapt the header (fSETX_HEADER) to display some description of the connexions to choose from.
+You should then adapt the header (fSETX_HEADER) to display some description of the connexions you are setting up.
 
 Obviously, you are invited to modify whatever itches you most, please share!
 
 ## Usage
 
 The normal setup for ramiho would be on a headless Raspberry Pi, connected to a network with LAN or WIFI and operated through SSH... plus a number of MIDI devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
-- create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); mine is **111**, so I can use it with an external numeric pad 
-- habilitate ssh connexion to your Raspberry Pi (**sudo raspi-config**)
-- auto-connect to WIFI network (**sudo nano /etc/wpa_supplicant/wpa_supplicant.conf**)
-- define a static IP address for the Raspberry Pi (**sudo nano /etc/dhcpcd.conf**)
+- create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); mine is **111**, so I can launch it with an external numeric pad 
+- enable ssh connexions in your Raspberry Pi (**sudo raspi-config**)
+- auto-connect your Raspberry Pi to WIFI network (**sudo nano /etc/wpa_supplicant/wpa_supplicant.conf**)
+- define a static IP address (**sudo nano /etc/dhcpcd.conf**)
 - on Raspberry Pi OS, set File System Overlay to be able to turn the device on and off with a power switch, without corrupting the SD card (**sudo raspi-config** then Performance/Overlay File System)  
 
 Most of these steps are covered in Neuma Studio's [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html).   
 
 ### with terminal front
-When you launch ramiho without arguments, it will open ramiho's terminal front. In English, it should look like this:  
+When you launch ramiho without arguments, it will open ramiho's terminal front. In English, it should look like this:    
 ![ramiho_terminal](https://edpanfleto.com/kdgdkd/assets/ramiho_term_en.png "ramiho terminal front" )  
 Numbers 4, 7 and 8 will open submenus.  
 
 
 
 ### with command line
-You can access the main features through the command line interface. To show all available commands, enter 
+You can access the main features through the command line interface. To show all available commands
 ```bash
 ramiho h
 ```  
 ![ramiho_cli](https://edpanfleto.com/kdgdkd/assets/ramiho_cli_en.png "ramiho cli" )  
 
 ### offline and headless
-For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, and receiving audio feedback through a small speaker connected to the device's mini-jack.  
+For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the device's mini-jack.  
 This is achieved through a text-to-sound engine, my preference is for festival.  
 To configure a different tts engine and to activate sound by default, edit these lines in the fCONFIG function of the script:  
 ```bash
@@ -84,7 +84,8 @@ tts_on="festival --tts"
 tts=$tts_on
 ```  
 
-If you are using an external numberic pad, this mode works better deactivating BloqNum (so the buttons send functions, like END or PgDn, instead of numbers). This way, when you press one of the buttons (1-9) you'll hear the name of the device on that position. 
+You can also turn the sound on by sending **99** to ramiho.
+If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now, instead of commands, what lies below the numbers are the devices in the list. If you press 3 (PgDn), you'll hear the name of the third device in the list. You may dis/connect them normall using the operators.
 
 
 ## Epilogue
