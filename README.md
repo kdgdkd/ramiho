@@ -26,7 +26,7 @@ ramiho generates a list of ports for the connected devices, and allows to operat
 ## Dependencies
 ramiho main functionalities require only ALSA; that's enough to use it for connexion management (aconnect) and MIDI monitor (aseqdump).  
 For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), by Geert Bevin. These provide a second monitor, and the send midi test. You may download them into ramiho's srmidi directory, or define their location in the fCONF function.   
-For advanced connexion routings you may use [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
+For advanced connexion routings (like routing channels or notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
 
@@ -45,11 +45,10 @@ ramiho allows to load preferred connexion configurations in batch, using the Fav
 The Favorite Connexions menu currently uses three ways of saving connexions. 
 - embedded in ramiho's code as aconnect commands (fSET_x functions)
 - in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands
-- in one of three midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
+- in one of two midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
 
-You should then adapt the header (fSETX_HEADER) to display some description of the connexions you are setting up.
+You should then adapt the header (fSETX_HEADER) to display some description of the connexions you've set up. 
 
-Obviously, you are invited to modify whatever itches you most, please share!
 
 ## Usage
 
