@@ -31,13 +31,17 @@ And if you wish ramiho to speak back, you will need a text-to-sound engine; I us
 
 
 ## Installation
-Copy the files and directories in this repository in your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. I believe that is it.
+Copy the files and directories in this repository in your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. You may also download the programs mentioned on the previous section. I believe that should be it.
 
 ## Customization
 There are a number of elements that are expected to be changed in order to customize ramiho to the user's setup and preferences. These are organized in a rather clumsy way.  
 
+```bash
+nano /home/pi/ramiho/ramiho
+``` 
+
 **Locale**  
-ramiho comes with Spanish and English interfaces. You are very wellcome if you want to create your own locales. Choose which to use below the locale functions (change fLOCALE_EN for fLOCALE_ES to turn ramiho's interface to Spanish).
+ramiho comes with Spanish and English interfaces. ramiho would like to speak your language, so please consider creating new locales. Choose which to use below the locale functions (change fLOCALE_EN for fLOCALE_ES to turn ramiho's interface to Spanish).
 
 **Favorite Connexions**  
 ramiho allows to load preferred connexion configurations in batch, using the Favorite Connexions submenu. You should update the corresponding section of the code to have an easy way of loading alternative configurations for your setups.  
