@@ -30,7 +30,7 @@ And if you wish ramiho to speak back, you will need a text-to-sound engine; I us
 
 
 ## Installation
-Just copy these files under your user directory (typically under /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. That is it.
+Just copy these files under your user directory (typically under /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. I believe that is it.
 
 ## Customization
 There are a number of elements that are expected to be changed in order to customize ramiho to the user's setup and preferences. These are organized in a rather clumsy way.  
@@ -52,14 +52,14 @@ Obviously, you are invited to modify whatever itches you most, please share!
 
 ## Usage
 
-The normal setup for ramiho would be on a headless Raspberry Pi, connected to a network with LAN or WIFI and operated through SSH... plus a number of musical devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
-- create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); I use **111**, so I can use it with an external numeric pad 
+The normal setup for ramiho would be on a headless Raspberry Pi, connected to a network with LAN or WIFI and operated through SSH... plus a number of MIDI devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
+- create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); mine is **111**, so I can use it with an external numeric pad 
 - habilitate ssh connexion to your Raspberry Pi (**sudo raspi-config**)
 - auto-connect to WIFI network (**sudo nano /etc/wpa_supplicant/wpa_supplicant.conf**)
 - define a static IP address for the Raspberry Pi (**sudo nano /etc/dhcpcd.conf**)
 - on Raspberry Pi OS, set File System Overlay to be able to turn the device on and off with a power switch, without corrupting the SD card (**sudo raspi-config** then Performance/Overlay File System)  
 
-I suggest you take a look at Neuma Studio's [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). It is a very good project, and it is a very useful guide covering most of the steps above.
+Most of these steps are covered in Neuma Studio's [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html).   
 
 ### with terminal front
 When you launch ramiho without arguments, it will open ramiho's terminal front. In English, it should look like this:  
