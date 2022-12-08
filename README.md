@@ -6,7 +6,7 @@ For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgd
 ## Features
 
 ramiho is a script written in bash that was conceived to run on a headless Raspberry Pi.  
-It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect MIDI device on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. My needs are rather more complex, so I wrote ramiho mainly as a front for aconnect.   
+It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. My needs are rather more complex, so I wrote ramiho mainly as a front for aconnect.   
 
 
 ramiho's main features are:
