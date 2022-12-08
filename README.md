@@ -71,7 +71,7 @@ Numbers 4, 7 and 8 will open submenus.
 
 
 ### with command line
-You can access the main features through the command line interface. To show all available commands
+You can access the main features through the command line interface. To show all available commands type
 ```bash
 ramiho h
 ```  
