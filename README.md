@@ -93,11 +93,11 @@ If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/n
 
 
 ## Epilogue
-I have spent a significant amount of time coding ramiho, but I am very happy that it solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't deal with aconnect on a command line, now operate ramiho on an ssh client on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
+I have spent a significant amount of time coding ramiho, but I am very happy that it solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
 
 ## Contributing
 
-I am stubborn, but I am no programmer. This script is likely to contain a significant amount of bugs, and most of the code could be polished and modified. So comments, suggestions, and pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+I am stubborn, but I am no programmer. And I am a newbie on GitHub and sharing code. This script is likely to contain a significant amount of bugs, and most of it could be polished and modified. So comments, suggestions, and pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 
 ## License
