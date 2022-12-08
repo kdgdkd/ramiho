@@ -1,12 +1,12 @@
 # ramiho - Raspberry Pi Midi Host manager
 
-ramiho is a terminal front for Raspberry Pi that provides user friendly MIDI management tools and will turn your raspi into a rocking hub for MIDI musical instruments.   
+ramiho is a terminal interface for user friendly MIDI management tools and will turn your Raspberry Pi into a rocking hub for MIDI musical instruments.   
 For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgdkd/).
 
 ## Features
 
 ramiho is a script written in bash conceived to run on a headless Raspberry Pi.  
-It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. When you add a sequencer, but you don't want it to share any data with the controller, you need to use aconnect. I wrote ramiho mainly as an accesible front-end for aconnect.   
+It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. For something more complex, like when you add a sequencer, but you don't want it to share any data with the controller, you need to use aconnect. I wrote ramiho initially as an accesible front-end for aconnect.   
 
 
 ramiho's main features are:
@@ -16,9 +16,7 @@ ramiho's main features are:
 - all of ramiho's commands can be accessed using a numeric pad (only numbers and mathematical operators)
 - it talks, it may be alive
   
-ramiho generates a list of ports for the connected devices, and allows to operate (connect, disconnect, etc) referring to them only by their position in the list. This results in very lean commands; for example,   
-- press **0** to connect all devices to each other  
-- press **.** to close all connexions between ports  
+ramiho generates a list of MIDI ports from the connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
 - press **1** to see the list of ports and connexions  
 - **+21** will send the MIDI Out signal from device number 2 to the MIDI In port of device number 1.  
 - **-31** will disconnect device number 3 from device number 1   
@@ -81,19 +79,19 @@ ramiho h
 
 ### offline and headless
 For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the device's mini-jack.  
-This is achieved through a text-to-sound engine, my preference is for festival.  
+This is achieved with a text-to-sound engine, my preference is for festival. Text will be piped into the tts engine ($tts_on).   
 To configure a different tts engine and to activate sound by default, edit these lines in the fCONFIG function of the script:  
 ```bash
 tts_on="festival --tts" 
 tts=$tts_on
 ```  
 
-You can also turn the sound on by sending **99** to ramiho.
+You can also turn the sound on and off by sending **99** to ramiho.   
 If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now, instead of commands, what lies below the numbers are the devices in the list. If you press 3 (PgDn), you'll hear the name of the third device in the list. You may dis/connect them normall using the operators.
 
 
 ## Epilogue
-I have spent a significant amount of time coding ramiho, but I am very happy that it solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
+I have spent a significant amount of time writing ramiho, but I am very happy that it solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
 
 ## Contributing
 
