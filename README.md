@@ -6,6 +6,7 @@ For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgd
 ## Features
 
 ramiho is a script written in bash that was conceived to run on a headless Raspberry Pi.  
+It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect every MIDI device on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. My needs are rather more complex, so I wrote ramiho mainly as a front for aconnect.   
 ramiho generates a list of connected devices and allows to operate (connect, disconnect, etc) referring to them only by their position in the list. This allows for very lean commands; for example,   
 - **+21** will send the MIDI Out signal from device number 2 to the MIDI In port of device number 1.  
 - **-31** will disconnect device number 3 from device number 1   
@@ -52,13 +53,13 @@ Obviously, you are invited to modify whatever itches you most, please share!
 ## Usage
 
 The normal setup for ramiho would be on a headless Raspberry Pi, connected to a network with LAN or WIFI and operated through SSH... plus a number of musical devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
-- create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); I use **111**, so I can use it with an external numeric pad
+- create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); I use **111**, so I can use it with an external numeric pad 
 - habilitate ssh connexion to your Raspberry Pi (**sudo raspi-config**)
 - auto-connect to WIFI network (**sudo nano /etc/wpa_supplicant/wpa_supplicant.conf**)
-- define a static IP address for the Raspberry Pi (**nano /etc/dhcpcd.conf**)
-- set File System Overlay to be able to turn the device on and off with a switch without corrupting the SD card(**sudo raspi-config** then Performance/Overlay File System)  
+- define a static IP address for the Raspberry Pi (**sudo nano /etc/dhcpcd.conf**)
+- on Raspberry Pi OS, set File System Overlay to be able to turn the device on and off with a power switch, without corrupting the SD card (**sudo raspi-config** then Performance/Overlay File System)  
 
-All of these steps are properly documented [somewhere](https://google.com).
+I suggest you take a look at Neuma Studio's [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). It is a very good project, and it is a very useful guide covering most of the steps above.
 
 ### with terminal front
 When you launch ramiho without arguments, it will open ramiho's terminal front. In English, it should look like this:  
@@ -87,11 +88,11 @@ If you are using an external numberic pad, this mode works better deactivating B
 
 
 ## Epilogue
-I have spent a significant amount of time coding ramiho, but I am very happy that it solves issues that we, as a band, found when tring to properly configure our DAW-less techno setup. Connecting devices, or loading previously used sets of connexions, is now easily done with ramiho for my very personal joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
+I have spent a significant amount of time coding ramiho, but I am very happy that it solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't deal with aconnect on a command line, now operate ramiho on an ssh client on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
 
 ## Contributing
 
-I am stubborn, but I am no programmer. This script is likely to contain a significant amount of bugs, and most of the code could be polished and modified. So pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+I am stubborn, but I am no programmer. This script is likely to contain a significant amount of bugs, and most of the code could be polished and modified. So comments, suggestions, and pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 
 ## License
