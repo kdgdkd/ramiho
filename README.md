@@ -1,6 +1,6 @@
 # ramiho - Raspberry Pi Midi Host manager
 
-ramiho is a terminal interface for user friendly MIDI management tools and will turn your Raspberry Pi into a rocking hub for MIDI musical instruments.   
+ramiho is a terminal interface for managing your MIDI connexoins that will turn your Raspberry Pi into a rocking hub for musical instruments.   
 For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgdkd/).
 
 ## Features
