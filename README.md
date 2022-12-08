@@ -31,7 +31,7 @@ And if you wish ramiho to speak back, you will need a text-to-sound engine; I us
 
 
 ## Installation
-Copy the files and folders in this repositor under your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. I believe that is it.
+Copy the files and directories in this repository in your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. I believe that is it.
 
 ## Customization
 There are a number of elements that are expected to be changed in order to customize ramiho to the user's setup and preferences. These are organized in a rather clumsy way.  
