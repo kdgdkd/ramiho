@@ -44,7 +44,7 @@ nano /home/pi/ramiho/ramiho
 ramiho comes with Spanish and English interfaces. ramiho would like to speak your language, so please consider creating new locales. Choose which to use below the locale functions (change fLOCALE_EN for fLOCALE_ES to turn ramiho's interface to Spanish).
 
 **Favorite Connexions**  
-ramiho allows to load preferred connexion configurations in batch, using the Favorite Connexions submenu. You should update the corresponding section of the code to have an easy way of loading alternative configurations for your setups.  
+ramiho allows to load preferred connexion configurations in batch, using the Favorite Connexions submenu. You should customize this section of the code to have an easy way of loading alternative configurations for your setup.  
 
 The Favorite Connexions menu currently uses three ways of saving connexions. 
 - embedded in ramiho's code as aconnect commands (fSET_x functions)
