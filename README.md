@@ -26,7 +26,7 @@ ramiho generates a list of ports for the connected devices, and allows to operat
 ## Dependencies
 ramiho main functionalities require only ALSA; that's enough to use it for connexion management and MIDI monitor (using aconnect and aseqdump).  
 For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), by Geert Bevin. These provide a second monitor, and the send midi test. You may download them into ramiho's srmidi directory, or define their location in the fCONF function.   
-For advanced connexion routings (like routing channels or notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
+For advanced connexion routings (like routing MIDI channels or notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
 
