@@ -1,4 +1,4 @@
-# ramiho - Raspberry Pi Midi Host manager
+L# ramiho - Raspberry Pi Midi Host manager
 
 ramiho is a terminal interface managing MIDI connexions on your Raspberry Pi.   
 For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgdkd/).
@@ -93,7 +93,7 @@ If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/n
 Imagine a situation in which you connect two MIDI devices with ramiho (say a sequencer sending notes to a synth), but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?". But that may not be it.   
 ramiho proposes two testing tools:   
 - MIDI monitor - it tests the sending device. It will print any MIDI information (for example the MIDI channel) coming from the sending ports. The first monitor uses ALSA's aseqdump, for the filtered monitors you'll need ReceiveMidi. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
-- Send MIDI - it tests the receiving device, you'll need SendMidi. Use ramiho's front-end for SendMidi to send a sequence of notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
+- Send MIDI - it tests the receiving device. Use ramiho's front-end for SendMidi to send notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
 
 If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI.  
 
