@@ -137,7 +137,7 @@ tx_hlptermhd1='ramiho Rpi MIDI Host - AYUDA
      6     Chequea favoritos
 
      7     Monitor puerto MIDI
-      
+     8     Enviar señal MIDI
      9     Mostrar IP y Ayuda'
 tx_hlptermhd2='     99    Leer IP y Ayuda, y activar sonido'
 tx_hlptermhd3='     99    Leer IP y Ayuda, y desactivar sonido'
@@ -264,7 +264,7 @@ tx_hlptermhd1='ramiho Rpi MIDI Host - HELP
      6     Check Favorite devices
 
      7     Monitor MIDI port
-      
+     8     Send MIDI signal to port
      9     Show IP and Help'
 tx_hlptermhd2='     99    Read IP and Help, enable sound'
 tx_hlptermhd3='     99    Read IP and Help, disable sound'
@@ -371,7 +371,7 @@ echo "ramiho >> Menu de conexiones favoritas
      5     Conectar KeyStep & UC-33 a Blofeld y Uno MIDI
      6     Conectar KeyStep, UC-33, USB Uno MIDI a Virus por USB
 	  
-      
+     7     Ruteo canales y puertos con midish
      8     Ruteo Virus 2x4
      9     Ruteo QuNeo - Minilogue 2x4
 	 
@@ -1004,7 +1004,7 @@ echo "Enter first port " | $tts > /dev/null 2>&1 &
 echo
 echo "$tx_cnxinp1"
 _norm
-read -n 1 -p "$tx_cnxinppr"  res1
+read -n 1 -p "$tx_cnxinppr1"  res1
 if [[ $res1 =~ ^-?[0-9]+$ ]]; then
 	if [[ $res1 -le ${#arrPuerto[@]} ]]; then
 		puertos=${arrPuerto[res1]}
@@ -1387,7 +1387,7 @@ devicename=
 clienttyp='dev'
 clienttypout=
 fSM_LISTPORT
-devicename=${arrClienteN[$iportout]}
+devicename=${arrClienteSM[$iportout]}
 tout="sendmidi $clienttyp $devicename ch $smch on $smnot 127 clock 120 off $smnot 127"
 while true; do
 	errorc=
@@ -1398,7 +1398,7 @@ while true; do
 	fSM_LISTPORT
 	echo
 	echo "$tout"
-	[[ $send == true ]] && send=false && $("$sendmidi" $clienttyp $devicename ch $smch on $smnot 127 clock 120 off $smnot 127)
+	[[ $send == true ]] && send=false && $("$sendmidi" $clienttyp "$devicename" ch $smch on $smnot 127 clock 120 off $smnot 127)
 	_bold
 	_amarillo
 	read -s -n 1 -p "SendMIDI>  " resp
@@ -1446,14 +1446,14 @@ while true; do
 			[8]) let iportout0=$iportout
 				let iportout=$iportout-1
 				[[ $iportout -le 1 ]] && let iportout=1
-				tout="Cliente ${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
-				devicename=${arrClienteN[$iportout]}
+				tout="Cliente ${arrClienteSM[$iportout0]} > ${arrClienteSM[$iportout]}    ${arrCliente[$iportout]}"
+				devicename=${arrClienteSM[$iportout]}
 				;;
 			[2]) let iportout0=$iportout
 				let iportout=$iportout+1
-				[[ $iportout -ge ${#arrCliente[@]} ]] && let iportout=$iportout-1
-				tout="Cliente ${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
-				devicename=${arrClienteN[$iportout]}
+				[[ $iportout -ge ${#arrClienteSM[@]} ]] && let iportout=$iportout-1
+				tout="Cliente ${arrClienteSM[$iportout0]} > ${arrClienteSM[$iportout]}    ${arrCliente[$iportout]}"
+				devicename=${arrClienteSM[$iportout]}
 				;;
 			[3]) let smoct=-1
 				let smnot0=$smnot
@@ -1481,9 +1481,9 @@ while true; do
 		case $caracter3 in # para usar con flechas
 			[B]) let iportout0=$iportout
 				let iportout=$iportout+1
-				[[ $iportout -ge ${#arrCliente[@]} ]] && let iportout=$iportout-1
-				tout="Cliente ${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
-				devicename=${arrClienteN[$iportout]};;  # Flecha Dn¡
+				[[ $iportout -ge ${#arrClienteSM[@]} ]] && let iportout=$iportout-1
+				tout="Cliente ${arrClienteSM[$iportout0]} > ${arrClienteSM[$iportout]}    ${arrCliente[$iportout]}"
+				devicename=${arrClienteSM[$iportout]};;  # Flecha Dn¡
 			[D]) let smch0=$smch
 				let smch=$smch-1
 				[[ $smch -eq 0 ]] && let smch=16
@@ -1495,8 +1495,8 @@ while true; do
 			[A]) let iportout0=$iportout
 				let iportout=$iportout-1
 				[[ $iportout -le 1 ]] && let iportout=1
-				tout="Cliente ${arrPuerto[$iportout0]} > ${arrPuerto[$iportout]}    ${arrCliente[$iportout]} [${arrPuerto[$iportout]}]"
-				devicename=${arrClienteN[$iportout]};; # Flecha Up
+				tout="Cliente ${arrClienteSM[$iportout0]} > ${arrClienteSM[$iportout]}    ${arrCliente[$iportout]}"
+				devicename=${arrClienteSM[$iportout]};; # Flecha Up
 			*)	#si no se encuentran coincidencias para $resp
 				errorc=true;;
 		esac
@@ -1504,9 +1504,9 @@ while true; do
 done
 }
 fSM_LISTPORT () {
-fREAD_ARRPORTS
+fSMREAD_ARRPORTS
 let icontador=0
-for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+for i in "${!arrClienteSM[@]}"; # por cada puerto MIDI existente
 do
 	if [[ $icontador == 0 ]]; then
 		_bold
@@ -1514,17 +1514,28 @@ do
 		_norm
 	elif [[ $icontador -eq $iportout ]]; then
 		_bold
-		echo " X   $icontador    [${arrPuerto[$icontador]}]   ${arrCliente[$icontador]}    ch$smch    n$smnot"
+		echo " X   $icontador    ${arrClienteSM[$icontador]}    ch$smch    n$smnot"
 		_norm
 
 	else
-		echo  "     $icontador    [${arrPuerto[$icontador]}]   ${arrCliente[$icontador]}  "
+		echo  "     $icontador    ${arrClienteSM[$icontador]}  "
 
 	fi
 	let icontador=$icontador+1
 done
 }
-
+fSMREAD_ARRPORTS () { # genera unos arrays con la lista de puertos y nombres de los clientes conectados
+arrClienteSM=()
+arrClienteSM+=('')
+let ilinea=0
+TAB="$(printf '\t')"
+while IFS= read -r line; do # leemos cada línea de aconnect -l
+	if [[ $ilinea -ge 2 ]]; then # nos saltamos las primera linea	
+		arrClienteSM+=("$line")
+	fi
+	let ilinea=$ilinea+1
+done <<< `$sendmidi list`
+}
 
 # CABECERAS*AYUDA******************************************************
 fHLP_HEADER () { # pantalla de ayuda
