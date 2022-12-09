@@ -105,7 +105,7 @@ tx_lstprthd="Sel  N    Cliente  [puerto]    Canal ch    Nota n"
 tx_detcnxprt="Detalle de conexiones y puertos"
 tx_exitsl="  /   para salir> "
 tx_exitout="  Saliendo..." 
-tx_monheader='ramiho monitor MIDI
+tx_monheader='ramiho >> monitor MIDI
 **********************************'
 tx_montyp="
 aseqdump   completo
@@ -232,7 +232,7 @@ tx_lstprthd="Sel  N    Client   [port]       Channel    Note n"
 tx_detcnxprt="Detailed ports and connexions"
 tx_exitsl="  /   to exit> "
 tx_exitout="  Bye..." 
-tx_monheader='ramiho MIDI monitor
+tx_monheader='ramiho >> MIDI monitor
 **********************************'
 tx_montyp="
 aseqdump   completo
