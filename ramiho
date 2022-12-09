@@ -1004,7 +1004,7 @@ echo "Enter first port " | $tts > /dev/null 2>&1 &
 echo
 echo "$tx_cnxinp1"
 _norm
-read -n 1 -p "$tx_cnxinppr"  res1
+read -n 1 -p "$tx_cnxinppr1"  res1
 if [[ $res1 =~ ^-?[0-9]+$ ]]; then
 	if [[ $res1 -le ${#arrPuerto[@]} ]]; then
 		puertos=${arrPuerto[res1]}
