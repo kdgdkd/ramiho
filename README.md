@@ -6,7 +6,7 @@ For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgd
 ## Features
 
 ramiho is a script written in bash conceived to run on a headless Raspberry Pi.  
-It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. For more complex setups, like when you add a sequencer, but you don't want it to share any data with the controller, you need to use aconnect. I wrote ramiho initially as an accesible front-end for aconnect.   
+It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. For more complex setups, like when you add more controllers, synths, or an external clock, you need to resort to aconnect. I wrote ramiho initially as an accesible front-end for aconnect to sort MIDI routing issues.   
 
 
 ramiho's main features are:
@@ -63,8 +63,8 @@ The normal use of ramiho would be on a headless Raspberry Pi, connected to a WIF
 
 Most of these steps are covered in Neuma Studio's [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html).   
 
-### with terminal front
-When you launch ramiho without arguments, it will open ramiho's terminal front. In English, it should look like this:    
+### with terminal interface
+When you launch ramiho without arguments, it will open ramiho's terminal interface. In English, it should look similar to this:    
 ![ramiho_terminal](https://edpanfleto.com/kdgdkd/assets/ramiho_term_en.png "ramiho terminal front" )  
 Numbers 4, 7 and 8 will open submenus.  
 
