@@ -18,7 +18,7 @@ ramiho's main features are:
   
 ramiho generates a list of available MIDI ports from the connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
 - press **1** to see the list of ports and connexions  
-- **+21** will send the MIDI Out signal from device number 2 to the MIDI In port of device number 1.  
+- [**+12**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) will send the MIDI Out signal from device number 1 to the MIDI In port of device number 2.  
 - **-31** will disconnect device number 3 from device number 1   
 
 ## Dependencies
@@ -65,7 +65,7 @@ Most of these steps are covered in Neuma Studio's [Raspberry Pi as USB/Bluetooth
 
 ### with terminal interface
 When you launch ramiho without arguments, it will open ramiho's terminal interface. In English, it should look similar to this:    
-![ramiho_terminal](https://edpanfleto.com/kdgdkd/assets/ramiho_term_en.png "ramiho terminal front" )  
+![ramiho_terminal](https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png "ramiho terminal" )  
 Numbers 4, 7 and 8 will open submenus.  
 
 
@@ -75,7 +75,7 @@ You can access the main features through the command line interface. To show all
 ```bash
 ramiho h
 ```  
-![ramiho_cli](https://edpanfleto.com/kdgdkd/assets/ramiho_cli_en.png "ramiho cli" )  
+![ramiho_cli](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png "ramiho cli" )  
 
 ### offline and headless
 For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the device's mini-jack.  
@@ -92,8 +92,8 @@ If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/n
 ### testing tools
 Imagine a situation in which you connect two MIDI devices with ramiho (say a sequencer sending notes to a synth), but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?". But that may not be it.   
 ramiho proposes two testing tools:   
-- MIDI monitor - it tests the sending device. It will print any MIDI information (for example the MIDI channel) coming from the sending ports.   
-- Send MIDI - it tests the receiving device. Use ramiho's front-end for SendMidi to send a sequence of notes directly from the Raspberry Pi to your receiving device.   
+- [MIDI monitor](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) - it tests the sending device. It will print any MIDI information (for example the MIDI channel) coming from the sending ports.   
+- [Send MIDI](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) - it tests the receiving device. Use ramiho's front-end for SendMidi to send a sequence of notes directly from the Raspberry Pi to your receiving device.   
 
 If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI.  
 
