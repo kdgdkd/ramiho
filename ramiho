@@ -1,6 +1,7 @@
 #!/bin/bash
 # ramiho - raspi midi host
 # Cliente de Teclado Numérico Raspi MIDI host
+# kdg/dkd - kódigo diskordia en edpanfleto.com/kdgdkd/
 
 # RECURSOS
 	# RASPBERRY PI AS USB/BLUETOOTH MIDI HOST
@@ -42,8 +43,6 @@ tput setaf 2
 }
 
 # CONFIGURATION***********************************************************
-# Para simplificar la tarea, todos los ficheros para personalizar las conexiones favoritas están en la carpeta /ramiho/favcnx/
-# Este fichero no tendría por qué tocarse, excepto si te apetece
 fCONF () {
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
 savedconnexions1="$SCRIPT_DIR/favcnx/svdcnx1"
@@ -106,6 +105,18 @@ tx_lstprthd="Sel  N    Cliente  [puerto]    Canal ch    Nota n"
 tx_detcnxprt="Detalle de conexiones y puertos"
 tx_exitsl="  /   para salir> "
 tx_exitout="  Saliendo..." 
+tx_monheader='ramiho monitor MIDI
+**********************************'
+tx_montyp="
+aseqdump   completo
+note       notas
+cc         control change
+psc        transport
+pc         program change
+syx        sysex
+rpn        rpn
+sr         all System Real-Time messages
+sc         all System Common messages"
 tx_frshhlp="      9 para leer ayuda> "
 tx_hlptermhd1='ramiho Rpi MIDI Host - AYUDA
 **********************************
@@ -134,7 +145,7 @@ tx_hlptermhd4='    FNC    Leer el puerto n
 **********************************'
 tx_hlptermhdmini1='ramiho - 9 para mostrar ayuda y activar sonido'
 tx_hlptermhdmini2='ramiho - 9 para mostrar ayuda y desactivar sonido'
-txhlpcli='ramiho Rpi MIDI Host - Ayuda
+txhlpcli='ramiho Rpi MIDI Host - Ayuda Linea de Comandos
 **********************************
 Uso:
 rpimidihost                     cliente interactivo
@@ -221,6 +232,18 @@ tx_lstprthd="Sel  N    Client   [port]       Channel    Note n"
 tx_detcnxprt="Detailed ports and connexions"
 tx_exitsl="  /   to exit> "
 tx_exitout="  Bye..." 
+tx_monheader='ramiho MIDI monitor
+**********************************'
+tx_montyp="
+aseqdump   completo
+note       notas
+cc         control change
+psc        transport
+pc         program change
+syx        sysex
+rpn        rpn
+sr         all System Real-Time messages
+sc         all System Common messages"
 tx_frshhlp="      9 to read help> "
 tx_hlptermhd1='ramiho Rpi MIDI Host - HELP
 **********************************
@@ -249,7 +272,7 @@ tx_hlptermhd4='    FNC    Read port N
 **********************************'
 tx_hlptermhdmini1='ramiho - 9 to show Help and enable sound'
 tx_hlptermhdmini2='ramiho - 9 to show Help and disable sound'
-txhlpcli='ramiho Rpi MIDI Host - HELP
+txhlpcli='ramiho Rpi MIDI Host - CLI HELP
 **********************************
 Usage:
 ramiho                     terminal front
@@ -294,7 +317,6 @@ fLOCALE_EN # Change this function to change the locale used by ramiho
 # FAVORITE DEVICES*****************************************************
 # Esta es una lista de los dispositivos que se verificarán al lanzar Chequear Favoritos desde la interface principal de ramiho
 # Verifica si el nombre (o parte del nombre) de un dispositivo aparece en la lista de conexiones de aconnect -l
-# Puedes modificar los dispositivos que quieres que chequee
 fLST_FAV () { 
 clfav=
 _bold
@@ -1262,16 +1284,7 @@ arrtipomonitor+=("sc")
 fMON_LISTPORT () {
 fREAD_ARRPORTS
 _bold
-echo "
-aseqdump   completo
-note       notas
-cc         control change
-psc        transport
-pc         program change
-syx        sysex
-rpn        rpn
-sr         all System Real-Time messages
-sc         all System Common messages"
+echo "$tx_monheader"
 echo "$tx_arrtyphd"
 _norm
 let icontador=0
@@ -1310,7 +1323,7 @@ while IFS= read -r line; do # por cada puerto MIDI existente
 		echo "     $icontador    $line"
 	fi
 	let icontador=$icontador+1
-done <<< "$monheader"
+done <<< "$tx_montyp"
 }
 fMON_ASEQ () { # monitor MIDI usando aseqdump
 puertom=${arrPuerto[$iportout]}
