@@ -11,7 +11,7 @@ It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](ht
 
 ramiho's main features are:
 - simple interface to manage MIDI connexions between devices  
-- connexion testing tools (MIDI monitors and SendMidi)
+- connexion testing tools (MIDI monitors)
 - it allows to save current connexion configuration, and define alternative favorite setups that can be easily loaded
 - all of ramiho's commands can be accessed using a numeric pad (only numbers and mathematical operators)
 - it talks, it may be alive
