@@ -22,8 +22,8 @@ ramiho generates a list of available MIDI ports from the connected devices, and 
 - **-31** will disconnect device number 3 from device number 1   
 
 ## Dependencies
-ramiho main functionalities (connexion management and MIDI monitor) require only ALSA. Written in bash, I would guess that ramiho should work on early Raspberry Pi's and other Linux devices running ALSA.   
-For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), by Geert Bevin. These tools provide a monitor filtered by type of data, and the send midi test. You may download them into ramiho's srmidi directory, or define their location in the fCONF function.   
+ramiho's connexion management functionality requires only ALSA. Written in bash, I guess that ramiho should work on early Raspberry Pi's and other Linux devices running ALSA. But don't take my word.    
+For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools provide a monitor filtered by type of data, and the send midi test. The default location for these executables is ramiho's srmidi directory, but you ma define any other location (or alias) in the fCONF function.   
 For advanced connexion routings (like routing individual MIDI channels or ranges of notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
