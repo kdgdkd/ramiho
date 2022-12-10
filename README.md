@@ -75,7 +75,7 @@ You can access the main features through the command line interface. To show all
 ```bash
 ramiho h
 ```  
-![ramiho_cli](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png "ramiho cli" )  
+and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png).  
 
 ### offline and headless
 For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the device's mini-jack.  
@@ -87,13 +87,13 @@ tts=$tts_on
 ```  
 
 You can also turn the sound on and off by sending **99** to ramiho.   
-If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now, instead of commands, what lies below the numbers are the devices in the list. If you press 3 (PgDn), you'll hear the name of the third device in the list. You may dis/connect them normall using the operators.
+If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now each button represents a device, and if you press button 3 (or rather, PgDn), you'll hear the name of the third device in the list. Operators dealing with connexions work normally. 
 
 ### testing tools
-Imagine a situation in which you connect two MIDI devices with ramiho (say a sequencer sending notes to a synth), but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?". But that may not be it.   
-ramiho proposes two testing tools:   
-- MIDI monitor - it tests the sending device. It will print any MIDI information (for example the MIDI channel) coming from the sending ports. The first monitor uses ALSA's aseqdump, for the filtered monitors you'll need ReceiveMidi. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
-- Send MIDI - it tests the receiving device. Use ramiho's front-end for SendMidi to send notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
+Imagine a situation in which you connect two MIDI devices with ramiho (say a sequencer sending notes to a synth), but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?"  
+ramiho proposes two tools that should help testing input and output MIDI ports in your devices:   
+- MIDI monitor - it tests the sending device. It will print MIDI information (like the channel) coming from the sending ports. The first monitor uses ALSA's aseqdump; for the filtered monitors you'll need [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI). In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
+- Send MIDI - it tests the receiving device. Use ramiho's front-end for [SendMidi](https://github.com/gbevin/ReceiveMIDI) to send notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
 
 If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI.  
 
