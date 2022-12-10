@@ -22,7 +22,7 @@ ramiho generates a list of available MIDI ports from the connected devices, and 
 - **-31** will disconnect device number 3 from device number 1   
 
 ## Dependencies
-ramiho main functionalities require only ALSA; that's enough to use it for connexion management and MIDI monitor (using aconnect and aseqdump).  
+ramiho main functionalities (connexion management and MIDI monitor) require only ALSA. Written in bash, I would guess that ramiho should work on early Raspberry Pi's and other Linux devices running ALSA.   
 For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), by Geert Bevin. These tools provide a monitor filtered by type of data, and the send midi test. You may download them into ramiho's srmidi directory, or define their location in the fCONF function.   
 For advanced connexion routings (like routing individual MIDI channels or ranges of notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
@@ -44,7 +44,7 @@ ramiho comes with Spanish and English interfaces. ramiho would like to speak you
 **Favorite Connexions**  
 ramiho allows to load preferred connexion configurations in batch, using the Favorite Connexions submenu. You should customize this section of the code to have an easy way of loading your own favorite setup configurations.  
 
-The Favorite Connexions menu currently uses three ways of saving connexions. 
+The Favorite Connexions menu currently uses three ways of saving connexions: 
 - embedded in ramiho's code as aconnect commands (fSET_x functions)
 - in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands
 - in one of two midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
@@ -61,7 +61,7 @@ The normal use of ramiho would be on a headless Raspberry Pi, connected to a WIF
 - define a static IP address (**sudo nano /etc/dhcpcd.conf**)
 - on Raspberry Pi OS, set File System Overlay to be able to turn the device on and off with a power switch, without corrupting the SD card (**sudo raspi-config** then Performance/Overlay File System)  
 
-Most of these steps are covered in Neuma Studio's [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html).   
+Most of these steps are covered in Neuma Studio's [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html).     
 
 ### with terminal interface
 When you launch ramiho without arguments, it will open ramiho's terminal interface. In English, it should look similar to this:    
