@@ -79,7 +79,7 @@ ramiho h
 ```  
 and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png).   
 Arguments will open ramiho's functionalities, just as in the terminal interface; for example, **ramiho +** will open the dialog to create a new connexion.  
-You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, ramiho will try to establish the connexion between the devices in those positions. For example, **ramiho +24** will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** would close the previous connexion.   
+You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, say **ramiho +24**, ramiho will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** would close the previous connexion.   
 You can also load your Favorite Connexions with a single command. Enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fSET_ACT.
 
 ### offline and headless
