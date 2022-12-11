@@ -55,7 +55,7 @@ ramiho allows to load preferred connexion configurations in batch, using the Fav
 
 The Favorite Connexions menu currently uses three ways of saving connexions: 
 - embedded in ramiho's code as a list of aconnect commands (fSET_x functions)
-- in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands
+- in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands, so they may get overwritten
 - in one of two midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
 
 You may edit these files and functions, and adapt the header of the menu (fSETX_HEADER) to display some description of the connexions you've set up. 
@@ -66,9 +66,12 @@ You may edit these files and functions, and adapt the header of the menu (fSETX_
 There are three ways of working with ramiho: terminal interface, command line interface, and with audio feedback.  
 
 ### with terminal interface
-When you launch ramiho without arguments, it will open ramiho's terminal interface. This is the main interface for ramiho. In English, it should look similar to this:    
+When ramiho is launched without arguments, it will load ramiho's terminal interface. This is the main interface for ramiho. You will see the Help header with the list of available commands, and the list of MIDI ports and connexions. In English, it should look similar to this:    
 ![ramiho_terminal](https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png "ramiho terminal" )  
-Numbers 4, 7 and 8 will open submenus.  
+There is already one connexion set, but you'd like to connect device number 2 to device number 4; enter **+24** [like this](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png "ramiho connect" ).   
+If you are happy with the current connexions and want to save them for later use, enter **4** to open the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) submenu; mine is in Spanish.  
+Enter **03** (0 for saving, 3 is the file number) to [save connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxsave.png "Save Connexions" ) into file svdcnx3.  
+Next time you enter ramiho, you'll just need to go to the Favorite Connexions submenu, and enter **3** to [load connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxload.png "Load Connexions" ) file svdcnx3.
 
 ### with command line
 You can access the main features through the command line interface. To show all available commands type
