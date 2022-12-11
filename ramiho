@@ -42,21 +42,6 @@ _verde () {
 tput setaf 2
 }
 
-# CONFIGURATION***********************************************************
-fCONF () {
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-savedconnexions1="$SCRIPT_DIR/favcnx/svdcnx1"
-savedconnexions2="$SCRIPT_DIR/favcnx/svdcnx2"
-savedconnexions3="$SCRIPT_DIR/favcnx/svdcnx3"
-savedconnexions=$savedconnexions1
-sendmidi="$SCRIPT_DIR/srmidi/sendmidi"
-receivemidi="$SCRIPT_DIR/srmidi/receivemidi"
-midiseq="$SCRIPT_DIR/srmidi/sendmidifile"
-tts_on="festival --tts"  #define text-to-sound engine
-tts= # $tts_on # to enable sound by default
-}
-fCONF
-
 # LOCALE************************************************
 fLOCALE_ES () {
 tx_checkfavdev="Chequea dispositivos favoritos:"
@@ -312,7 +297,22 @@ tx_smhdr="ramiho >> Send MIDI signal
 ************************************************"
 
 }
-fLOCALE_EN # Change this function to change the locale used by ramiho
+
+# CONFIGURATION***********************************************************
+fCONF () {
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
+savedconnexions1="$SCRIPT_DIR/favcnx/svdcnx1"
+savedconnexions2="$SCRIPT_DIR/favcnx/svdcnx2"
+savedconnexions3="$SCRIPT_DIR/favcnx/svdcnx3"
+savedconnexions=$savedconnexions1
+sendmidi="$SCRIPT_DIR/srmidi/sendmidi"
+receivemidi="$SCRIPT_DIR/srmidi/receivemidi"
+midiseq="$SCRIPT_DIR/srmidi/sendmidifile"
+tts_on="festival --tts"  #define text-to-sound engine
+tts= # $tts_on # uncomment to enable sound by default
+fLOCALE_EN # Change this to your preferred locale
+}
+fCONF
 
 # FAVORITE DEVICES*****************************************************
 # Esta es una lista de los dispositivos que se verificarán al lanzar Chequear Favoritos desde la interface principal de ramiho
