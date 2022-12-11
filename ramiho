@@ -47,7 +47,7 @@ tx_mondeac="Desactivando monitor de "
 tx_errcli="Error, no se identificó el cliente"
 tx_monhd2="Monitor MIDI de puerto N"
 tx_lstprthd="Sel  N    Cliente  [puerto]    Canal ch    Nota n"
-tx_detcnxprt="Detalle de conexiones y puertos"
+tx_detcnxprt="ALSA Detalle de conexiones"
 tx_exitsl="  /   para salir> "
 tx_exitout="  Saliendo..." 
 tx_monheader='ramiho >> monitor MIDI
@@ -174,7 +174,7 @@ tx_mondeac="Closing monitor for "
 tx_errcli="Error, client not identified"
 tx_monhd2="MIDI monitor for port N"
 tx_lstprthd="Sel  N    Client   [port]       Channel    Note n"
-tx_detcnxprt="Detailed ports and connexions"
+tx_detcnxprt="ALSA Detailed connexions"
 tx_exitsl="  /   to exit> "
 tx_exitout="  Bye..." 
 tx_monheader='ramiho >> MIDI monitor
@@ -962,9 +962,16 @@ _bold
 echo "$tx_lstusb"
 _norm
 lsusb
+}
+fLST_ALSADETAILS () {
+_bold		
+echo "$tx_detcnxprt"
+_norm
+aconnect -l	
+echo
 _bold
 echo "$tx_lstprt"
-_norm
+_norm			
 aplaymidi -l
 }
 
@@ -1507,7 +1514,7 @@ arrClienteSM+=('')
 let ilinea=0
 TAB="$(printf '\t')"
 while IFS= read -r line; do # leemos cada línea de aconnect -l
-	if [[ $ilinea -ge 2 ]]; then # nos saltamos las primera linea	
+	if [[ $ilinea -ge 1 ]]; then # nos saltamos las primera linea	
 		arrClienteSM+=("$line")
 	fi
 	let ilinea=$ilinea+1
@@ -1590,10 +1597,7 @@ while true; do
 						fLST_CONNEX
 					fi;;
 				[1]) fLST_CONNEX; echo "$texrecl. $texreco" | $tts > /dev/null 2>&1 &;;
-				[2]) _bold		
-					echo "$tx_detcnxprt"
-					_norm
-					aconnect -l;;
+				[2]) fLST_ALSADETAILS;;
 				[3]) fLST_USB;;
 				[4]) fSETX_FRONT;;
 				[5]) fREAD_PORTINFO ;;
@@ -1687,10 +1691,7 @@ if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
 				fLST_CONNEX
 			fi
 			if [[ $arg == *2* ]] || [[ $arg == *t* ]]; then
-				_bold
-				echo "$tx_detcnxprt"
-				_norm
-				aconnect -l
+				fLST_ALSADETAILS
 			fi
 			if [[ $arg == *3* ]] || [[ $arg == *u* ]]; then
 				fLST_USB
