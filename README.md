@@ -32,7 +32,7 @@ And if you wish ramiho to speak back, you will need a text-to-sound engine; I us
 ## Installation
 Copy the files and directories in this repository to your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. You may also download the programs mentioned on the previous section. I believe that should be it.
 
-**Setting-up a headless Raspberry Pi**
+**Setting-up a headless Raspberry Pi**  
 The standard setup for ramiho would be on a headless Raspberry Pi, connected to a WIFI network and operated through an SSH client... and with a number of MIDI devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
 - create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); mine is **111**, so I can launch it with an external numeric pad 
 - enable ssh connexions in your Raspberry Pi (**sudo raspi-config**)
@@ -58,7 +58,7 @@ The Favorite Connexions menu currently uses three ways of saving connexions:
 - in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands
 - in one of two midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
 
-You should then adapt the header of the menu (fSETX_HEADER) to display some description of the connexions you've set up. 
+You may edit these files and functions, and adapt the header of the menu (fSETX_HEADER) to display some description of the connexions you've set up. 
 
 
 ## Usage
