@@ -11,10 +11,9 @@ I wrote ramiho initially as an accesible front-end for aconnect to sort MIDI rou
 
 
 ramiho's main features are:
-- simple interface to manage MIDI connexions between devices  
+- simple interface to manage MIDI connexions between devices, every operation is accessible by using only the numeric pad (numbers and mathematical operators)  
 - connexion testing tools (MIDI monitors and SendMidi)
 - it allows to save current connexion configuration, and define alternative favorite setups that can be easily loaded
-- all of ramiho's commands can be accessed using a numeric pad (only numbers and mathematical operators)
 - it talks, it may be alive
   
 ramiho generates a list of available MIDI ports from the connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
