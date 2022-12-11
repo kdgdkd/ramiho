@@ -2,46 +2,6 @@
 # ramiho - raspi midi host
 # Cliente de Teclado Numérico Raspi MIDI host
 # kdg/dkd - kódigo diskordia en edpanfleto.com/kdgdkd/
-
-# RECURSOS
-	# RASPBERRY PI AS USB/BLUETOOTH MIDI HOST
-	# https://neuma.studio/rpi-midi-complete.html
-	#
-	# LINUX MIDI CHEATSHEET 
-	# https://mclarenlabs.com/blog/2018/07/03/linux-midi-cheatsheet/
-	#
-	# the ALSA system exposes many of its details through the /proc/asound filesystem
-	# cat /proc/asound/seq/clients
-	#
-	# dmesg to see messages about USB devices being plugged and unplugged. Use this if you are unsure if your equipment is being recognized by your system. The [-w] option makes dmesg wait for new messages.
-	#
-	# lsusb to list the USB devices currently connected to your system. Use this if you are unsure if your keyboard or controller is being recognized as a USB device.
-	#
-# HERRAMIENTAS
-	# CREAR puertos virtuales:
-	# sudo modprobe snd-virmidi snd_index=1
-	# o
-	# sudo modprobe snd-virmidi enable=1,1 midi_devs=4,1
-	# BORRAR los puertos virtuales:
-	# sudo modprobe -r snd-virmidi
-	#
-
-_bold () { 
-tput bold
-}
-_norm () { 
-tput sgr0
-}
-_blanco () { 
-tput setaf 7 
-}
-_amarillo () {
-tput setaf 3
-}
-_verde () {
-tput setaf 2
-}
-
 # LOCALE************************************************
 fLOCALE_ES () {
 tx_checkfavdev="Chequea dispositivos favoritos:"
@@ -314,6 +274,23 @@ fLOCALE_EN # Change this to your preferred locale
 }
 fCONF
 
+# FORMAT*******************
+_bold () { 
+tput bold
+}
+_norm () { 
+tput sgr0
+}
+_blanco () { 
+tput setaf 7 
+}
+_amarillo () {
+tput setaf 3
+}
+_verde () {
+tput setaf 2
+}
+
 # FAVORITE DEVICES*****************************************************
 # Esta es una lista de los dispositivos que se verificarán al lanzar Chequear Favoritos desde la interface principal de ramiho
 # Verifica si el nombre (o parte del nombre) de un dispositivo aparece en la lista de conexiones de aconnect -l
@@ -349,7 +326,7 @@ else
 	echo "$clfav"
 fi
 }
-# CONEXIONES*FAVORITAS*********************************************
+# CONEXIONES FAVORITAS--FAVORITE CONNEXIONS*********************************************
 # Aquí puedes determinar algunas acciones del menu de conexiones favoritas
 # para una conexión favorita, añade la descripción y el código en la función correspondiente
 # input 1, 2 y 3 lanzan las funcinoes fSET_1, fSET_2 y fSET_3, pensadas para conexiones aconnect 
@@ -414,7 +391,7 @@ fMSH_1 () {
 fMSH_DEL
 _bold
 echo
-echo " Cargar ruteo Virus 2x4"
+echo " midish routing 1"
 echo "    Ctrl + C para salir"
 _norm
 source "$SCRIPT_DIR/favcnx/midishcnx1.stp" #2>/dev/null
@@ -423,7 +400,7 @@ fMSH_2 () {
 fMSH_DEL
 _bold
 echo
-echo " Cargar ruteo QuNeo-Minilogue 2x4"
+echo " midish routing 2"
 echo "    Ctrl + C para salir"
 _norm
 source "$SCRIPT_DIR/favcnx/midishcnx2.stp" #2>/dev/null
@@ -1746,4 +1723,28 @@ else # si se ejecutó sin argumentos, entrar en el loop
 	fRMH_START
 fi
 exit 0
-	
+		
+# RECURSOS
+	# RASPBERRY PI AS USB/BLUETOOTH MIDI HOST
+	# https://neuma.studio/rpi-midi-complete.html
+	#
+	# LINUX MIDI CHEATSHEET 
+	# https://mclarenlabs.com/blog/2018/07/03/linux-midi-cheatsheet/
+	#
+	# Shell programming with bash: by example, by counter-example
+	# https://matt.might.net/articles/bash-by-example/
+	#
+	# the ALSA system exposes many of its details through the /proc/asound filesystem
+	# cat /proc/asound/seq/clients
+	#
+# HERRAMIENTAS / DEBUGGING TOOLS
+	# CREAR puertos virtuales:
+	# sudo modprobe snd-virmidi snd_index=1
+	# o
+	# sudo modprobe snd-virmidi enable=1,1 midi_devs=4,1
+	# BORRAR los puertos virtuales:
+	# sudo modprobe -r snd-virmidi
+	#
+	# dmesg to see messages about USB devices being plugged and unplugged. Use this if you are unsure if your equipment is being recognized by your system. The [-w] option makes dmesg wait for new messages.
+	#
+	# lsusb to list the USB devices currently connected to your system. Use this if you are unsure if your keyboard or controller is being recognized as a USB device.
