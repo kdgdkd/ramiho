@@ -98,9 +98,11 @@ ramiho $1 $2$3       argumentos para uso en línea de comandos
 
 argumentos: 
   /$1   > Información sobre cliente número $1
-  *$1   > Cargar fichero svdcnx número $1
- +$1$2  > Conectar puerto número $1 al puerto número $2
- -$1$2  > Desconectar puerto número $1 del puerto número $2
+  *$1   > Cargar Conexión Favorita número $1
+  +     > Conectar puertos
+  +$1$2 > Conectar puerto número $1 al puerto número $2
+  -     > Desconectar puertos
+  -$1$2 > Desconectar puerto número $1 del puerto número $2
  
  . & q  > Desconectar todo
  0 & a  > Conectar todos los puertos entre sí
@@ -108,11 +110,11 @@ argumentos:
  2 & t  > Mostrar detalles ALSA MIDI
  3 & u  > Mostrar dispositivos USB
  4 & f  > Menú Conexiones Favoritas
- 5 & e  > Enviar señal MIDI
- 6 & m  > Monitorizar puerto MIDI
- 7 & c  > Conectar puertos
- 8 & d  > Desconectar puertos
- 9 & h  > Esta ayuda e IP'
+ 5 & n  > Leer puerto N
+ 6 & c  > Chequea favoritos
+ 7 & m  > Monitor puerto MIDI
+ 8 & s  > Enviar señal MIDI
+ 9 & h  > Mostrar IP y Ayuda'
 
 tx_monhd="ramiho >> Elegir puerto y tipo de monitor MIDI
 ********************************************************************"
@@ -228,9 +230,11 @@ ramiho $1 $2$3       arguments for command line
 
 arguments: 
   /$1   > Provide information about port number $1
-  *$1   > Load svdcnx file number $1
- +$1$2  > Connect port number $1 to port number $2
- -$1$2  > Disconnect port number $1 from port number $2
+  *$1   > Load Favorite Connexion number $1
+  +     > Connect ports
+  +$1$2 > Connect port number $1 to port number $2
+  -     > Disconnect ports
+  -$1$2 > Disconnect port number $1 from port number $2
  
  . & q  > Disconnect all
  0 & a  > Connect all
@@ -238,10 +242,10 @@ arguments:
  2 & t  > ALSA MIDI details
  3 & u  > USB devices details
  4 & f  > Favorite Connexions menu
- 5 & e  > Send MIDI signal to port
- 6 & m  > Monitor MIDI port
- 7 & c  > Connect ports
- 8 & d  > Disconnect ports
+ 5 & n  > Read port N
+ 6 & c  > Check Favorite devices
+ 7 & m  > Monitor MIDI port
+ 8 & s  > Send MIDI signal to port
  9 & h  > This help and IP'
 
 tx_monhd="ramiho >> Choose port and type of monitor
@@ -361,9 +365,42 @@ echo "ramiho >> Menu de conexiones favoritas
      -     Desconectar puertos
 ********************************************************************"
 }
-
-
-
+fSET_ACT () {
+if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
+	if [[ $1 = "" ]]; then # si borrar (Backspace) entonces
+		echo $tx_retrmh
+		break
+	else
+		echo
+		case $1 in
+			[.]) fMSH_DEL; fCNX_DISCONNECTALL;;
+			[0]) fSET_SAVEFILE;; 
+			[1]) fSET_LOADFILE "${svdcnxarr[0]}"; fLST_CONNEX;; 
+			[2]) fSET_LOADFILE "${svdcnxarr[1]}"; fLST_CONNEX;;  
+			[3]) fSET_LOADFILE "${svdcnxarr[2]}"; fLST_CONNEX;;  
+			[4]) fSET_1; fLST_CONNEX;;  
+			[5]) fSET_2; fLST_CONNEX;; 
+			[6]) fSET_3; fLST_CONNEX;;   
+			[7]) fMSH_FRONT;; 
+			[8]) fMSH_1;;   
+			[9]) fMSH_2;;    
+			[+]) fCNX_CONNECT
+				fLST_CONNEX;; 
+			[-]) fCNX_DISCONNECT
+				fLST_CONNEX;;   
+			[*]) if [[ $connectall == 'true' ]]; then
+					fCNX_DISCONNECTALL
+				else
+					fCNX_CONNECTALL
+					fLST_CONNEX
+				fi
+				;; 
+			*) ci_err1=true;;
+		esac
+	fi
+[[ $ci_err1 == true ]] && echo $tx_errsel && echo "Error, no setup selected" | $tts > /dev/null 2>&1 &
+fi
+}
 fSET_1 () { 
 aconnect -x
 _bold
@@ -429,42 +466,6 @@ while true; do
 	_norm
 	fSET_ACT $setup
 done
-}
-fSET_ACT () {
-if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
-	if [[ $1 = "" ]]; then # si borrar (Backspace) entonces
-		echo $tx_retrmh
-		break
-	else
-		echo
-		case $1 in
-			[.]) fMSH_DEL; fCNX_DISCONNECTALL;;
-			[0]) fSET_SAVEFILE;; 
-			[1]) fSET_LOADFILE "${svdcnxarr[0]}"; fLST_CONNEX;; 
-			[2]) fSET_LOADFILE "${svdcnxarr[1]}"; fLST_CONNEX;;  
-			[3]) fSET_LOADFILE "${svdcnxarr[2]}"; fLST_CONNEX;;  
-			[4]) fSET_1; fLST_CONNEX;;  
-			[5]) fSET_2; fLST_CONNEX;; 
-			[6]) fSET_3; fLST_CONNEX;;   
-			[7]) fMSH_FRONT;; 
-			[8]) fMSH_1;;   
-			[9]) fMSH_2;;    
-			[+]) fCNX_CONNECT
-				fLST_CONNEX;; 
-			[-]) fCNX_DISCONNECT
-				fLST_CONNEX;;   
-			[*]) if [[ $connectall == 'true' ]]; then
-					fCNX_DISCONNECTALL
-				else
-					fCNX_CONNECTALL
-					fLST_CONNEX
-				fi
-				;; 
-			*) ci_err1=true;;
-		esac
-	fi
-[[ $ci_err1 == true ]] && echo $tx_errsel && echo "Error, no setup selected" | $tts > /dev/null 2>&1 &
-fi
 }
 fSET_SAVEFILE () { # guarda un fichero con las conexiones actuales
 fREAD_ARRPORTS
@@ -993,97 +994,106 @@ puertor=
 nombres=
 nombrer=
 ci_err=false
-_bold
-echo "Enter first port " | $tts > /dev/null 2>&1 &
-echo
-echo "$tx_cnxinp1"
-_norm
-_verde
-read -n 1 -p "$tx_cnxinppr1"  res1
-_norm
-if [[ $res1 =~ ^-?[0-9]+$ ]]; then
-	if [[ $res1 -le ${#arrPuerto[@]} ]]; then
-		puertos=${arrPuerto[res1]}
-		nombres=${arrClienteN[res1]}
-	else
-		ci_err=true
-	fi
-elif [[ $res1 == '' ]]; then
-	ci_err=true
-elif [[ $res1 == '.' ]]; then
-	read res1
-	res1=$(echo "${res1//../:}")
-	puertos=$res1
-	# nombres=${arrClienteN[res1]}
-else # si res1 no está vacío ni empieza por un número (N) o un punto, asumimos que se están usando las FUNC del NumPad y comparamos el 3er caracter
-	read -n 1 resp2 
-	read -n 1 resp3
-	read -t 0.01 resto
-	case $resp3 in
-		[4F]) let res1=1;; # End
-		[B]) let res1=2;;  # Flecha Dn
-		[6]) let res1=3;;  # Pg Dn / Av Pag
-		[D]) let res1=4;; # Flecha Lft
-		[EG]) let res1=5;; # (5) en el centro de las flechas
-		[C]) let res1=6;; # Flecha Rgt
-		[1H]) let res1=7;; # Home
-		[A]) let res1=8;; # Flecha Up
-		[5]) let res1=9;;  # Pg Up / Re Pag
-		*) ci_err=true;;
-	esac
-	if [[ $res1 =~ ^-?[0-9]+$ ]]; then
-		puertos=${arrPuerto[res1]}
-		nombres=${arrClienteN[res1]}
-	else
-		ci_err=true
-		res1=
-	fi
-fi
-if [[ $ci_err == false ]]; then
-	echo "Enter second port" | $tts > /dev/null 2>&1 &
+
+if [[ -z "$1" ]]; then
+	_bold
+	echo "Enter first port " | $tts > /dev/null 2>&1 &
 	echo
-	_verde
-	read -n 1 -p "$tx_cnxinppr2" res2
+	echo "$tx_cnxinp1"
 	_norm
-	if [[ $res2 =~ ^-?[0-9]+$ ]]; then
+	_verde
+	read -n 1 -p "$tx_cnxinppr1"  res1
+	_norm
+	if [[ $res1 =~ ^-?[0-9]+$ ]]; then
 		if [[ $res1 -le ${#arrPuerto[@]} ]]; then
-			puertor=${arrPuerto[res2]}
-			nombrer=${arrClienteN[res2]}
+			puertos=${arrPuerto[res1]}
+			nombres=${arrClienteN[res1]}
 		else
 			ci_err=true
 		fi
-	elif [[ $res2 == '' ]]; then
+	elif [[ $res1 == '' ]]; then
 		ci_err=true
-		echo "Error"
-	elif [[ $res2 == '.' ]]; then
-		read res2
-		res2=$(echo "${res2//../:}")
-		puertor=$res2
-		nombrer=${arrClienteN[res2]}
-	else
-		read -n 1 resp2 # se guardan los primeros tres caracteres de la respuesta para buscar equivalencias
+	elif [[ $res1 == '.' ]]; then
+		read res1
+		res1=$(echo "${res1//../:}")
+		puertos=$res1
+		# nombres=${arrClienteN[res1]}
+	else # si res1 no está vacío ni empieza por un número (N) o un punto, asumimos que se están usando las FUNC del NumPad y comparamos el 3er caracter
+		read -n 1 resp2 
 		read -n 1 resp3
 		read -t 0.01 resto
 		case $resp3 in
-			[4F]) let res2=1;; # End
-			[B]) let res2=2;;  # Flecha Dn
-			[6]) let res2=3;;  # Pg Dn / Av Pag
-			[D]) let res2=4;; # Flecha Lft
-			[EG]) let res2=5;; # (5) en el centro de las flechas
-			[C]) let res2=6;; # Flecha Rgt
-			[1H]) let res2=7;; # Home
-			[A]) let res2=8;; # Flecha Up
-			[5]) let res2=9;;  # Pg Up / Re Pag
+			[4F]) let res1=1;; # End
+			[B]) let res1=2;;  # Flecha Dn
+			[6]) let res1=3;;  # Pg Dn / Av Pag
+			[D]) let res1=4;; # Flecha Lft
+			[EG]) let res1=5;; # (5) en el centro de las flechas
+			[C]) let res1=6;; # Flecha Rgt
+			[1H]) let res1=7;; # Home
+			[A]) let res1=8;; # Flecha Up
+			[5]) let res1=9;;  # Pg Up / Re Pag
 			*) ci_err=true;;
 		esac
-		if [[ $res2 =~ ^-?[0-9]+$ ]]; then
-			puertor=${arrPuerto[res2]}
-			nombrer=${arrClienteN[res2]}
+		if [[ $res1 =~ ^-?[0-9]+$ ]]; then
+			puertos=${arrPuerto[res1]}
+			nombres=${arrClienteN[res1]}
 		else
 			ci_err=true
-			res2=
+			res1=
 		fi
 	fi
+	if [[ $ci_err == false ]]; then
+		echo "Enter second port" | $tts > /dev/null 2>&1 &
+		echo
+		_verde
+		read -n 1 -p "$tx_cnxinppr2" res2
+		_norm
+		if [[ $res2 =~ ^-?[0-9]+$ ]]; then
+			if [[ $res1 -le ${#arrPuerto[@]} ]]; then
+				puertor=${arrPuerto[res2]}
+				nombrer=${arrClienteN[res2]}
+			else
+				ci_err=true
+			fi
+		elif [[ $res2 == '' ]]; then
+			ci_err=true
+			echo "Error"
+		elif [[ $res2 == '.' ]]; then
+			read res2
+			res2=$(echo "${res2//../:}")
+			puertor=$res2
+			nombrer=${arrClienteN[res2]}
+		else
+			read -n 1 resp2 # se guardan los primeros tres caracteres de la respuesta para buscar equivalencias
+			read -n 1 resp3
+			read -t 0.01 resto
+			case $resp3 in
+				[4F]) let res2=1;; # End
+				[B]) let res2=2;;  # Flecha Dn
+				[6]) let res2=3;;  # Pg Dn / Av Pag
+				[D]) let res2=4;; # Flecha Lft
+				[EG]) let res2=5;; # (5) en el centro de las flechas
+				[C]) let res2=6;; # Flecha Rgt
+				[1H]) let res2=7;; # Home
+				[A]) let res2=8;; # Flecha Up
+				[5]) let res2=9;;  # Pg Up / Re Pag
+				*) ci_err=true;;
+			esac
+			if [[ $res2 =~ ^-?[0-9]+$ ]]; then
+				puertor=${arrPuerto[res2]}
+				nombrer=${arrClienteN[res2]}
+			else
+				ci_err=true
+				res2=
+			fi
+		fi
+	fi
+else
+
+	puertos=${arrPuerto[$1]}
+	nombres=${arrClienteN[$1]}
+	puertor=${arrPuerto[$2]}
+	nombrer=${arrClienteN[$2]}
 fi
 if [[ $ci_err == true ]]; then
 	_bold
@@ -1091,28 +1101,11 @@ if [[ $ci_err == true ]]; then
 	echo "$tx_errprt"
 fi
 }
-fCNX_INPARG () {
-fREAD_ARRPORTS
-puertos=
-puertor=
-nombres=
-nombrer=
-ci_err=false
-puertos=${arrPuerto[$1]}
-nombres=${arrClienteN[$1]}
-puertor=${arrPuerto[$2]}
-nombrer=${arrClienteN[$2]}
-}
 fCNX_CONNECT () { # conectar dos puertos MIDI 
 _bold
 echo "$tx_midicnx"
 _norm
-if [[ -z "$1" ]]; then
-	fLST_CONNEX
-	fCNX_INPUT
-else
-	fCNX_INPARG $1 $2
-fi
+fCNX_INPUT $1 $2
 if [[ $ci_err == false ]]; then
 	echo
 	echo "aconnect $puertos $puertor"
@@ -1137,12 +1130,7 @@ fCNX_DISCONNECT () { # desconectar dos puertos MIDI
 _bold
 echo "$tx_mididcnt "
 _norm
-if [[ -z "$1" ]]; then
-	fLST_CONNEX
-	fCNX_INPUT
-else
-	fCNX_INPARG $1 $2
-fi
+fCNX_INPUT $1 $2
 if [[ $ci_err == false ]]; then
 	echo
 	echo "aconnect -d $puertos $puertor"
@@ -1703,7 +1691,7 @@ echo
 # COMIENZO
 if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
 	for arg in "$@"; do 
-		if [[ $arg == s ]]; then
+		if [[ $arg == 'mute' ]]; then
 				tts=
 				fRMH_START
 		elif [[ $arg == '/'* ]]; then
@@ -1715,68 +1703,46 @@ if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
 			pt2=
 			pt1=${arg:1:1}
 			pt2=${arg:2:1}
-			if [[ $pt1 != '' ]] && [[ $pt2 != '' ]]; then
-				fCNX_CONNECT $pt1 $pt2
-				fLST_CONNEX
-			else
-				echo "$tx_errprt"
-			fi
+			fCNX_CONNECT $pt1 $pt2
+			fLST_CONNEX
 		elif [[ $arg == -* ]]; then
 			pt1=
 			pt2=
 			pt1=${arg:1:1}
 			pt2=${arg:2:1}
-			if [[ $pt1 != '' ]] && [[ $pt2 != '' ]]; then
-				fCNX_DISCONNECT $pt1 $pt2
-				fLST_CONNEX
-			else
-				echo "$tx_errprt"
-			fi
+			fCNX_DISCONNECT $pt1 $pt2
+			fLST_CONNEX
 		elif [[ $arg == '*'* ]]; then
 			ldfile=
 			ldfile=${arg:1:1}
 			fSET_ACT "$ldfile"
 			fLST_CONNEX
-		else
-			if [[ $arg == *'.'* ]] || [[ $arg == *q* ]]; then
-				fCNX_DISCONNECTALL
-				fLST_CONNEX
-			fi
-			if [[ $arg == *0* ]] || [[ $arg == *a* ]]; then
-				fCNX_CONNECTALL
-				fLST_CONNEX
-			fi
-			if [[ $arg == *1* ]] || [[ $arg == *l* ]]; then
-				fLST_CONNEX
-			fi
-			if [[ $arg == *2* ]] || [[ $arg == *t* ]]; then
-				fLST_ALSADETAILS
-			fi
-			if [[ $arg == *3* ]] || [[ $arg == *u* ]]; then
-				fLST_USB
-			fi
-			if [[ $arg == *4* ]] || [[ $arg == *f* ]]; then
-				fSETX_FRONT
-			fi
-			if [[ $arg == *5* ]] || [[ $arg == *e* ]]; then
-				fSM_FRONT
-			fi
-			if [[ $arg == *6* ]] || [[ $arg == *m* ]]; then
-				fMON_FRONT
-			fi
-			if [[ $arg == *7* ]] || [[ $arg == *c* ]]; then
-				fCNX_CONNECT
-				fLST_CONNEX
-			fi
-			if [[ $arg == *8* ]] || [[ $arg == *d* ]]; then
-				fCNX_DISCONNECT
-				fLST_CONNEX
-			fi
-			if [[ $arg == *9* ]] || [[ $arg == *h* ]]; then
-				hostIP=`hostname -I`
-				fHLP_CLI
-				echo $hostIP
-			fi
+		elif [[ $arg == '.' ]] || [[ $arg == q ]]; then
+			fCNX_DISCONNECTALL
+			fLST_CONNEX
+		elif [[ $arg == 0 ]] || [[ $arg == a ]]; then
+			fCNX_CONNECTALL
+			fLST_CONNEX
+		elif [[ $arg == *1* ]] || [[ $arg == *l* ]]; then
+			fLST_CONNEX
+		elif [[ $arg == *2* ]] || [[ $arg == *t* ]]; then
+			fLST_ALSADETAILS
+		elif [[ $arg == *3* ]] || [[ $arg == *u* ]]; then
+			fLST_USB
+		elif [[ $arg == 4 ]] || [[ $arg == f ]]; then
+			fSETX_FRONT
+		elif [[ $arg == 5 ]] || [[ $arg == n ]]; then
+			fREAD_PORTINFO
+		elif [[ $arg == 6 ]] || [[ $arg == c ]]; then
+			fLST_FAV
+		elif [[ $arg == 7 ]] || [[ $arg == m ]]; then
+			fMON_FRONT
+		elif [[ $arg == 8 ]] || [[ $arg == s ]]; then
+			fSM_FRONT
+		elif [[ $arg == 9 ]] || [[ $arg == h ]]; then
+			hostIP=`hostname -I`
+			fHLP_CLI
+			echo $hostIP
 		fi
 	done
 else # si se ejecutó sin argumentos, entrar en el loop
