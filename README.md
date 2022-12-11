@@ -90,7 +90,7 @@ tts=$tts_on
 ```  
 
 You can also turn the sound on and off by sending **99** to ramiho.   
-If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now each button represents a device, and if you press button 3 (or rather, PgDn), you'll hear the name of the third device in the list. Operators dealing with connexions work normally. 
+If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now buttons 1-9 represent devices, and if you press button 3 (or rather, PgDn), you'll hear the name of the third device in the list. Operators dealing with connexions work normally. 
 
 ### testing tools
 Imagine a situation in which you connect two MIDI devices with ramiho (say a sequencer sending notes to a synth), but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?"  
