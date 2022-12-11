@@ -73,30 +73,29 @@ Enter **03** (0 for saving, 3 is the file number) to [save connexions](https://e
 Next time you enter ramiho, you'll just need to go to the Favorite Connexions submenu, and enter **3** to [load connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxload.png "Load Connexions" ) file svdcnx3.
 
 ### with command line
-You can access the main features through the command line interface, by adding arguments after the ramiho command. To show all available commands type
+You can access all of ramiho's features through the command line interface, by adding arguments after the ramiho command. Commands mirror the terminal interface's; to show all available commands type
 ```bash
 ramiho h
 ```  
 and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png).   
-Some arguments will open one of ramiho's functionalities; if you execute **ramiho 7** to create a new connexion, ramiho will ask for the ports just like with the terminal interface.  
-You can achieve the same result with **ramiho +24**, which will connect directly port number 2 to port number 4. In a similar way, **ramiho -24** would close the previous connexion.   
-You can also load directly from the cli your Favorite Connexions. Enter **ramiho \*n**, with n being a number from 1 to 9, to load saved presets directly as defined in fSET_ACT.
+Arguments will open ramiho's functionalities, just as in the terminal interface; for example, **ramiho +** will open the dialog to create a new connexion.  
+You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, ramiho will try to establish the connexion between the devices in those positions. For example, **ramiho +24** will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** would close the previous connexion.   
+You can also load your Favorite Connexions with a single command. Enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fSET_ACT.
 
 ### offline and headless
-For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the device's mini-jack.  
-This is achieved with a text-to-sound engine, my preference is for festival. Text will be piped into the tts engine ($tts_on).   
-To configure a different tts engine and to activate sound by default, edit these lines in the fCONFIG function of the script:  
+For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the mini-jack output.  
+To work this out, you will need a text-to-sound engine; there's espeak, my preference is for festival. Text will be piped into the tts engine ($tts_on). Send **99** to turn sound on and off.      
+To configure a different tts engine and to activate sound by default, edit these lines in the script's fCONFIG function:  
 ```bash
 tts_on="festival --tts" 
 tts=$tts_on
 ```  
 
-You can also turn the sound on and off by sending **99** to ramiho.   
-If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now buttons 1-9 represent devices, and if you press button 3 (or rather, PgDn), you'll hear the name of the third device in the list. Operators dealing with connexions work normally. 
+If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now buttons 1 to 9 represent devices, and if you press button 3 (or rather, PgDn), you'll hear the name of the third device in the list. Operators dealing with connexions work just the same. 
 
 ### testing tools
-Imagine a situation in which you connect two MIDI devices with ramiho (say a sequencer sending notes to a synth), but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?"  
-ramiho proposes two tools that should help testing input and output MIDI ports in your devices:   
+Let's say you connect two MIDI devices with ramiho, but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?"  
+ramiho proposes two tools that should help testing input and output MIDI ports on your devices:   
 - MIDI monitor - it tests the sending device. It will print MIDI information (like the channel) coming from the sending ports. The first monitor uses ALSA's aseqdump; for the filtered monitors you'll need [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI). In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
 - Send MIDI - it tests the receiving device. Use ramiho's front-end for [SendMidi](https://github.com/gbevin/ReceiveMIDI) to send notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
 
