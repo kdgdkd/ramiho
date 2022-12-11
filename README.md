@@ -58,12 +58,11 @@ The Favorite Connexions menu currently uses three ways of saving connexions:
 - in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands, so they may get overwritten
 - in one of two midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
 
-You may edit these files and functions, and adapt the header of the menu (fSETX_HEADER) to display some description of the connexions you've set up. 
+You may edit these files and functions, and adapt the header of the menu (fSETX_HEADER and fSET_ACT) to display some description of the connexions you've set up. 
 
 
 ## Usage
 
-There are three ways of working with ramiho: terminal interface, command line interface, and with audio feedback.  
 
 ### with terminal interface
 When ramiho is launched without arguments, it will load ramiho's terminal interface. This is the main interface for ramiho. You will see the Help header with the list of available commands, and the list of MIDI ports and connexions. In English, it should look similar to this:    
@@ -74,11 +73,14 @@ Enter **03** (0 for saving, 3 is the file number) to [save connexions](https://e
 Next time you enter ramiho, you'll just need to go to the Favorite Connexions submenu, and enter **3** to [load connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxload.png "Load Connexions" ) file svdcnx3.
 
 ### with command line
-You can access the main features through the command line interface. To show all available commands type
+You can access the main features through the command line interface, by adding arguments after the ramiho command. To show all available commands type
 ```bash
 ramiho h
 ```  
-and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png).  
+and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png).   
+Some arguments will open one of ramiho's functionalities; if you execute **ramiho 7** to create a new connexion, ramiho will ask for the ports just like with the terminal interface.  
+You can achieve the same result with **ramiho +24**, which will connect directly port number 2 to port number 4. In a similar way, **ramiho -24** would close the previous connexion.   
+You can also load directly from the cli your Favorite Connexions. Enter **ramiho \*n**, with n being a number from 1 to 9, to load saved presets directly as defined in fSET_ACT.
 
 ### offline and headless
 For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the device's mini-jack.  
