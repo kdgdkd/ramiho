@@ -1198,7 +1198,7 @@ while true; do
 	if [[ $send == true ]]; then
 		send=false
 		if [[ $montipo == 'aseqdump' ]]; then
-			fMON_ASEQ
+			fMON_ASEQ $iportout
 		else
 			fMON_RM $montipo
 		fi
@@ -1329,7 +1329,10 @@ while IFS= read -r line; do # por cada puerto MIDI existente
 done <<< "$tx_montyp"
 }
 fMON_ASEQ () { # monitor MIDI usando aseqdump
-puertom=${arrPuerto[$iportout]}
+puertom=${arrPuerto[$1]}
+if [[ $devicename == '' ]]; then
+	devicename=${arrClienteN[$1]}
+fi
 if [[ $puertom != '' ]]; then
 	echo 
 	echo aseqdump -p $puertom
@@ -1723,20 +1726,27 @@ if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
 		elif [[ $arg == 0 ]] || [[ $arg == a ]]; then
 			fCNX_CONNECTALL
 			fLST_CONNEX
-		elif [[ $arg == *1* ]] || [[ $arg == *l* ]]; then
+		elif [[ $arg == 1 ]] || [[ $arg == l ]]; then
 			fLST_CONNEX
-		elif [[ $arg == *2* ]] || [[ $arg == *t* ]]; then
+		elif [[ $arg == 2 ]] || [[ $arg == t ]]; then
 			fLST_ALSADETAILS
-		elif [[ $arg == *3* ]] || [[ $arg == *u* ]]; then
+		elif [[ $arg == 3 ]] || [[ $arg == u ]]; then
 			fLST_USB
 		elif [[ $arg == 4 ]] || [[ $arg == f ]]; then
 			fSETX_FRONT
-		elif [[ $arg == 5 ]] || [[ $arg == n ]]; then
-			fREAD_PORTINFO
+		elif [[ $arg == 5* ]] || [[ $arg == n* ]]; then
+			inumcli=${arg:1}
+			fREAD_PORTINFO $inumcli
 		elif [[ $arg == 6 ]] || [[ $arg == c ]]; then
 			fLST_FAV
-		elif [[ $arg == 7 ]] || [[ $arg == m ]]; then
-			fMON_FRONT
+		elif [[ $arg == 7* ]] || [[ $arg == m* ]]; then
+			inumcli=${arg:1}
+			if [[ -z "$inumcli" ]]; then
+				fMON_FRONT
+			else
+				fREAD_ARRPORTS
+				fMON_ASEQ $inumcli
+			fi
 		elif [[ $arg == 8 ]] || [[ $arg == s ]]; then
 			fSM_FRONT
 		elif [[ $arg == 9 ]] || [[ $arg == h ]]; then
