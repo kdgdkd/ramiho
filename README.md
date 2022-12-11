@@ -6,7 +6,8 @@ For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgd
 ## Features
 
 ramiho is a script written in bash conceived to run on a headless Raspberry Pi.  
-It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. For more complex setups, like when you add more controllers, synths, or an external clock, you need to resort to aconnect. I wrote ramiho initially as an accesible front-end for aconnect to sort MIDI routing issues.   
+It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. For more complex setups, like when you add more controllers, synths, or an external clock, you need to resort to aconnect.   
+I wrote ramiho initially as an accesible front-end for aconnect to sort MIDI routing issues.   
 
 
 ramiho's main features are:
@@ -22,9 +23,9 @@ ramiho generates a list of available MIDI ports from the connected devices, and 
 - **-31** will disconnect device number 3 from device number 1   
 
 ## Dependencies
-ramiho's connexion management functionality requires only ALSA. Written in bash, I guess that ramiho should work on early Raspberry Pi's and other Linux devices running ALSA. But don't take my word.    
-For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools provide a monitor filtered by type of data, and the send midi test. The default location for these executables is ramiho's srmidi directory, but you ma define any other location (or alias) in the fCONF function.   
-For advanced connexion routings (like routing individual MIDI channels or ranges of notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu.  
+ramiho is written in bash, and it only requires ALSA to work as a MIDI connexion manager. I guess that ramiho should work on early Raspberry Pi's and other Linux devices running ALSA. But don't take my word.    
+For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools provide a monitor filtered by type of data, and the send midi test. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
+For advanced connexion routings (like routing individual MIDI channels or ranges of notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu (needs to be tested).  
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
 
