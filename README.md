@@ -20,7 +20,7 @@ ramiho's main features are:
 ramiho generates a list of available MIDI ports from the connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
 - press **1** to see the list of ports and connexions  
 - [**+12**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) will send the MIDI Out signal from device number 1 to the MIDI In port of device number 2.  
-- **-31** will disconnect device number 3 from device number 1   
+- **-3\*** will disconnect device number 3 from every other device (* is a wildcard)   
 
 ## Dependencies
 ramiho is written in bash, and only requires ALSA for MIDI connexion management. I guess that ramiho should work on early Raspberry Pi's and other Linux devices running ALSA. But don't take my word.    
@@ -68,8 +68,8 @@ You may edit these files and functions, and adapt the header of the menu (fSETX_
 When ramiho is launched without arguments, it will load ramiho's terminal interface. This is the main interface for ramiho. You will see the Help header with the list of available commands, and the list of MIDI ports and connexions. In English, it should look similar to this:    
 ![ramiho_terminal](https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png "ramiho terminal" )  
 There is already one connexion set, but you'd like to connect device number 2 to device number 4; enter **+24** [like this](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png "ramiho connect" ).   
-If you are happy with the current connexions and want to save them for later use, enter **4** to open the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) submenu; mine is in Spanish.  
-Enter **03** (0 for saving, 3 is the file number) to [save connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxsave.png "Save Connexions" ) into file svdcnx3.  
+If you are happy with the current connexions and want to save them for later use, enter **0** to open the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) submenu; mine is in Spanish.  
+Now enter **3** to [save connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxsave.png "Save Connexions" ) into file svdcnx3.  
 Next time you enter ramiho, you'll just need to go to the Favorite Connexions submenu, and enter **3** to [load connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxload.png "Load Connexions" ) file svdcnx3.
 
 ### with command line
@@ -101,6 +101,11 @@ ramiho proposes two tools that should help testing input and output MIDI ports o
 
 If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI.  
 
+### using * when connecting / disconnecting
+ramiho accepts using **\*** as a symbol for "every other device". On the terminal   
+- +2* will connect device number 2 to every other device   
+- +*3 will connect every other device to device number 3
+- -*4 will disconnect every other device from device number 4   
 
 
 ## Epilogue
