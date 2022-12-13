@@ -25,7 +25,7 @@ ramiho generates a list of available MIDI ports from the connected devices, and 
 ## Dependencies
 ramiho is written in bash, and only requires ALSA for MIDI connexion management. I guess that ramiho should work on early Raspberry Pi's and other Linux devices running ALSA. But don't take my word.    
 For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools provide a filtered monitor and the send midi test. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
-For advanced connexion routings (like routing individual MIDI channels or ranges of notes) try [midish](https://midish.org/); ramiho embeds a front for it within the Favorite Connexions submenu (needs to be tested).  
+For advanced connexion configurations (like routing MIDI channels) ramiho uses [Midish](https://midish.org), by Alexandre Ratchov.   
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
 
@@ -82,6 +82,15 @@ Arguments will open ramiho's functionalities, just as in the terminal interface;
 You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, say **ramiho +24**, ramiho will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** would close the previous connexion.   
 You can also load your Favorite Connexions with a single command. Enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fSET_ACT.
 
+
+### using * when connecting / disconnecting
+ramiho accepts using **\*** as a symbol for "every other device". On the terminal   
+- +2* will connect device number 2 to every other device   
+- +*3 will connect every other device to device number 3
+- -*4 will disconnect every other device from device number 4   
+
+
+
 ### offline and headless
 For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the mini-jack output.  
 To work this out, you will need a text-to-sound engine; there's espeak, my preference is for festival. Text will be piped into the tts engine ($tts_on). Send **99** to turn sound on and off.      
@@ -99,21 +108,19 @@ ramiho proposes two tools that should help testing input and output MIDI ports o
 - MIDI monitor - it tests the sending device. It will print MIDI information (like the channel) coming from the sending ports. The first monitor uses ALSA's aseqdump; for the filtered monitors you'll need [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI). In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
 - Send MIDI - it tests the receiving device. Use ramiho's front-end for [SendMidi](https://github.com/gbevin/ReceiveMIDI) to send notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
 
-If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI.  
+If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI. Then, you may want to try with Midish.  
 
-### using * when connecting / disconnecting
-ramiho accepts using **\*** as a symbol for "every other device". On the terminal   
-- +2* will connect device number 2 to every other device   
-- +*3 will connect every other device to device number 3
-- -*4 will disconnect every other device from device number 4   
-
+### using Midish   
+[Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. Within the Favorite Connexions menu, ramiho provides a front-end for Midish's MIDI routing, and two files with pre-loaded connexions and filters.   
+The front-end allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel (well, not exactly: only channels 1 to 10 seem to work). For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5, in order to have a bass and a sub-bass playing the same notes.   
+You can define more complex connexions and filters within the midishcnx files in ramiho's favcnx directory. They will be available for loading within ramiho's Favorite Connexions menu (lauched from the fMSH_x functions).   
 
 ## Epilogue
 I have spent a significant amount of time writing ramiho, but I am very happy that it solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
 
 ## Contributing
 
-I am stubborn, but I am no programmer. And I am a newbie on GitHub and sharing code. This script is likely to contain a significant amount of bugs, and most of it could be polished and modified. Comments, suggestions, and pull requests are welcome. 
+I am stubborn, but I am no programmer. And I am a newbie on GitHub and sharing code. This script is likely to contain a significant amount of bugs, and most of it could be polished and modified (do I really need 1,000 variables?). Comments, suggestions, and pull requests are welcome. 
 
 
 ## License
