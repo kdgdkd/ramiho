@@ -50,6 +50,18 @@ tx_all2prthd="Conectar desde todos los puertos"
 tx_monhd2="Monitor MIDI de puerto N"
 tx_lstprthd="Sel  N    Cliente  [puerto]    Canal ch    Nota n"
 tx_detcnxprt="ALSA Detalle de conexiones"
+tx_mdshoutin="Crea dispositivos de entrada"
+tx_mdshoutout="Crea dispositivos de salida"
+tx_mdshprtin="N de puerto de envío "
+tx_mdshchin="    Canal MIDI envío "
+tx_mdshprtout="N de puerto de recepción "
+tx_mdshchout="    Canal MIDI recepción "
+tx_mdshlstin="Lista dispositivos de entrada"
+tx_mdshlstout="Lista dispositivos de salida"
+tx_mdshcnxhd="Conecta los dispositivos de entrada con los de salida"
+tx_mdshcnxin="Conectar dispositivo de entrada > input"
+tx_mdshcnxout="   Con dispositivo de salida > output"
+tx_mdshsnd="Enviando..."
 tx_exitsl="  /   para salir> "
 tx_exitout="  Saliendo..." 
 tx_monheader='ramiho >> monitor MIDI
@@ -186,6 +198,18 @@ tx_all2prthd="Connect from all ports"
 tx_monhd2="MIDI monitor for port N"
 tx_lstprthd="Sel  N    Client   [port]       Channel    Note n"
 tx_detcnxprt="ALSA Detailed connexions"
+tx_mdshoutin="Create input devices"
+tx_mdshoutout="Create ouput devices"
+tx_mdshprtin="N input port "
+tx_mdshchin="    input MIDI channel "
+tx_mdshprtout="N output port "
+tx_mdshchout="    output MIDI channel "
+tx_mdshlstin="Input devices"
+tx_mdshlstout="Output devices"
+tx_mdshcnxhd="Connect input devices with output devices"
+tx_mdshcnxin="Connect device > input"
+tx_mdshcnxout="   with device > output"
+tx_mdshsnd="Sending..."
 tx_exitsl="  /   to exit> "
 tx_exitout="  Bye..." 
 tx_monheader='ramiho >> MIDI monitor
@@ -363,9 +387,9 @@ echo "ramiho >> Menu de conexiones favoritas
      5     Conectar KeyStep & UC-33 a Blofeld y Uno MIDI
      6     Conectar KeyStep, UC-33, USB Uno MIDI a Virus por USB
 	  
-     7     Ruteo canales y puertos con midish
-     8     Ruteo Virus 2x4
-     9     Ruteo QuNeo - Minilogue 2x4
+     7     KeyStep & UC33e -> USB MIDI [KS: ch1->ch1&ch2 / ch3->ch3&ch4 / ch5->ch5...]
+     8     KeyStep & UC33e -> USB MIDI [KS: ch1->ch1&ch2 / ch3->ch3&ch4 / ch5->ch5&ch6&ch7 / ch8->ch8 / ch9->ch9]
+     9     interface midish
 	 
      *     Chequear dispositivos favoritos
      .     Desconectar todo
@@ -389,9 +413,9 @@ if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 			[4]) fSET_1; fLST_CONNEX;;  
 			[5]) fSET_2; fLST_CONNEX;; 
 			[6]) fSET_3; fLST_CONNEX;;   
-			[7]) fMSH_FRONT;; 
-			[8]) fMSH_1;;   
-			[9]) fMSH_2;;    
+			[7]) fMSH_1;; 
+			[8]) fMSH_2;;   
+			[9]) fMSH_FRONT;;    
 			[+]) fCNX_OPS 'cnx'
 				fLST_CONNEX;; 
 			[-]) fCNX_OPS 'dcnx'
@@ -449,6 +473,15 @@ echo " midish routing 2"
 echo "    Ctrl + C para salir"
 _norm
 source "$SCRIPT_DIR/favcnx/midishcnx2.stp" #2>/dev/null
+}
+fMSH_3 () { 
+fMSH_DEL
+_bold
+echo
+echo " midish routing 3"
+echo "    Ctrl + C para salir"
+_norm
+source "$SCRIPT_DIR/favcnx/midishcnx3.stp" #2>/dev/null
 }
 
 fSETX_FRONT () { # menu para elegir el setup preferido / utiliza midish para configuraciones avanzadas con ruteo de puertos y canales
@@ -556,14 +589,14 @@ source "$savedconnexions"
 }
 fMSH_FRONT () { 
 _bold
-echo
 echo $tx_midishfront
 echo $tx_ctlc 
+echo
 _norm
 fLST_PORTS
 fMSH_INPUT
 if [[ $ci_err == 'false' ]]; then
-	echo "Enviando...
+	echo "$tx_mdshsnd 
 $midishout"
 	fMSH_SND
 fi
@@ -589,18 +622,18 @@ for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
 do
 	if [[ $icontN -gt 0 ]]; then
 		midishout="$midishout
- dnew $icontN ${arrPuerto[$i]} rw"
+ dnew $icontN \"${arrPuerto[$i]}\" rw"
 	fi
 	let icontN=$icontN+1
 done
-echo "$midishout"
+# echo "$midishout"
 _bold
 echo
-echo "Introduce puertos de envío, puertos de recepción y conexiones"
+echo "$tx_mdshoutin"
 _norm
 while [[ $ci_err == false ]]; do
 	echo "Enter input port number" | $tts > /dev/null 2>&1 &
-	read -p "N de puerto de envío> " res1
+	read -p "$tx_mdshprtin (input$icontS)> " res1
 	if [[ $res1 = '' ]]; then
 			tput cuu 1
 			tput el 1
@@ -612,7 +645,7 @@ while [[ $ci_err == false ]]; do
 		fi
 	elif [[ $res1 =~ ^-?[0-9]+$ ]] && [[ $res1 -gt 0 ]]; then
 		echo "Enter midi channel" | $tts > /dev/null 2>&1 &
-		read -n 2 -p "    Canal MIDI envío> " resch1
+		read -n 2 -p "$tx_mdshchin (input$icontS)> " resch1
 		echo
 		if [[ $resch1 = '' ]]; then
 			resch1=any
@@ -626,15 +659,18 @@ while [[ $ci_err == false ]]; do
 	fi
 	if [[ $ci_err == false ]]; then
 		midishout="$midishout
- inew puertoE$icontS {$res1 $resch1}"
-		lstportE="$lstportE    inew puertoE$icontS {$res1 $resch1}
+ inew input$icontS {$res1 $resch1}"
+		lstportE="$lstportE    inew input$icontS {$res1 $resch1}
 "
 	fi
 	let icontS=$icontS+1
 done
+_bold
+echo "$tx_mdshoutout"
+_norm
 while [[ $ci_err == false ]]; do
 	echo "Enter output port number" | $tts > /dev/null 2>&1 &
-	read -n 2 -p "N de puerto recepción> " res2
+	read -n 2 -p "$tx_mdshprtout  (output$icontR)> " res2
 	if [[ $res2 = '' ]]; then
 			tput cuu 1
 			tput el 1
@@ -646,7 +682,7 @@ while [[ $ci_err == false ]]; do
 		fi
 	elif [[ $res2 =~ ^-?[0-9]+$ ]] && [[ $res2 -gt 0 ]]; then
 		echo "Enter midi channel" | $tts > /dev/null 2>&1 &
-		read -n 2 -p "    Canal MIDI recepción> " resch2
+		read -n 2 -p "$tx_mdshchout  (output$icontR)> " resch2
 		echo
 		if [[ $resch2 = '' ]]; then
 			resch2=any
@@ -660,8 +696,8 @@ while [[ $ci_err == false ]]; do
 	fi
 	if [[ $ci_err == false ]]; then
 		midishout="$midishout
- onew puertoR$icontR {$res2 $resch2}"
-		lstportR="$lstportR    onew puertoR$icontR {$res2 $resch2}
+ onew output$icontR {$res2 $resch2}"
+		lstportR="$lstportR    onew output$icontR {$res2 $resch2}
     "
 	fi
 	let icontR=$icontR+1
@@ -670,21 +706,22 @@ if [[ $ci_err == false ]]; then
 	midishout="$midishout
  fnew midishfilter"
 	_bold
-	echo Lista puertos de envío
+	echo "$tx_mdshlstin"
 	echo "$lstportE"
-	echo Lista puertos de recepción
+	echo "$tx_mdshlstout"
 	echo "$lstportR"
+	echo "$tx_mdshcnxhd"
 	_norm
 	while [[ $ci_err == false ]]; do
 		echo "Connect input and export clients" | $tts > /dev/null 2>&1 &
-		read -n 2 -p "Conectar puerto de envío> " res3
+		read -n 2 -p "$tx_mdshcnxin" res3
 		if [[ $res3 = '' ]] && [[ $icontC -gt 0 ]]; then
 			break 2
 		elif [[ $res3 =~ ^-?[0-9]+$ ]]; then
-			read -n 2 -p "Conectar puerto de recepción> " res4
+			read -n 2 -p "$tx_mdshcnxout" res4
 			if [[ $res4 =~ ^-?[0-9]+$ ]]; then
 				midishout="$midishout
- fmap {any puertoE$res3} {any puertoR$res4}"
+ fmap {any input$res3} {any output$res4}"
 			else
 				ci_err=true
 			fi
@@ -698,7 +735,7 @@ fi
 if [[ $ci_err == true ]]; then
 	_bold
 	echo
-	echo "Error introduciendo puertos"
+	echo "$tx_errprt"
 	midishout=
 else
 	midishout="$midishout
@@ -1583,6 +1620,171 @@ do
 done
 }
 fSMREAD_ARRPORTS () { # genera unos arrays con la lista de puertos y nombres de los clientes conectados
+arrClienteSM=()
+arrClienteSM+=('')
+let ilinea=0
+TAB="$(printf '\t')"
+while IFS= read -r line; do # leemos cada línea de aconnect -l
+	if [[ $ilinea -ge 1 ]]; then # nos saltamos las primera linea	
+		arrClienteSM+=("$line")
+	fi
+	let ilinea=$ilinea+1
+done <<< `$sendmidi list`
+}
+
+# TRASPOSE***********************************************************
+fTP_FRONT () { # trasponer señal midi con midish
+let iportout=1
+let smch=1
+let smoct=0
+let smnot=48
+let iportout0=0
+let smch0=1
+let smoct0=3
+let smnot0=48
+send=false
+devicename=
+clienttyp='dev'
+clienttypout=
+fSM_LISTPORT
+devicename=${arrClienteSM[$iportout]}
+tout="sendmidi $clienttyp $devicename ch $smch on $smnot 127 clock 120 off $smnot 127"
+while true; do
+	errorc=
+	clear
+	_bold
+	echo "$tx_smhdr "
+	_norm
+	fSM_LISTPORT
+	echo
+	echo "$tout"
+	[[ $send == true ]] && send=false && $("$sendmidi" $clienttyp "$devicename" ch $smch on $smnot 127 clock 120 off $smnot 127)
+	_bold
+	_amarillo
+	read -s -n 1 -p "SendMIDI>  " resp
+	read -n 1 -t 0.05 caracter2
+	read -n 1 -t 0.01 caracter3
+	read -t 0.01 resto
+	_norm
+	# echo -en "\r\033[K" # borra la línea anterior (prompt de read y respuesta)
+	_norm
+	_blanco
+	if [[ $resp == '' ]]; then
+		send=true
+		tout="sendmidi $clienttyp $devicename ch $smch on $smnot 127 clock 120 off $smnot 127"
+	elif [[ $resp = "" ]]; then # si borrar (Backspace) entonces
+		echo "$tx_retrmh"
+		break
+	else
+		case $resp in # comprobar si el primer caracter de la respuesta coincide
+			[/q]) echo $tx_retrmh 
+				break;;
+			[5]) tout="Mandar secuencia"
+				x=$("$sendmidi" $clienttyp $devicename ch $smch file "$midiseq" );;
+			[0..]) echo "Panic!"
+				x=$("$sendmidi" $clienttyp $devicename panic) ;;
+			[1]) if [[ $clienttyp == 'dev' ]]; then
+					clienttyp='virt'
+					clienttypout='[vir]'
+				else
+					clienttyp='dev'
+					clienttypout=
+				fi
+				tout="Tipo de cliente $clienttyp";;
+			[7]) let smch=1
+				let smoct=0
+				let smnot=48
+				tout="Cargar valores por defecto";;
+			[+]) let smnot0=$smnot
+				let smnot=$smnot+1
+				[[ $smnot -ge 128 ]] && let smnot=127
+				tout="Nota $smnot0 > $smnot";;
+			[-]) let smnot0=$smnot
+				let smnot=$smnot-1
+				[[ $smnot -le 0 ]] && let smnot=0
+				tout="Nota $smnot0 > $smnot";;
+			[8]) let iportout0=$iportout
+				let iportout=$iportout-1
+				[[ $iportout -le 1 ]] && let iportout=1
+				tout="Cliente ${arrClienteSM[$iportout0]} > ${arrClienteSM[$iportout]}    ${arrCliente[$iportout]}"
+				devicename=${arrClienteSM[$iportout]}
+				;;
+			[2]) let iportout0=$iportout
+				let iportout=$iportout+1
+				[[ $iportout -ge ${#arrClienteSM[@]} ]] && let iportout=$iportout-1
+				tout="Cliente ${arrClienteSM[$iportout0]} > ${arrClienteSM[$iportout]}    ${arrCliente[$iportout]}"
+				devicename=${arrClienteSM[$iportout]}
+				;;
+			[3]) let smoct=-1
+				let smnot0=$smnot
+				let smnot=$smnot+$smoct*12
+				[[ $smnot -ge 128 ]] && let smnot=127
+				tout="(-Oct) Nota $smnot0 > $smnot"
+				let smoct=0;; 
+			[9]) let smoct=1
+				let smnot0=$smnot
+				let smnot=$smnot+$smoct*12
+				[[ $smnot -ge 128 ]] && let smnot=127
+				tout="(+Oct) Nota $smnot0 > $smnot"
+				let smoct=0;;
+			[4]) let smch0=$smch
+				let smch=$smch-1
+				[[ $smch -eq 0 ]] && let smch=16
+				echo "Canal MIDI $smch0 > $smch";;
+			[6]) let smch0=$smch
+				let smch=$smch+1
+				[[ $smch -eq 17 ]] && let smch=1
+				tout="Canal MIDI $smch0 > $smch";;
+			*) #si no se encuentran coincidencias para $resp
+				errorc=true;;
+		esac
+		case $caracter3 in # para usar con flechas
+			[B]) let iportout0=$iportout
+				let iportout=$iportout+1
+				[[ $iportout -ge ${#arrClienteSM[@]} ]] && let iportout=$iportout-1
+				tout="Cliente ${arrClienteSM[$iportout0]} > ${arrClienteSM[$iportout]}    ${arrCliente[$iportout]}"
+				devicename=${arrClienteSM[$iportout]};;  # Flecha Dn¡
+			[D]) let smch0=$smch
+				let smch=$smch-1
+				[[ $smch -eq 0 ]] && let smch=16
+				echo "Canal MIDI $smch0 > $smch";; # Flecha Lft
+			[C]) let smch0=$smch
+				let smch=$smch+1
+				[[ $smch -eq 17 ]] && let smch=1
+				tout="Canal MIDI $smch0 > $smch";; # Flecha Rgt
+			[A]) let iportout0=$iportout
+				let iportout=$iportout-1
+				[[ $iportout -le 1 ]] && let iportout=1
+				tout="Cliente ${arrClienteSM[$iportout0]} > ${arrClienteSM[$iportout]}    ${arrCliente[$iportout]}"
+				devicename=${arrClienteSM[$iportout]};; # Flecha Up
+			*)	#si no se encuentran coincidencias para $resp
+				errorc=true;;
+		esac
+	fi
+done
+}
+fTP_LISTPORT () {
+fSMREAD_ARRPORTS
+let icontador=0
+for i in "${!arrClienteSM[@]}"; # por cada puerto MIDI existente
+do
+	if [[ $icontador == 0 ]]; then
+		_bold
+		echo "$tx_lstprthd"
+		_norm
+	elif [[ $icontador -eq $iportout ]]; then
+		_bold
+		echo " X   $icontador    ${arrClienteSM[$icontador]}    ch$smch    n$smnot"
+		_norm
+
+	else
+		echo  "     $icontador    ${arrClienteSM[$icontador]}  "
+
+	fi
+	let icontador=$icontador+1
+done
+}
+fTPREAD_ARRPORTS () { # genera unos arrays con la lista de puertos y nombres de los clientes conectados
 arrClienteSM=()
 arrClienteSM+=('')
 let ilinea=0
