@@ -1,57 +1,46 @@
 #!/bin/sh
 midish -b <<END
-dnew 1 "Arturia BeatStep Pro" rw
+dnew 1 "KeyStep Pro" rw
 dnew 2 "UC-33 USB MIDI Controller" rw
 dnew 3 "USB Uno MIDI Interface" rw
-inew beatstep1 {1 0}
-inew beatstep5 {1 4}
-inew UC33e1 {2 0}
-inew UC33e2 {2 1}
-inew UC33e3 {2 2}
-inew UC33e4 {2 3}
-inew UC33e5 {2 4}
-inew UC33e6 {2 5}
-inew UC33e7 {2 6}
-inew UC33e8 {2 7}
-inew UC33e9 {2 8}
-onew usbUNO1 {3 0}
-onew usbUNO2 {3 1}
-onew usbUNO3 {3 2}
-onew usbUNO4 {3 3}
-onew usbUNO5 {3 4}
-onew usbUNO6 {3 5}
-onew usbUNO7 {3 6}
-onew usbUNO8 {3 7}
-fnew convirus
-fmap {any beatstep1} {any usbUNO1}
-fmap {any beatstep1} {any usbUNO2}
-fmap {any beatstep1} {any usbUNO3}
-fmap {any beatstep1} {any usbUNO4}
-fmap {any beatstep5} {any usbUNO5}
-fmap {any beatstep5} {any usbUNO6}
-fmap {any beatstep5} {any usbUNO7}
-fmap {any beatstep5} {any usbUNO8}
-fmap {any UC33e1} {any usbUNO1}
-fmap {any UC33e1} {any usbUNO2}
-fmap {any UC33e1} {any usbUNO3}
-fmap {any UC33e1} {any usbUNO4}
-fmap {any UC33e2} {any usbUNO2}
-fmap {any UC33e3} {any usbUNO3}
-fmap {any UC33e4} {any usbUNO4}
-fmap {any UC33e5} {any usbUNO5}
-fmap {any UC33e5} {any usbUNO6}
-fmap {any UC33e5} {any usbUNO7}
-fmap {any UC33e5} {any usbUNO8}
-fmap {any UC33e6} {any usbUNO6}
-fmap {any UC33e7} {any usbUNO7}
-fmap {any UC33e8} {any usbUNO8}
-fmap {any UC33e9} {any usbUNO1}
-fmap {any UC33e9} {any usbUNO2}
-fmap {any UC33e9} {any usbUNO3}
-fmap {any UC33e9} {any usbUNO4}
-fmap {any UC33e9} {any usbUNO5}
-fmap {any UC33e9} {any usbUNO6}
-fmap {any UC33e9} {any usbUNO7}
-fmap {any UC33e9} {any usbUNO8}
+inew keystep1 {1 0}
+inew keystep3 {1 2}
+inew keystep5 {1 4}
+inew keystep6 {1 5}
+inew keystep7 {1 6}
+inew keystep8 {1 7}
+inew uc33e1 {2 0}
+inew uc33e2 {2 1}
+inew uc33e3 {2 2}
+inew uc33e4 {2 3}
+inew uc33e5 {2 4}
+inew uc33e6 {2 5}
+inew uc33e7 {2 6}
+inew uc33e8 {2 7}
+onew usbmidi1 {3 0}
+onew usbmidi2 {3 1}
+onew usbmidi3 {3 2}
+onew usbmidi4 {3 3}
+onew usbmidi5 {3 4}
+onew usbmidi6 {3 5}
+onew usbmidi7 {3 6}
+onew usbmidi8 {3 7}
+fnew kstpvirus3
+fmap {any keystep1} {any usbmidi1}
+fmap {any keystep1} {any usbmidi2}
+fmap {any keystep3} {any usbmidi3}
+fmap {any keystep3} {any usbmidi4}
+fmap {any keystep5} {any usbmidi5}
+fmap {any keystep6} {any usbmidi6}
+fmap {any keystep7} {any usbmidi7}
+fmap {any keystep8} {any usbmidi8}
+fmap {any uc33e1} {any usbmidi1}
+fmap {any uc33e2} {any usbmidi2}
+fmap {any uc33e3} {any usbmidi3}
+fmap {any uc33e4} {any usbmidi4}
+fmap {any uc33e5} {any usbmidi5}
+fmap {any uc33e6} {any usbmidi6}
+fmap {any uc33e7} {any usbmidi7}
+fmap {any uc33e8} {any usbmidi8}
 i
 END
