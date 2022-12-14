@@ -14,6 +14,7 @@ tx_svpos="Elegir posición (1, 2 o 3)> "
 tx_svd="Conexiones guardadas:"
 tx_ldcnx="  Cargar conexiones guardadas "
 tx_midishfront=" Rutear canales y puertos"
+tx_midishfr2=" Definiendo puertos, canales y conexiones, déja la respuesta en blanco para pasar al siguiente"
 tx_ctlc="    Ctrl + C para salir"
 tx_mdshdel="9 Borrar ruteos MIDI"
 tx_rdport="Leer puerto N"
@@ -162,6 +163,7 @@ tx_svpos="Choose position (1, 2 o 3)> "
 tx_svd="Saved connexions:"
 tx_ldcnx="  Load saved connexions "
 tx_midishfront=" Reroute ports and channels"
+tx_midishfr2=" When defining ports, channels and connexions, send Enter on an empty prompt to move forward"
 tx_ctlc="    Ctrl + C to exit"
 tx_mdshdel="9 delete MIDI routings"
 tx_rdport="Reed port N"
@@ -593,6 +595,9 @@ source "$savedconnexions"
 fMSH_FRONT () { 
 _bold
 echo $tx_midishfront
+_norm
+echo $tx_midishfr2
+_bold
 echo $tx_ctlc 
 echo
 _norm
@@ -649,7 +654,6 @@ while [[ $ci_err == false ]]; do
 	elif [[ $res1 =~ ^-?[0-9]+$ ]] && [[ $res1 -gt 0 ]]; then
 		echo "Enter midi channel" | $tts > /dev/null 2>&1 &
 		read -n 2 -p "$tx_mdshchin (input$icontS)> " resch1
-		echo
 		if [[ $resch1 = '' ]]; then
 			resch1=any
 		elif [[ $resch1 =~ ^-?[0-9]+$ ]] && [[ $resch1 -gt 0 ]] && [[ $resch1 -le 16 ]]; then
@@ -673,7 +677,7 @@ echo "$tx_mdshoutout"
 _norm
 while [[ $ci_err == false ]]; do
 	echo "Enter output port number" | $tts > /dev/null 2>&1 &
-	read -n 2 -p "$tx_mdshprtout  (output$icontR)> " res2
+	read -n 2 -p "$tx_mdshprtout (output$icontR)> " res2
 	if [[ $res2 = '' ]]; then
 			tput cuu 1
 			tput el 1
@@ -686,7 +690,7 @@ while [[ $ci_err == false ]]; do
 	elif [[ $res2 =~ ^-?[0-9]+$ ]] && [[ $res2 -gt 0 ]]; then
 		echo "Enter midi channel" | $tts > /dev/null 2>&1 &
 		read -n 2 -p "$tx_mdshchout  (output$icontR)> " resch2
-		echo
+		# echo
 		if [[ $resch2 = '' ]]; then
 			resch2=any
 		elif [[ $resch2 =~ ^-?[0-9]+$ ]] && [[ $resch2 -gt 0 ]] && [[ $resch2 -le 16 ]]; then
@@ -719,6 +723,8 @@ if [[ $ci_err == false ]]; then
 		echo "Connect input and export clients" | $tts > /dev/null 2>&1 &
 		read -n 2 -p "$tx_mdshcnxin" res3
 		if [[ $res3 = '' ]] && [[ $icontC -gt 0 ]]; then
+			tput cuu 1
+			tput el 1
 			break 2
 		elif [[ $res3 =~ ^-?[0-9]+$ ]]; then
 			read -n 2 -p "$tx_mdshcnxout" res4
