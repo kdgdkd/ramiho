@@ -1,36 +1,33 @@
 # ramiho - Raspberry Pi Midi Host manager
 
-ramiho is a terminal interface managing MIDI connexions on your Raspberry Pi.   
+ramiho is an interactive command-line interface managing MIDI connexions on your Raspberry Pi.   
+  
 For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgdkd/).
 
 ## Features
 
-ramiho is a script written in bash conceived to manage MIDI connexions on a headless Raspberry Pi.   
-It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Their project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI controller to send information to a synthesizer. For more complex setups, like when you add more controllers, synths, or an external clock, you need to resort to aconnect.   
-Initially, I wrote ramiho as an accesible front-end for aconnect to sort MIDI routing issues.   
+ramiho is written in bash, and was conceived to ease MIDI connexions management on a headless Raspberry Pi.   
+It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). This will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI keyboard to send notes to a synthesizer.   
+My needs are far more complex, so I wrote ramiho as an accesible front-end for aconnect to sort-out MIDI routing issues.   
 
 
 ramiho's main features are:
-- simple, lightweight interface to manage MIDI connexions between devices
+- simple, lightweight cli to manage MIDI connexions between devices
 - connexion testing tools (MIDI monitors and SendMidi)
 - it allows to save current connexion configuration, and define alternative favorite setups that can be easily loaded
 - all operations are accessible by using only the [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png) (numbers and mathematical operators)  
 - it talks, it may be alive
   
-ramiho generates a list of available MIDI ports from the connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
-- press **1** to see the list of ports and connexions  
-- [**+12**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) will send the MIDI Out signal from device number 1 to the MIDI In port of device number 2.  
-- **-3\*** will disconnect device number 3 from every other device (* is a wildcard)   
 
 ## Dependencies
-ramiho is written in bash, and only requires ALSA for MIDI connexion management. I guess that ramiho should work on early Raspberry Pi's and other Linux devices running ALSA. But don't take my word.    
+ramiho is written in bash, and only requires ALSA for MIDI connexion management. I guess it should work on most Linux distributions, including early Raspberry's. But don't take my word.    
 For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools provide a filtered monitor and the send midi test. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
-For advanced connexion configurations (like routing MIDI channels) ramiho uses [Midish](https://midish.org), by Alexandre Ratchov.   
+For advanced connexion configurations (like routing MIDI channels) ramiho uses [midish](https://midish.org), by Alexandre Ratchov.   
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
 
 ## Installation
-Copy the files and directories in this repository to your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, so ramiho is executable and can access favcnx files. You may also download the programs mentioned on the previous section. I believe that should be it.
+Copy the files and directories in this repository to your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, ramiho is executable and can access favcnx files. You may also install the additional programs mentioned on the previous section.   
 
 **Setting-up a headless Raspberry Pi**  
 The standard setup for ramiho would be on a headless Raspberry Pi, connected to a WIFI network and operated through an SSH client... and with a number of MIDI devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
@@ -44,25 +41,35 @@ Most of these steps are covered in Neuma Studio's [Raspberry Pi as USB/Bluetooth
 
 
 ## Customization
-There are a number of elements that are expected to be customized to the user's own preferences. Just open ramiho on a text or code editor.   
+There are a number of elements that are expected to be customized to the user's own preferences. Open ramiho on a text or code editor.   
 
 
 **Locale**  
 ramiho comes with Spanish and English interfaces. ramiho would like to speak your language, so please consider creating new locales. Choose which to use within the fCONF function (change fLOCALE_EN for fLOCALE_ES to turn the interface to Spanish).
 
 **Favorite Connexions**  
-ramiho allows to load preferred connexion configurations in batch, using the Favorite Connexions submenu. You should customize this section of the code to have an easy way of loading your own favorite setup configurations.  
+ramiho allows to load preferred connexion configurations in batch, using the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) menu. You should customize this section to have an easy way of loading your own favorite setup configurations.  
 
 The Favorite Connexions menu currently uses three ways of saving connexions: 
-- embedded in ramiho's code as a list of aconnect commands (fSET_x functions)
-- in one of three svdcnx files under favcnx directory; these are also used to save current configurations in form of lists of aconnect commands, so they may get overwritten
-- in one of two midishcnx files under favcnx directory, that allow for advanced routing configuration using midish  
+- embedded in ramiho's code under three fSET_x functions, as lists of aconnect commands
+- in one of three svdcnx files under favcnx directory, as lists of aconnect commands; these files are also used to save current configurations, so they may get overwritten   
+- in one of two midishcnx files under favcnx directory, that allow for advanced routing configuration using midish   
 
-You may edit these files and functions, and adapt the header of the menu (fSETX_HEADER and fSET_ACT) to display some description of the connexions you've set up. 
+You may edit these files and functions, adapt the header of the menu (fSETX_HEADER) with a description of the connexions you've set up, and link them with commands (fSET_ACT). 
 
 
 ## Usage
 
+ramiho generates a dynamic list of available MIDI ports from connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
+- press **1** to see the list of ports and connexions  
+- [**+12**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) will send the MIDI signal from port number 1 to port number 2.  
+- **-3\*** will close connexions from port number 3 to any other port (* is a wildcard)   
+
+#### using * 
+ramiho accepts using **\*** as a symbol for "every other device" when connecting / disconnecting. On the terminal   
+- +2* will connect device number 2 to every other device   
+- +*3 will connect every other device to device number 3
+- -*4 will disconnect every other device from device number 4   
 
 ### with terminal interface
 When ramiho is launched without arguments, it will load ramiho's terminal interface. This is the main interface for ramiho. You will see the Help header with the list of available commands, and the list of MIDI ports and connexions. In English, it should look similar to this:    
@@ -82,14 +89,6 @@ and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png
 Arguments will open ramiho's functionalities, just as in the terminal interface; for example, **ramiho +** will open the dialog to create a new connexion.  
 You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, say **ramiho +24**, ramiho will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** would close the previous connexion.   
 You can also load your Favorite Connexions with a single command. Enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fSET_ACT.
-
-
-### using * when connecting / disconnecting
-ramiho accepts using **\*** as a symbol for "every other device". On the terminal   
-- +2* will connect device number 2 to every other device   
-- +*3 will connect every other device to device number 3
-- -*4 will disconnect every other device from device number 4   
-
 
 
 ### offline and headless
@@ -117,7 +116,7 @@ The front-end allows defining connexions not only between ports, but also betwee
 You can define more complex connexions and filters within the midishcnx files in ramiho's favcnx directory. They will be available for loading within ramiho's Favorite Connexions menu (lauched from the fMSH_x functions).   
 
 ## Epilogue
-I have spent a significant amount of time writing ramiho, but I am very happy that it solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
+ramiho solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
 
 ## Contributing
 
