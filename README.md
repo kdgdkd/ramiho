@@ -45,7 +45,7 @@ There are a number of elements that are expected to be customized to the user's 
 
 
 **Locale**  
-ramiho comes with Spanish and English interfaces. ramiho would like to speak your language, so please consider creating new locales. Choose which to use within the fCONF function (change fLOCALE_EN for fLOCALE_ES to turn the interface to Spanish).
+ramiho comes with Spanish and English interfaces. Choose which to use within the fCONF function (change fLOCALE_EN for fLOCALE_ES to turn the interface to Spanish), or consider creating new locales.
 
 **Favorite Connexions**  
 ramiho allows to load preferred connexion configurations in batch, using the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) menu. You should customize this section to have an easy way of loading your own favorite setup configurations.  
@@ -112,7 +112,7 @@ If these tests fail, check the cables and whether the hardware is properly confi
 
 ### using Midish   
 [Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. Within the Favorite Connexions menu, ramiho provides a front-end for Midish's MIDI routing, and two files with pre-loaded connexions and filters.   
-The front-end allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel (well, not exactly: only channels 1 to 10 seem to work). For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5, in order to have a bass and a sub-bass playing the same notes. Or, like in [this example](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png), merge the signal from two sources (on channels 1 and 2) and send it to channel 5 on the receiving device.   
+The front-end allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel. And you can choose to transpose the notes! For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5 a full octave below, so you would have a bass and a sub-bass. Or, like in [this example](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png), merge the signal from two sources (on channels 1 and 2) and send it to channel 5 on the receiving device.   
 You can define more complex connexions and filters within the midishcnx files in ramiho's favcnx directory. They will be available for loading within ramiho's Favorite Connexions menu (lauched from the fMSH_x functions).   
 
 ## Epilogue
