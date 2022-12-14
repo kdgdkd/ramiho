@@ -66,8 +66,8 @@ You may edit these files and functions, and adapt the header of the menu (fSETX_
 
 ### with terminal interface
 When ramiho is launched without arguments, it will load ramiho's terminal interface. This is the main interface for ramiho. You will see the Help header with the list of available commands, and the list of MIDI ports and connexions. In English, it should look similar to this:    
+<img src="[https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png]" alt="ramiho_terminal" height="300"/>  
 
-<img src="[drawing.jpg](https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png)" alt="ramiho_terminal" hieght="300"/>
 There is already one connexion set, but you'd like to connect device number 2 to device number 4; enter **+24** [like this](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png "ramiho connect" ).   
 If you are happy with the current connexions and want to save them for later use, enter **0** to open the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) submenu; mine is in Spanish.  
 Now enter **3** to [save connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxsave.png "Save Connexions" ) into file svdcnx3.  
