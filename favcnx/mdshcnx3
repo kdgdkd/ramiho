@@ -1,0 +1,49 @@
+#!/bin/sh
+midish -b <<END
+dnew 1 "KeyStep Pro" rw
+dnew 2 "UC-33 USB MIDI Controller" rw
+dnew 3 "USB Uno MIDI Interface" rw
+inew keystep1 {1 0}
+inew keystep3 {1 2}
+inew keystep5 {1 4}
+inew keystep8 {1 7}
+inew keystep9 {1 8}
+inew uc33e1 {2 0}
+inew uc33e2 {2 1}
+inew uc33e3 {2 2}
+inew uc33e4 {2 3}
+inew uc33e5 {2 4}
+inew uc33e6 {2 5}
+inew uc33e7 {2 6}
+inew uc33e8 {2 7}
+inew uc33e9 {2 8}
+onew usbmidi1 {3 0}
+onew usbmidi2 {3 1}
+onew usbmidi3 {3 2}
+onew usbmidi4 {3 3}
+onew usbmidi5 {3 4}
+onew usbmidi6 {3 5}
+onew usbmidi7 {3 6}
+onew usbmidi8 {3 7}
+onew usbmidi9 {3 8}
+fnew kstpvirus2
+fmap {any keystep1} {any usbmidi1}
+fmap {any keystep1} {any usbmidi2}
+fmap {any keystep3} {any usbmidi3}
+fmap {any keystep3} {any usbmidi4}
+fmap {any keystep5} {any usbmidi5}
+fmap {any keystep5} {any usbmidi6}
+fmap {any keystep5} {any usbmidi7}
+fmap {any keystep8} {any usbmidi8}
+fmap {any keystep9} {any usbmidi9}
+fmap {any uc33e1} {any usbmidi1}
+fmap {any uc33e2} {any usbmidi2}
+fmap {any uc33e3} {any usbmidi3}
+fmap {any uc33e4} {any usbmidi4}
+fmap {any uc33e5} {any usbmidi5}
+fmap {any uc33e6} {any usbmidi6}
+fmap {any uc33e7} {any usbmidi7}
+fmap {any uc33e8} {any usbmidi8}
+fmap {any uc33e9} {any usbmidi9}
+i
+END
