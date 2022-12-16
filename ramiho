@@ -17,6 +17,7 @@ tx_mdshprompt="ramiho_midish> "
 tx_svcnx="  Guardar conexiones actuales"
 tx_svpos="Elegir posición (1, 2 o 3)> "
 tx_svd="Conexiones guardadas:"
+tx_mdshsvd="Conexiones guardadas en "
 tx_ldcnx="  Cargar conexiones guardadas "
 tx_midishfront=" Rutear canales y puertos"
 tx_midishfr2=" Definiendo puertos, canales y conexiones, déja la respuesta en blanco para pasar al siguiente"
@@ -173,8 +174,9 @@ tx_errsel="Error introducing selection"
 tx_cnx="ramiho_fav> "
 tx_mdshprompt="ramiho_midish> "
 tx_svcnx="  Save current connexions"
-tx_svpos="Choose position (1, 2 o 3)> "
+tx_svpos="Choose position (1, 2 or 3)> "
 tx_svd="Saved connexions:"
+tx_mdshsvd="Connexions saved in "
 tx_ldcnx="  Load saved connexions "
 tx_midishfront=" Reroute ports and channels"
 tx_midishfr2=" When defining ports, channels and connexions, send Enter on an empty prompt to move forward"
@@ -688,6 +690,7 @@ while true; do
 done
 }
 fMSH_SAVEFILE () { # guarda un fichero con las conexiones actuales
+error=false
 if [[ "$midishout" == '' ]]; then
 	echo "$tx_errmdshf"
 else
@@ -696,16 +699,23 @@ else
 	_norm
 	savedconnexions="${midishfiles[0]}"
 	read -n 1 -p "$tx_svpos" fichern
-	case $fichern in # comprobar si el primer caracter de la respuesta coincide
+	case $fichern in # uno de los tres ficheros midish
 		[1]) savedconnexions="${midishfiles[0]}";;
 		[2]) savedconnexions="${midishfiles[1]}";;
 		[3]) savedconnexions="${midishfiles[2]}";;
+		*) error=true
 	esac
-	echo "#!/bin/sh
-	midish -b <<END"  > "$savedconnexions"
-	echo "$midishout" >> "$savedconnexions"
-	echo "
-	END" >> "$savedconnexions"
+	if [[ $error == false ]]; then
+		echo "#!/bin/sh
+		midish -b <<END"  > "$savedconnexions"
+		echo "$midishout" >> "$savedconnexions"
+		echo "
+		END" >> "$savedconnexions"
+		echo
+		echo "$tx_mdshsvd $savedconnexions"
+	else
+		echo "$tx_errprt"
+	fi
 fi
 }
 fMSH_LOADFILE () { # carga el fichero con las conexiones guardadas
@@ -1203,6 +1213,7 @@ elif [[ $cnxtyp == 'excl' ]]; then
 else
 	ci_err=true
 fi
+fLST_CONNEX
 _norm
 fCNX_INPUT $2 $3
 if [[ $ci_err == false ]]; then
