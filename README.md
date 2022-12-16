@@ -15,6 +15,7 @@ ramiho's main features are:
 - simple, lightweight cli to manage MIDI connexions between devices
 - connexion testing tools (MIDI monitors and SendMidi)
 - it allows to save current connexion configuration, and define alternative favorite setups that can be easily loaded
+- upon opening, ramiho will try to load the connexions from the last time it was used   
 - all operations are accessible by using only the [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png) (numbers and mathematical operators)  
 - it talks, it may be alive
   
