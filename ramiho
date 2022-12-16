@@ -90,21 +90,21 @@ sr         all System Real-Time messages
 sc         all System Common messages"
 tx_frshhlp="        ...> "
 tx_hlptermhd1='ramiho Rpi MIDI Host - AYUDA
-**********************************
+********************************************
      //    Para salir
      +     Conectar puertos
      -     Desconectar puertos
-    BSp    Conectar puertos en modo exclusivo
+    BSp    Conectar en modo exclusivo
      *     Conectar / Desconectar todo
      .     Desconectar todo
 	 
-     0     Menú conexiones favoritas
+     0     Menú Conexiones Favoritas
 
      1     Lista de puertos y conexiones
      2     Detalles ALSA MIDI
      3     Detalles dispositivos USB
 
-     4     Conectar todo
+     4     Menú Conexiones Favoritas
      5     Front-end midish
      6     Leer puerto N
 
@@ -116,7 +116,7 @@ tx_hlptermhd1='ramiho Rpi MIDI Host - AYUDA
      98    Activar/Desactivar sonido
      97    Cambiar idioma
     FNC    Leer el puerto n
-**********************************'
+********************************************'
 txhlpcli='ramiho Rpi MIDI Host - Ayuda Linea de Comandos
 *************************************************************
 Uso:
@@ -263,7 +263,7 @@ tx_hlptermhd1='ramiho Rpi MIDI Host - HELP
      2     ALSA MIDI details
      3     USB devices details
 
-     4     Connect all
+     4     Favorite Connexions
      5     midish front-end
      6     Read port N
 
@@ -322,9 +322,9 @@ tx_smhdr="ramiho >> Send MIDI signal
 }
 
 # CONFIGURATION***********************************************************
-fCONF () {
+fCONF () {  # customize
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
-aconfiles=("$SCRIPT_DIR/favcnx/aconsvd1" "$SCRIPT_DIR/favcnx/aconsvd1" "$SCRIPT_DIR/favcnx/aconsvd1")
+aconfiles=("$SCRIPT_DIR/favcnx/aconsvd0" "$SCRIPT_DIR/favcnx/aconsvd1" "$SCRIPT_DIR/favcnx/aconsvd1" "$SCRIPT_DIR/favcnx/aconsvd1")
 midishfiles=("$SCRIPT_DIR/favcnx/mdshsvd1" "$SCRIPT_DIR/favcnx/mdshsvd2" "$SCRIPT_DIR/favcnx/mdshsvd3" "$SCRIPT_DIR/favcnx/mdshcnx1" "$SCRIPT_DIR/favcnx/mdshcnx2" "$SCRIPT_DIR/favcnx/mdshcnx3")
 sendmidi="$SCRIPT_DIR/srmidi/sendmidi"
 receivemidi="$SCRIPT_DIR/srmidi/receivemidi"
@@ -384,7 +384,7 @@ tput setaf 2
 # input 4, 5 y 6 para guardar las conexiones actuales, o cargar configuraciones anteriores - No modificar
 # input 7 y 8 lanzan las funciones fMSH_1 y fMSH_2, pensadas para conexiones con midish
 # imput 9 abre la interface para midish
-fFAV_HEADER () {
+fFAV_HEADER () {  # customize
 echo "ramiho >> Menu de conexiones favoritas
 ********************************************************************
      /     Volver a ramiho
@@ -412,7 +412,7 @@ echo "ramiho >> Menu de conexiones favoritas
      -     Desconectar puertos
 ********************************************************************"
 }
-fFAV_ACT () {
+fFAV_ACT () { # customize
 if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 	if [[ $1 = "" ]]; then # si borrar (Backspace) entonces
 		echo "$tx_retrmh"
@@ -422,9 +422,9 @@ if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 		case $1 in
 			[.]) fMSH_DEL; fCNX_DISCONNECTALL;;
 			[0]) fFAV_SAVEFILE;; 
-			[1]) fFAV_LOADFILE "${aconfiles[0]}"; fLST_CONNEX;; 
-			[2]) fFAV_LOADFILE "${aconfiles[1]}"; fLST_CONNEX;;  
-			[3]) fFAV_LOADFILE "${aconfiles[2]}"; fLST_CONNEX;;  
+			[1]) fFAV_LOADFILE "${aconfiles[1]}"; fLST_CONNEX;; 
+			[2]) fFAV_LOADFILE "${aconfiles[2]}"; fLST_CONNEX;;  
+			[3]) fFAV_LOADFILE "${aconfiles[3]}"; fLST_CONNEX;;  
 			[4]) fFAV_1; fLST_CONNEX;;  
 			[5]) fFAV_2; fLST_CONNEX;; 
 			[6]) fFAV_3; fLST_CONNEX;;   
@@ -442,7 +442,7 @@ if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 [[ $ci_err1 == true ]] && echo $tx_errsel && echo "Error, no setup selected" | $tts > /dev/null 2>&1 &
 fi
 }
-fFAV_1 () { 
+fFAV_1 () {  # customize
 aconnect -x
 _bold
 echo " Conectar KeyStep & UC-33 a Uno MIDI"
@@ -450,7 +450,7 @@ _norm
 aconnect 'UC-33 USB MIDI Controller':0 'USB Uno MIDI Interface':0
 aconnect 'KeyStep Pro':0 'USB Uno MIDI Interface':0 
 }
-fFAV_2 () { 
+fFAV_2 () {  # customize
 aconnect -x
 _bold
 echo " Conectar KeyStep & UC-33 a Blofeld y Uno MIDI"
@@ -460,7 +460,7 @@ aconnect 'KeyStep Pro':0 'USB Uno MIDI Interface':0
 aconnect 'UC-33 USB MIDI Controller':0 'Blofeld':0
 aconnect 'KeyStep Pro':0 'Blofeld':0 
 }
-fFAV_3 () { 
+fFAV_3 () {  # customize
 aconnect -x
 _bold
 echo " Conectar KeyStep, UC-33, USB Uno MIDI a Virus por USB"
@@ -471,7 +471,7 @@ aconnect 'Arturia BeatStep Pro':0 'Virus TI':1
 aconnect 'USB Uno MIDI Interface':0 'Virus TI':1
 aconnect 'QUNEO' 'Virus TI':1
 }
-fFAV_DEVICE () { #checks if the devices in the list are connected
+fFAV_DEVICE () { #checks if the devices in the list are connected  # customize
 clfav=
 _bold
 echo $tx_checkfavdev
@@ -491,6 +491,12 @@ iconnection=`aconnect -i -l`
   Zoom ARQ AR-96 on"
 	[[ "$iconnection" == *"USB Uno MIDI"* ]] && clfav="$clfav 
   USB Uno MIDI Interface on"
+	[[ "$iconnection" == *"minilogue"* ]] && clfav="$clfav 
+  Korg Minilogue XD on"
+	[[ "$iconnection" == *"launchpad"* ]] && clfav="$clfav 
+  Novation Launchpad"
+	[[ "$iconnection" == *"blofeld"* ]] && clfav="$clfav 
+  Waldorf Blofeld on"
 	[[ "$iconnection" == *"X-TOUCH"* ]] && clfav="$clfav 
   X-Touch Mini on"
 	[[ "$iconnection" == *"QUNEO"* ]] && clfav="$clfav 
@@ -514,6 +520,7 @@ echo "Choose setup number" | $tts > /dev/null 2>&1 &
 	fFAV_HEADER
 	fLST_CONNEX
 while true; do
+	_bold
 	_amarillo
 	read -n 1 -p $tx_cnx setup 
 	read -t 0.01 resto
@@ -522,18 +529,22 @@ while true; do
 	fFAV_ACT "$setup"
 done
 }
-fFAV_SAVEFILE () { # guarda un fichero con las conexiones actuales
+fFAV_SAVEFILE () { # guarda un fichero con las conexiones actuales aconnect
 fREAD_ARRPORTS
 _bold
 echo  $tx_svcnx
 _norm
-savedconnexions="${aconfiles[0]}"
-read -n 1 -p "$tx_svpos" fichern
-case $fichern in # comprobar si el primer caracter de la respuesta coincide
-	[1]) savedconnexions="${aconfiles[0]}";;
-	[2]) savedconnexions="${aconfiles[1]}";;
-	[3]) savedconnexions="${aconfiles[2]}";;
-esac
+if [[ -z $1 ]]; then
+	savedconnexions="${aconfiles[0]}"
+	read -n 1 -p "$tx_svpos" fichern
+	case $fichern in # comprobar si el primer caracter de la respuesta coincide
+		[1]) savedconnexions="${aconfiles[0]}";;
+		[2]) savedconnexions="${aconfiles[1]}";;
+		[3]) savedconnexions="${aconfiles[2]}";;
+	esac
+else
+	savedconnexions="${aconfiles[$1]}"
+fi
 echo > "$savedconnexions"
 _bold
 echo "  en $savedconnexions"
@@ -599,7 +610,7 @@ puertoto=
 arrpuertoto=()
 done <<< `aconnect -l`
 }
-fFAV_LOADFILE () { # carga el fichero con las conexiones guardadas
+fFAV_LOADFILE () { # carga el fichero con conexiones aconnect
 savedconnexions="$1"
 _bold
 echo "$tx_ldcnx $savedconnexions"
@@ -609,7 +620,7 @@ source "$savedconnexions"
 }
 
 # midish*****************************************************************************************************
-fMSH_HEADER () {
+fMSH_HEADER () {  # customize
 clear
 _bold
 echo "ramiho >> Midish front-end
@@ -641,7 +652,7 @@ echo "ramiho >> Midish front-end
      -     Desconectar puertos
 ********************************************************************"
 }
-fMSH_ACTIONS () {
+fMSH_ACTIONS () {  # customize
 if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 	if [[ $1 = "" ]]; then # si borrar (Backspace) entonces
 		echo "$tx_retrmh"
@@ -679,8 +690,8 @@ ci_err1=false
 ci_err2=false
 echo "Choose setup number" | $tts > /dev/null 2>&1 &
 	fMSH_HEADER
-	# fLST_CONNEX
 while true; do
+	_bold
 	_amarillo
 	read -n 1 -p $tx_mdshprompt setup 
 	read -t 0.01 resto
@@ -995,7 +1006,7 @@ else
 	fi
 fi
 }
-fREAD_CONEXINFO () { # imprime la lista de conexiones
+fREAD_CONEXINFO () { # imprime la lista de conexiones  // !!! ¿la usamos para algo?
 fREAD_ARRPORTS
 texreco=
 Puerto1=
@@ -1185,15 +1196,15 @@ _norm
 lsusb
 }
 fLST_ALSADETAILS () {
-_bold		
-echo "$tx_detcnxprt"
+_bold
+echo "$tx_lstprt"		
 _norm
-aconnect -l	
+aplaymidi -l
 echo
 _bold
-echo "$tx_lstprt"
-_norm			
-aplaymidi -l
+echo "$tx_detcnxprt"
+_norm	
+aconnect -l			
 }
 
 # CONEXIONES***********************************************************************************************
@@ -1223,7 +1234,7 @@ if [[ $ci_err == false ]]; then
 	[[ $? != 0 ]] && echo "$tx_errcnx"
 fi
 }
-fCNX_INPUT () { #utilidad para recibir input de índices o puertos para operar con aconnect. Si se usan las FUNC del NumPad se envían los índices
+fCNX_INPUT () { #utilidad para recibir input de índices o puertos para operar aconnect. Si se usan las FUNC se envían los índices
 fREAD_ARRPORTS
 puertos=
 puertor=
@@ -1811,9 +1822,6 @@ _norm
 _bold	
 echo "$tx_hlptermhd1"
 }
-fHLP_CLI () { # pantalla de ayuda para usar en terminal
-echo "$txhlpcli"
-}
 fHLP_READ () { # lector con tts de la ayuda
 texthelp="Raspi Midi Host.
 slash to exit.
@@ -1855,21 +1863,10 @@ while true; do
 					fLST_CONNEX;;
 				[..,]) fCNX_DISCONNECTALL;;
 				[0]) fFAV_FRONT;;
-				# [0]) if [[ $caracter2 == 0 ]]; then # para los teclados numéricos con botón para 00 o 000
-						# if [[ $connectall == 'true' ]]; then
-							# fCNX_DISCONNECTALL
-						# else
-							# fCNX_CONNECTALL
-							# fLST_CONNEX
-						# fi
-					# else
-						# fCNX_CONNECTALL
-						# fLST_CONNEX
-					# fi;;
 				[1]) fLST_CONNEX; echo "$texrecl. $texreco" | $tts > /dev/null 2>&1 &;;
 				[2]) fLST_ALSADETAILS;;
 				[3]) fLST_USB;;
-				[4]) fCNX_CONNECTALL; fLST_CONNEX;;
+				[4]) fFAV_FRONT;;
 				[5]) fMSH_FRONT;;
 				[6]) fREAD_PORTINFO ;;
 				[7]) fMON_FRONT;;
@@ -1878,7 +1875,7 @@ while true; do
 					leerIP=`hostname -I`
 					if [[ $dosnueve -eq 9 ]]; then
 						clear
-						echo $leerIP
+						# echo $leerIP
 						fCONF_MUTE
 						fHLP_HEADER
 						echo $leerIP | $tts > /dev/null 2>&1
@@ -1916,6 +1913,7 @@ done
 }
 fRMH_START () {
 echo "Welcome to ra mi ho" | $tts > /dev/null 2>&1 &
+fFAV_LOADFILE "${aconfiles[0]}" > /dev/null 2>&1
 clear
 fHLP_HEADER
 fLST_CONNEX
@@ -1931,6 +1929,7 @@ if [[ $iexit == '/' ]]; then
 	echo "$tx_exitout"
 	echo "Good vibe" | $tts > /dev/null 2>&1 &
 	_norm
+	fFAV_SAVEFILE 0 > /dev/null 2>&1
 	exit 0
 fi
 _blanco
@@ -2006,7 +2005,7 @@ if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
 			fSM_FRONT
 		elif [[ $arg == 9 ]]; then
 			hostIP=`hostname -I`
-			fHLP_CLI
+			echo "$txhlpcli"
 			echo $hostIP
 		fi
 	done
