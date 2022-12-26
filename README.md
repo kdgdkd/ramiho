@@ -65,12 +65,12 @@ You may edit these files and functions, adapt the header of the menu (fFAV_HEADE
 ramiho generates a dynamic list of available MIDI ports from connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
 - press **1** to see the list of ports and connexions   
 - [**+14**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) will send the MIDI signal from port number 1 to port number 4    
-- **-*4** will disconnect every other port from port number 4    
+- **-\*4** will disconnect every other port from port number 4    
 
 #### using * 
 ramiho accepts using **\*** as a symbol for "every other device" when connecting / disconnecting. On the terminal   
 - **+2\*** will connect port number 2 to every other port   
-- **+*3** will connect every other port to port number 3
+- **+\*3** will connect every other port to port number 3
 - **-3\*** will close connexions from port number 3 to any other port (* is a wildcard)   
 
 ### with terminal interface
@@ -80,7 +80,7 @@ When ramiho is launched without arguments, it will load ramiho's terminal interf
 There is already one connexion set, but you'd like to connect device number 2 to device number 4; enter **+24** [like this](https://edpanfleto.com/kdgdkd/git/ramiho_connect2.png "ramiho connect" ).   
 If you are happy with the current connexions and want to save them for later use, enter **0** to open the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) submenu; mine is in Spanish.  
 Now enter **03** to [save connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxsave.png "Save Connexions" ) into file svdcnx3.  
-Next time you enter ramiho, you'll just need to go to the Favorite Connexions submenu, and enter **3** to [load connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxload.png "Load Connexions" ) file svdcnx3.
+Next time you enter ramiho, you'll just need to send **0** to enter the Favorite Connexions submenu, and then **3** to [load connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxload.png "Load Connexions" ) file svdcnx3.
 
 ### with command line
 You can access all of ramiho's features through the command line interface, by adding arguments after the ramiho command. Commands mirror the terminal interface's; to show all available commands type
@@ -95,13 +95,12 @@ You can also load your Favorite Connexions with a single command. Enter **ramiho
 
 ### offline and headless
 For some strange reason, ramiho was originally conceived to work from an offline Raspberry Pi, operated with an external numeric pad, providing audio feedback through a small speaker connected to the mini-jack output.  
-To work this out, you will need a text-to-sound engine; there's espeak, my preference is for festival. Text will be piped into the tts engine ($tts_on). Send **99** to turn sound on and off.      
-To configure a different tts engine and to activate sound by default, edit these lines in the script's fCONFIG function:  
+To work this out, you will need a text-to-sound engine; there's espeak, my preference is for festival. Text will be piped into the tts engine ($tts_on). To configure a different tts engine and to activate sound by default, edit these lines in the script's fCONFIG function:  
 ```bash
 tts_on="festival --tts" 
 tts=$tts_on
 ```  
-You can also turn sound on and off by sendind **98** in the main interface.   
+You can also turn sound on and off by sending **98** in the main interface.   
 If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions, like arrows, END or PgDn, instead of numbers. Now buttons 1 to 9 represent devices, and if you press button 3 (or rather, PgDn), you'll hear the name of the third device in the list. Operators dealing with connexions work just the same. 
 
 ### testing tools
