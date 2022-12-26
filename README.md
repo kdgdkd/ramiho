@@ -55,7 +55,7 @@ ramiho uses four ways of saving connexions:
 - embedded in ramiho's code under three fFAV_x functions, as lists of aconnect commands
 - aconsvd files under favcnx directory, as lists of aconnect commands; these files are also used to save current aconnect configurations, so they may get overwritten   
 - mdshcnx files under favcnx directory, that allow for advanced routing configuration using midish   
-- mdshsvd files under favcnx directory, as midish shell files; there are used to save current midish configurations and may bet overwritten   
+- mdshsvd files under favcnx directory, as midish shell files; there are used to save current midish configurations and may get overwritten   
 
 You may edit these files and functions, adapt the header of the menu (fFAV_HEADER) with a description of the connexions you've set up, and link them with commands (fFAV_ACT). 
 
@@ -65,12 +65,12 @@ You may edit these files and functions, adapt the header of the menu (fFAV_HEADE
 ramiho generates a dynamic list of available MIDI ports from connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
 - press **1** to see the list of ports and connexions   
 - [**+14**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) will send the MIDI signal from port number 1 to port number 4    
-- -*4 will disconnect every other port from port number 4    
+- **-*4** will disconnect every other port from port number 4    
 
 #### using * 
 ramiho accepts using **\*** as a symbol for "every other device" when connecting / disconnecting. On the terminal   
-- +2* will connect port number 2 to every other port   
-- +*3 will connect every other port to port number 3
+- **+2\*** will connect port number 2 to every other port   
+- **+*3** will connect every other port to port number 3
 - **-3\*** will close connexions from port number 3 to any other port (* is a wildcard)   
 
 ### with terminal interface
