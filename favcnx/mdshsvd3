@@ -1,0 +1,143 @@
+dnew 1 "KeyStep Pro" rw
+dnew 2 "UC-33 USB MIDI Controller" rw
+dnew 3 "USB Uno MIDI Interface" rw
+dnew 4 "Arturia KeyStep 32" rw
+inew keystep1 {1 0}
+inew keystep2 {1 1}
+inew keystep3 {1 2}
+inew keystep4 {1 3}
+inew keystep5 {1 4}
+inew keystep6 {1 5}
+inew keystep7 {1 6}
+inew keystep8 {1 7}
+inew keystep9 {1 8}
+inew keystep10 {1 9}
+inew keystep11 {1 10}
+inew keystep12 {1 11}
+inew keystep13 {1 12}
+inew keystep14 {1 13}
+inew keystep15 {1 14}
+inew keystep16 {1 15}
+inew uc33e1 {2 0}
+inew uc33e2 {2 1}
+inew uc33e3 {2 2}
+inew uc33e4 {2 3}
+inew uc33e5 {2 4}
+inew uc33e6 {2 5}
+inew uc33e7 {2 6}
+inew uc33e8 {2 7}
+inew uc33e9 {2 8}
+inew uc33e10 {2 9}
+inew uc33e11 {2 10}
+inew uc33e12 {2 11}
+inew uc33e13 {2 12}
+inew uc33e14 {2 12}
+inew uc33e15 {2 14}
+inew uc33e16 {2 15}
+inew ks32_1 {4 0}
+inew ks32_2 {4 1}
+inew ks32_3 {4 2}
+inew ks32_4 {4 3}
+inew ks32_5 {4 4}
+inew ks32_6 {4 5}
+inew ks32_7 {4 6}
+inew ks32_8 {4 7}
+inew ks32_9 {4 8}
+inew ks32_10 {4 9}
+inew ks32_11 {4 10}
+inew ks32_12 {4 11}
+inew ks32_13 {4 12}
+inew ks32_14 {4 13}
+inew ks32_15 {4 14}
+inew ks32_16 {4 15}
+onew usbmidi1 {3 0}
+onew usbmidi2 {3 1}
+onew usbmidi3 {3 2}
+onew usbmidi4 {3 3}
+onew usbmidi5 {3 4}
+onew usbmidi6 {3 5}
+onew usbmidi7 {3 6}
+onew usbmidi8 {3 7}
+onew usbmidi9 {3 8}
+onew usbmidi10 {3 9}
+onew usbmidi11 {3 10}
+onew usbmidi12 {3 11}
+onew usbmidi13 {3 12}
+onew usbmidi14 {3 13}
+onew usbmidi15 {3 14}
+onew usbmidi16 {3 15}
+fnew kstpvirus3
+fmap {any keystep1} {any usbmidi1}
+fmap {any keystep1} {any usbmidi2}
+fmap {any keystep1} {any usbmidi12}
+fmap {any keystep1} {any usbmidi13}
+fmap {any keystep3} {any usbmidi3}
+fmap {any keystep3} {any usbmidi4}
+fmap {any keystep3} {any usbmidi14}
+fmap {any keystep5} {any usbmidi5}
+fmap {any keystep5} {any usbmidi6}
+fmap {any keystep5} {any usbmidi15}
+fmap {any keystep7} {any usbmidi7}
+fmap {any keystep7} {any usbmidi8}
+fmap {any keystep7} {any usbmidi9}
+fmap {any keystep7} {any usbmidi10}
+fmap {any keystep2} {any usbmidi2}
+fmap {any keystep4} {any usbmidi4}
+fmap {any keystep6} {any usbmidi6}
+fmap {any keystep8} {any usbmidi8}
+fmap {any keystep9} {any usbmidi9}
+fmap {any keystep10} {any usbmidi10}
+fmap {any keystep11} {any usbmidi11}
+fmap {any keystep12} {any usbmidi12}
+fmap {any keystep13} {any usbmidi13}
+fmap {any keystep14} {any usbmidi14}
+fmap {any keystep15} {any usbmidi15}
+fmap {any uc33e1} {any usbmidi1}
+fmap {any uc33e2} {any usbmidi2}
+fmap {any uc33e3} {any usbmidi3}
+fmap {any uc33e4} {any usbmidi4}
+fmap {any uc33e5} {any usbmidi5}
+fmap {any uc33e6} {any usbmidi6}
+fmap {any uc33e7} {any usbmidi7}
+fmap {any uc33e8} {any usbmidi8}
+fmap {any uc33e9} {any usbmidi9}
+fmap {any uc33e10} {any usbmidi10}
+fmap {any uc33e11} {any usbmidi11}
+fmap {any uc33e12} {any usbmidi12}
+fmap {any uc33e13} {any usbmidi13}
+fmap {any uc33e14} {any usbmidi14}
+fmap {any uc33e15} {any usbmidi15}
+fmap {any uc33e16} {any usbmidi1}
+fmap {any uc33e16} {any usbmidi2}
+fmap {any uc33e16} {any usbmidi3}
+fmap {any uc33e16} {any usbmidi4}
+fmap {any uc33e16} {any usbmidi5}
+fmap {any uc33e16} {any usbmidi6}
+fmap {any uc33e16} {any usbmidi7}
+fmap {any uc33e16} {any usbmidi8}
+fmap {any uc33e16} {any usbmidi9}
+fmap {any uc33e16} {any usbmidi10}
+fmap {any uc33e16} {any usbmidi11}
+fmap {any uc33e16} {any usbmidi12}
+fmap {any uc33e16} {any usbmidi13}
+fmap {any uc33e16} {any usbmidi14}
+fmap {any uc33e16} {any usbmidi15}
+fmap {any ks32_1} {any usbmidi1}
+fmap {any ks32_2} {any usbmidi2}
+fmap {any ks32_3} {any usbmidi3}
+fmap {any ks32_4} {any usbmidi4}
+fmap {any ks32_5} {any usbmidi5}
+fmap {any ks32_6} {any usbmidi6}
+fmap {any ks32_7} {any usbmidi7}
+fmap {any ks32_8} {any usbmidi8}
+fmap {any ks32_9} {any usbmidi9}
+fmap {any ks32_10} {any usbmidi10}
+fmap {any ks32_11} {any usbmidi11}
+fmap {any ks32_12} {any usbmidi12}
+fmap {any ks32_13} {any usbmidi13}
+fmap {any ks32_14} {any usbmidi14}
+fmap {any ks32_15} {any usbmidi15}
+ftransp {any usbmidi13} 7
+ftransp {any usbmidi14} 7
+ftransp {any usbmidi15} 7
+ftransp {any usbmidi10} 7

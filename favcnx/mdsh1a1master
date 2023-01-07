@@ -1,0 +1,27 @@
+# KS, UC33 a USB MIDI
+# UC33 ch16 Master
+dnew 1 "KeyStep Pro" rw
+dnew 2 "UC-33 USB MIDI Controller" rw
+dnew 3 "USB Uno MIDI Interface" rw
+dnew 4 "Arturia KeyStep 32" rw
+fnew kstpvirus1
+fmap {any 1} {any 3}
+fmap {any 2} {any 3}
+fmap {any 4} {any 3}
+fmap {any {2 15}} {any {3 0}}
+fmap {any {2 15}} {any {3 1}}
+fmap {any {2 15}} {any {3 2}}
+fmap {any {2 15}} {any {3 3}}
+fmap {any {2 15}} {any {3 4}}
+fmap {any {2 15}} {any {3 5}}
+fmap {any {2 15}} {any {3 6}}
+fmap {any {2 15}} {any {3 7}}
+fmap {any {2 15}} {any {3 8}}
+fmap {any {2 15}} {any {3 9}}
+fmap {any {2 15}} {any {3 10}}
+fmap {any {2 15}} {any {3 11}}
+fmap {any {2 15}} {any {3 12}}
+fmap {any {2 15}} {any {3 13}}
+fmap {any {2 15}} {any {3 14}}
+fmap {any {2 15}} {any {3 15}}
+fvcurve {any 3} (-50)
