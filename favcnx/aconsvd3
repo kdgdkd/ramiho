@@ -1,6 +1,0 @@
-
-aconnect 'UC-33 USB MIDI Controller':0 'USB Uno MIDI Interface':0
-aconnect 'Arturia BeatStep Pro':0 'USB Uno MIDI Interface':0
-aconnect 'USB Uno MIDI Interface':0 'Arturia BeatStep Pro':0
-aconnect 'USB Uno MIDI Interface':0 'Arturia KeyStep 32':0
-aconnect 'Arturia KeyStep 32':0 'USB Uno MIDI Interface':0
