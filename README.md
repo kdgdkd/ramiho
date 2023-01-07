@@ -36,9 +36,9 @@ The standard setup for ramiho would be on a headless Raspberry Pi, connected to 
 - enable ssh connexions in your Raspberry Pi (**sudo raspi-config**)
 - auto-connect your Raspberry Pi to WIFI network (**sudo nano /etc/wpa_supplicant/wpa_supplicant.conf**)
 - define a static IP address (**sudo nano /etc/dhcpcd.conf**)
-- you may want to be able to turn the device on and off with a power switch without corrupting the SD card (in Raspberry Pi OS, the File System Overlay in raspi-config)   
+- you may want to be able to turn the device on and off with a power switch without corrupting the SD card (in Raspberry Pi OS, the File System Overlay in raspi-config, or you may prefer trying [rpi-readonly](https://gitlab.com/larsfp/rpi-readonly))   
 
-Most of these steps are covered in Neuma Studio's [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html), or well documented somewhere else. If you run ramiho on a desktop or laptop you could do very well without all of this fuzz.     
+Most of these steps are well documented somewhere. If you run ramiho on a desktop or laptop you could do very well without all of this fuzz.     
 
 
 ## Customization
@@ -114,7 +114,7 @@ If these tests fail, check the cables and whether the hardware is properly confi
 ### using Midish   
 [Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. The Midish menu in ramiho provides a front-end for Midish's MIDI routing, and saving/loading of existing or customized connexions.    
 The front-end allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel. And you can choose to transpose the notes! For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5 a full octave below, so you would have a bass and a sub-bass, like in [this example](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png).     
-You can save the last used midish connexion into one of the mdshsvd files. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu. 
+You can work on the last connexion that you defined or loaded, adding routings, velocity adjustments, send program change signal... And when you are happy, you can save the connexion to be able to access it in the future. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu. 
 
 ## Conclusion
 ramiho solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
