@@ -452,21 +452,21 @@ echo "ramiho >> Menu de conexiones favoritas
      .     Desconectar todo
      0     Cargar fichero
 	 
-     1     aconnect: KeyStep y UC33 a Uno MIDI
-     2     aconnect: KeyStep & UC-33 a Blofeld y Uno MIDI
+     1     aconnect: KeyStep y ZeRO a Uno MIDI
+     2     aconnect: KeyStep & ZeRO a Blofeld y Uno MIDI
      3     aconnect: X-Touch mini a Launchpad
 	 
-     4     midish: KeyStep y UC33 -> USB MIDI + Master
+     4     midish: KeyStep y ZeRO -> USB MIDI + Master
              [KSP:   ch1..15->ch1..15]
-             [UC33e: ch1..15->ch1..15 / Master ch16->ch1..15]
-     5     midish: KeyStep Pro & UC33e -> USB MIDI + Master
+             [ZeRO: ch1..15->ch1..15 / Master ch16->ch1..15]
+     5     midish: KeyStep Pro & ZeRO -> USB MIDI + Master
              [KSP:   ch1->ch1,2,12 / ch3->ch3,4
 				     / ch5->ch5,6 / ch7->ch7,8,9]
-             [UC33e: ch1..15->ch1..15 / Master ch16->ch1..15]
-     6     midish: KeyStep Pro & UC33e -> USB MIDI + Master
+             [ZeRO: ch1..15->ch1..15 / Master ch16->ch1..15]
+     6     midish: KeyStep Pro & ZeRO -> USB MIDI + Master
              [KSP:   ch1->ch1,2,12&ch13(+7st) / ch3->ch3,4&ch14(+7st)
 				     / ch5->ch5,6&ch15(+7st) / ch7->ch7,8,9&ch10(+7st)]
-             [UC33e: ch1..15->ch1..15 / Master ch16->ch1..15]
+             [ZeRO: ch1..15->ch1..15 / Master ch16->ch1..15]
 	  
      7     Front-end aconnect
      8     Front-end midish
@@ -641,9 +641,9 @@ echo "ramiho >> acconnect front-end
      2     Cargar conexiones guardadas (2)
      3     Cargar fichero
 	 
-     4     Conectar KeyStep y UC33 a Uno MIDI
-     5     Conectar KeyStep & UC-33 a Blofeld y Uno MIDI
-     6     Conectar KeyStep, UC-33, USB Uno MIDI a Virus por USB
+     4     Conectar KeyStep y ZeRO a Uno MIDI
+     5     Conectar KeyStep & ZeRO a Blofeld y Uno MIDI
+     6     Conectar KeyStep, ZeRO, USB Uno MIDI a Virus por USB
 	  
      7     Front-end midish
      8     Conexiones Favoritas
