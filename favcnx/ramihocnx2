@@ -1,5 +1,4 @@
 # KS, UC33 a USB MIDI
-# KS ch1->ch1,2,12,13(+7st) / ch3->ch3,4,14(+7st) / ch5->ch5,6,15(+7st) / ch7->ch7,8,9(+7st)
 # UC33 ch16 Master
 dnew 1 "KeyStep Pro" rw
 dnew 2 "UC-33 USB MIDI Controller" rw
@@ -9,20 +8,6 @@ fnew kstpvirus3
 fmap {any 1} {any 3}
 fmap {any 2} {any 3}
 fmap {any 4} {any 3}
-fmap {any {1 0}} {any {3 0}}
-fmap {any {1 0}} {any {3 1}}
-fmap {any {1 0}} {any {3 11}}
-fmap {any {1 0}} {any {3 12}}
-fmap {any {1 2}} {any {3 2}}
-fmap {any {1 2}} {any {3 3}}
-fmap {any {1 2}} {any {3 13}}
-fmap {any {1 4}} {any {3 4}}
-fmap {any {1 4}} {any {3 5}}
-fmap {any {1 4}} {any {3 14}}
-fmap {any {1 6}} {any {3 6}}
-fmap {any {1 6}} {any {3 7}}
-fmap {any {1 6}} {any {3 8}}
-fmap {any {1 6}} {any {3 9}}
 fmap {any {2 15}} {any {3 0}}
 fmap {any {2 15}} {any {3 1}}
 fmap {any {2 15}} {any {3 2}}
@@ -39,7 +24,3 @@ fmap {any {2 15}} {any {3 12}}
 fmap {any {2 15}} {any {3 13}}
 fmap {any {2 15}} {any {3 14}}
 fmap {any {2 15}} {any {3 15}}
-ftransp {any {3 12}} 7
-ftransp {any {3 13}} 7
-ftransp {any {3 14}} 7
-ftransp {any {3 9}} 7
