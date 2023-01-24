@@ -2,6 +2,24 @@
 # ramiho - raspi midi host
 # Cliente de Teclado Numérico Raspi MIDI host
 # kdg/dkd - kódigo diskordia en edpanfleto.com/kdgdkd/
+
+# FORMATO*******************
+_bold () { 
+tput bold
+}
+_norm () { 
+tput sgr0
+}
+_blanco () { 
+tput setaf 7 
+}
+_amarillo () {
+tput setaf 3
+}
+_verde () {
+tput setaf 2
+}
+
 # LOCALE************************************************
 fLOCALE_ES () {
 txconf_locale="ES"
@@ -124,6 +142,7 @@ tx_hlptermhd1='ramiho Rpi MIDI Host - AYUDA
      99    Leer IP y Ayuda
      98    Activar/Desactivar sonido
      97    Cambiar idioma
+     96    Alternar protección contra escritura
 	 
     FNC    Leer el puerto n
      //    Para salir
@@ -137,12 +156,18 @@ ramiho $1 $2$3       argumentos para uso en línea de comandos
 argumentos: 
    +   > Conectar puertos
  +$1$2 > Conectar puerto número $1 al puerto número $2
+ +$1*  > Conectar puerto número $1 a todos los demás puertos
+ +*    > Conectar todos los puertos entre si
    -   > Desconectar puertos
  -$1$2 > Desconectar puerto número $1 del puerto número $2
+ -*$2  > Desconectar todos los puertos del puerto número $2
+ -*    > Desconectar todos los puertos
  
    .   > Desconectar todo
    0   > Menú Conexiones Favoritas
    0$1 > Cargar Conexión Favorita número $1
+  00   > Abrir archivos de conexiones
+  00$1 > Cargar archivo número $1
    1   > Lista de puertos y conexiones
    2   > Mostrar detalles ALSA MIDI
    3   > Mostrar dispositivos USB
@@ -152,7 +177,12 @@ argumentos:
    6$1 > Leer puerto $1
    7   > front-end aconnect
    8   > front-end midish
-   9   > Mostrar IP y Ayuda'
+   9   > Mostrar IP y Ayuda
+   99  > Leer IP
+   98  > Activar sonido
+   97  > Cambiar idioma
+   96  > Alternar protección contra escritura
+   91  > Iniciar interface ramiho'
 
 tx_monhd="ramiho >> Elegir puerto y tipo de monitor MIDI
 ********************************************************************"
@@ -294,6 +324,7 @@ tx_hlptermhd1='ramiho Rpi MIDI Host - HELP
      99    Read IP and Help
      98    Enable/disable sound
      97    Change language
+     96    Switch write protection
 	 
     FNC    Read port N
      //    To Exit
@@ -307,12 +338,18 @@ ramiho $1 $2$3       arguments for command line
 arguments: 
    +   > Connect ports
  +$1$2 > Connect port number $1 to port number $2
+ +$1*  > Connect port number $1 to every other port
+ +*    > Connect all ports to every other port
    -   > Disconnect ports
  -$1$2 > Disconnect port number $1 from port number $2
+ -*$2  > Disconnect every port from port number $2
+ -*    > Close all connexions
  
    .   > Disconnect all
    0   > Favorite Connexions menu
    0$1 > Load Favorite Connexion number $1
+  00   > Open file selection
+  00$1 > Load file number $1
    1   > List of ports and connexions
    2   > ALSA MIDI details
    3   > USB devices details
@@ -323,7 +360,12 @@ arguments:
    6$1 > Provide information on port number $1
    7   > aconnect front-end
    8   > midish front-end
-   9   > This help and IP'
+   9   > This help and IP
+   99  > Read IP
+   98  > Open interface with sound
+   97  > Change locale to Spanish
+   96  > Switch write protection on
+   91  > Open ramiho interface'
 
 tx_monhd="ramiho >> Choose port and type of monitor
 ********************************************************************"
@@ -345,16 +387,15 @@ tx_smhdr="ramiho >> Send MIDI signal
 }
 
 # CONFIGURATION***********************************************************
-fCONF () {  # customize
+fCONF_INIT () {  # customize
 sendmidi="$SCRIPT_DIR/srmidi/sendmidi"
 receivemidi="$SCRIPT_DIR/srmidi/receivemidi"
 midiseq="$SCRIPT_DIR/srmidi/sendmidifile"
 tts="festival --tts"  #define text-to-sound engine
-soundon='false' # change to false to mute by default
-writeprotection='true'
-fLOCALE_EN # Change this to your preferred locale
+soundon='false' # false to mute by default
+switchwp='false' # true when using rpi-readonly
+fLOCALE_EN # Change to your preferred locale
 }
-fCONF
 fCONF_FILES () {
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )"
 midishsvdfiles=("$SCRIPT_DIR/favcnx/mdshsvd"*)
@@ -374,8 +415,8 @@ for empty in ${afavcnxfiles[@]}; do
 done
 afavcnxfiles=()
 afavcnxfiles+=(${apersconfiles[@]} ${aconsvdfiles[@]} ${midishsvdfiles[@]})
+let ifavcnxfiles="${#afavcnxfiles[@]}"
 }
-fCONF_FILES
 fCONF_LOCALE () { 
 _bold
 echo
@@ -400,24 +441,7 @@ else
 fi
 }
 
-# FORMAT*******************
-_bold () { 
-tput bold
-}
-_norm () { 
-tput sgr0
-}
-_blanco () { 
-tput setaf 7 
-}
-_amarillo () {
-tput setaf 3
-}
-_verde () {
-tput setaf 2
-}
-
-# CONEXIONES FAVORITAS--FAVORITE CONNEXIONS*********************************************
+# CONEXIONES FAVORITAS-*************************************************************
 fFCN_HEADER () {  # customize
 _bold
 echo "ramiho >> Menu de conexiones favoritas
@@ -459,20 +483,20 @@ if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 	else
 		echo
 		case $1 in
-			[.]) fMSH_DEL; fCNX_DISCONNECTALL;;
+			[.]) fMSH_DEL; fACN_CNX_DISCONNECTALL;;
 			[0]) fFCN_SELFILE;; 
-			[1]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/aconKSPUC33unousb"; fLST_CONNEX;; 
-			[2]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/aconKSPUC33blofeld"; fLST_CONNEX;;  
-			[3]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/aconXTOUCHlaunchpad"; fLST_CONNEX;;  
-			[4]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/mdsh1a1master";;  
-			[5]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/mdsh1a2master";; 
-			[6]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/mdsh1a3quinmaster";;   
+			[1]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/05_aconKSPUC33unousb"; fLST_CONNEX;; 
+			[2]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/04_aconKSPUC33blofeld"; fLST_CONNEX;;  
+			[3]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/06_aconXTOUCHlaunchpad"; fLST_CONNEX;;  
+			[4]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/01_mdsh1a1master";;  
+			[5]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/02_mdsh1a2master";; 
+			[6]) fFCN_LOADFILE "$SCRIPT_DIR/favcnx/03_mdsh1a3quinmaster";;   
 			[7]) fACN_FRONT; lpbrk=true;; 
 			[8]) fMSH_FRONT; lpbrk=true;;   
 			[9]) fFCN_HEADER;;    
-			[+]) fCNX_OPS 'cnx'
+			[+]) fACN_CNX_OPS 'cnx'
 				fLST_CONNEX;; 
-			[-]) fCNX_OPS 'dcnx'
+			[-]) fACN_CNX_OPS 'dcnx'
 				fLST_CONNEX;;   
 			[*]) fFCN_DEVICE;; 
 			*) ci_err1=true;;
@@ -543,7 +567,7 @@ if [[ $1 =~ ^-?[0-9]+$ ]]; then
 else
 	listaficheros="Cargar fichero de ramiho/favcnx
 	 N    File"
-	[[ $soundon == 'true' ]] && echo "Load file number " | $tts > /dev/null 2>&1 &
+	[[ $soundon == 'true' ]] && echo "Load file" | $tts > /dev/null 2>&1 &
 	let icontN=1
 	for i in "${!afavcnxfiles[@]}"; # por cada puerto MIDI existente (arrCliente en lugar de arrPuerto)
 	do
@@ -557,8 +581,8 @@ else
 	read -p "Cargar fichero > " preset 
 	echo
 fi
-if [[ $preset =~ ^-?[0-9]+$ ]] && [[ $preset -lt $icontN ]]; then
-	[[ $soundon == 'true' ]] && echo "Loading file number $preset" | $tts > /dev/null 2>&1 &
+if [[ $preset =~ ^-?[0-9]+$ ]] && [[ $preset -lt $ifavcnxfiles ]]; then
+	[[ $soundon == 'true' ]] && echo "Loading file number $preset" | $tts > /dev/null 2>&1
 	let preset=$preset-1
 	fFCN_LOADFILE "${afavcnxfiles[$preset]}"
 else
@@ -573,7 +597,9 @@ do
 	let iCuenta=$iCuenta+1
 done
 savedconnexions="$SCRIPT_DIR/favcnx/ramihocnx$iCuenta"
+fFCN_WRITEPROTECT 'off'
 touch "$SCRIPT_DIR/favcnx/ramihocnx$iCuenta"
+fFCN_WRITEPROTECT 'on'
 }
 fFCN_LOADFILE () {
 if grep -q "aconnect" $1; then
@@ -583,13 +609,21 @@ elif grep -q "dnew" $1; then
 fi
 }
 fFCN_WRITEPROTECT () {
-if [[ $writeprotection == 'true' ]]; then
+if [[ $switchwp == 'true' ]]; then
 	if [[ $1 == 'off' ]]; then
-		echo "rw" | bash 
+		fFCN_WPOFF
 	elif [[ $1 == 'on' ]]; then
-		echo "ro" | bash 
+		fFCN_WPON
 	fi
 fi
+}
+fFCN_WPON () {
+sudo mount -o remount,ro / 
+sudo mount -o remount,ro /boot
+}
+fFCN_WPOFF () {
+sudo mount -o remount,rw / 
+sudo mount -o remount,rw /boot
 }
 
 # aconnect front-end*********************************************
@@ -605,7 +639,7 @@ echo "ramiho >> acconnect front-end
 	 
      1     Cargar conexiones guardadas (1)
      2     Cargar conexiones guardadas (2)
-     3     Cargar conexiones guardadas (3)
+     3     Cargar fichero
 	 
      4     Conectar KeyStep y UC33 a Uno MIDI
      5     Conectar KeyStep & UC-33 a Blofeld y Uno MIDI
@@ -631,16 +665,16 @@ if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 			[0]) fACN_SAVEFILE;; 
 			[1]) fACN_LOADFILE "${aconsvdfiles[1]}"; fLST_CONNEX;; 
 			[2]) fACN_LOADFILE "${aconsvdfiles[2]}"; fLST_CONNEX;;  
-			[3]) fACN_LOADFILE "${aconsvdfiles[3]}"; fLST_CONNEX;;  
+			[3]) fFCN_SELFILE;;  
 			[4]) fACN_1; fLST_CONNEX;;  
 			[5]) fACN_2; fLST_CONNEX;; 
 			[6]) fACN_3; fLST_CONNEX;;   
 			[7]) fMSH_FRONT; lpbrk=true;; 
 			[8]) fFCN_FRONT; lpbrk=true;;   
 			[9]) fACN_HEADER;;    
-			[+]) fCNX_OPS 'cnx'
+			[+]) fACN_CNX_OPS 'cnx'
 				fLST_CONNEX;; 
-			[-]) fCNX_OPS 'dcnx'
+			[-]) fACN_CNX_OPS 'dcnx'
 				fLST_CONNEX;;   
 			*) ci_err1=true;;
 		esac
@@ -704,7 +738,7 @@ aconnect 'QUNEO' 'Virus TI':1"
 }
 fACN_SAVEFILE () { # guarda un fichero con las conexiones actuales aconnect
 fREAD_ARRPORTS
-# fFCN_WRITEPROTECT 'off'
+fFCN_WRITEPROTECT 'off'
 _bold && echo  "$tx_svcnx" && _norm
 if [[ -z $1 ]]; then
 	savedconnexions="${aconsvdfiles[0]}"
@@ -783,7 +817,7 @@ aconnect '$Clientes':$Puerto2 '$Clienter':$puertox2"
 puertoto=
 arrpuertoto=()
 done <<< `aconnect -l`
-# fFCN_WRITEPROTECT 'on'
+fFCN_WRITEPROTECT 'on'
 }
 fACN_LOADFILE () { # carga el fichero con conexiones aconnect
 savedconnexions="$1"
@@ -792,6 +826,8 @@ aconnect -x
 source "$savedconnexions"
 aconout=$(<"$savedconnexions")
 aconout="${aconout//$'\n'/ }"
+ttstmp=$(sed -n '/#/p' "$savedconnexions")
+[[ $soundon == 'true' ]] && echo "$ttstmp" | $tts > /dev/null 2>&1 &
 _bold && echo "$aconout" && _norm
 }
 fACN_SEECNX () {
@@ -811,7 +847,249 @@ else
 fi
 }
 
-# midish*****************************************************************************************************
+# aconnect CONEXIONES***********************************************************************************************
+fACN_CNX_OPS () { # entrada para las conexiones
+cnxtyp=$1
+cnxoper=
+_bold
+if [[ $cnxtyp == 'cnx' ]]; then
+	echo "$tx_midicnx"
+	cnxoper=''
+	ttstmp="Connect two ports"
+elif [[ $cnxtyp == 'dcnx' ]]; then
+	echo "$tx_mididcnt"
+	cnxoper='-d '
+	ttstmp="Disconnect two ports"
+elif [[ $cnxtyp == 'excl' ]]; then
+	echo "$tx_midicnxex"
+	cnxoper='-e '
+	ttstmp="Connect exclusive two ports"
+else
+	ci_err=true
+fi
+[[ $soundon == 'true' ]] && echo "$ttstmp" | $tts > /dev/null 2>&1 &
+fLST_CONNEX
+_norm
+fACN_CNX_INPUT $2 $3
+if [[ $ci_err == false ]]; then
+	echo
+	echo "aconnect $cnxoper $puertos $puertor"
+	aconnect $cnxoper $puertos $puertor
+	[[ $? != 0 ]] && echo "$tx_errcnx"
+fi
+}
+fACN_CNX_INPUT () { #utilidad para recibir input de índices o puertos para operar aconnect. Si se usan las FUNC se envían los índices
+fREAD_ARRPORTS
+puertos=
+puertor=
+nombres=
+nombrer=
+ci_err=false
+ci_all=false
+if [[ -z "$1" ]]; then
+	_bold
+	[[ $soundon == 'true' ]] && echo "Enter first port " | $tts > /dev/null 2>&1 &
+	echo
+	echo "$tx_cnxinp1"
+	_norm
+	_verde
+	read -n 1 -p "$tx_cnxinppr1"  res1
+	_norm
+	if [[ $res1 =~ ^-?[0-9]+$ ]]; then
+		if [[ $res1 -le ${#arrPuerto[@]} ]]; then
+			puertos=${arrPuerto[res1]}
+			nombres=${arrClienteN[res1]}
+		else
+			ci_err=true
+		fi
+	elif [[ $res1 == '*' ]]; then
+		ci_all=true
+	elif [[ $res1 == '' ]]; then
+		ci_err=true
+	elif [[ $res1 == '.' ]]; then
+		read res1
+		res1=$(echo "${res1//../:}")
+		puertos=$res1
+		# nombres=${arrClienteN[res1]}
+	else # si res1 no está vacío ni empieza por un número (N) o un punto, asumimos que se están usando las FUNC del NumPad y comparamos el 3er caracter
+		read -n 1 resp2 
+		read -n 1 resp3
+		read -t 0.01 resto
+		case $resp3 in
+			[4F]) let res1=1;; # End
+			[B]) let res1=2;;  # Flecha Dn
+			[6]) let res1=3;;  # Pg Dn / Av Pag
+			[D]) let res1=4;; # Flecha Lft
+			[EG]) let res1=5;; # (5) en el centro de las flechas
+			[C]) let res1=6;; # Flecha Rgt
+			[1H]) let res1=7;; # Home
+			[A]) let res1=8;; # Flecha Up
+			[5]) let res1=9;;  # Pg Up / Re Pag
+			*) ci_err=true;;
+		esac
+		if [[ $res1 =~ ^-?[0-9]+$ ]]; then
+			puertos=${arrPuerto[res1]}
+			nombres=${arrClienteN[res1]}
+		else
+			ci_err=true
+			res1=
+		fi
+	fi
+	if [[ $ci_err == false ]]; then
+		[[ $soundon == 'true' ]] && echo "Enter second port" | $tts > /dev/null 2>&1 &
+		echo
+		_verde
+		read -n 1 -p "$tx_cnxinppr2" res2
+		_norm
+		if [[ $ci_all == 'true' ]]; then
+			if [[ $res2 == '*' ]] || [[ $res2 == '' ]]; then
+				if [[ $cnxtyp == 'cnx' ]]; then
+					fACN_CNX_CONNECTALL
+				else
+					fACN_CNX_DISCONNECTALL
+				fi
+			else
+				fACN_CNX_ALL2PRT $res2
+				ci_err=true
+			fi
+		elif [[ $res2 == '*' ]]; then
+			fACN_CNX_PRT2ALL $res1
+			ci_all=true
+			ci_err=true
+		elif [[ $res2 =~ ^-?[0-9]+$ ]]; then
+			if [[ $res1 -le ${#arrPuerto[@]} ]]; then
+				puertor=${arrPuerto[res2]}
+				nombrer=${arrClienteN[res2]}
+			else
+				ci_err=true
+			fi
+		elif [[ $res2 == '' ]]; then
+			ci_err=true
+			echo "Error"
+		elif [[ $res2 == '.' ]]; then
+			read res2
+			res2=$(echo "${res2//../:}")
+			puertor=$res2
+			nombrer=${arrClienteN[res2]}
+		else
+			read -n 1 resp2 # se guardan los primeros tres caracteres de la respuesta para buscar equivalencias
+			read -n 1 resp3
+			read -t 0.01 resto
+			case $resp3 in
+				[4F]) let res2=1;; # End
+				[B]) let res2=2;;  # Flecha Dn
+				[6]) let res2=3;;  # Pg Dn / Av Pag
+				[D]) let res2=4;; # Flecha Lft
+				[EG]) let res2=5;; # (5) en el centro de las flechas
+				[C]) let res2=6;; # Flecha Rgt
+				[1H]) let res2=7;; # Home
+				[A]) let res2=8;; # Flecha Up
+				[5]) let res2=9;;  # Pg Up / Re Pag
+				*) ci_err=true;;
+			esac
+			if [[ $res2 =~ ^-?[0-9]+$ ]]; then
+				puertor=${arrPuerto[res2]}
+				nombrer=${arrClienteN[res2]}
+			else
+				ci_err=true
+				res2=
+			fi
+		fi
+	fi
+else
+	if [[ $1 == 'simball' ]]; then
+		if [[ $2 == 'simball' ]] || [[ $2 == '' ]]; then
+			if [[ $cnxtyp == 'cnx' ]]; then
+				fACN_CNX_CONNECTALL
+			elif [[ $cnxtyp == 'dcnx' ]]; then
+				fACN_CNX_DISCONNECTALL
+			fi
+		else
+			fACN_CNX_ALL2PRT $2
+		fi
+	elif [[ $2 == 'simball' ]]; then
+		fACN_CNX_PRT2ALL $1
+	else
+		puertos=${arrPuerto[$1]}
+		nombres=${arrClienteN[$1]}
+		puertor=${arrPuerto[$2]}
+		nombrer=${arrClienteN[$2]}
+	fi
+fi
+if [[ $ci_err == true ]] && [[ $ci_all == false ]]; then
+	_bold && echo && echo "$tx_errprt" && _norm
+fi
+}
+fACN_CNX_PRT2ALL () {
+indpuertos="$1"
+ci_err=true
+ci_all=true
+_bold && echo && echo "$tx_prt2allhd" && _norm
+for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+do
+	if [[ $i -ge 1 ]] && [[ $i != $indpuertos ]]; then
+		puertos=${arrPuerto[$indpuertos]}
+		nombres=${arrClienteN[$indpuertos]}
+		puertor=${arrPuerto[$i]}
+		nombrer=${arrClienteN[$i]}
+		aconnect $cnxoper $puertos $puertor 2>/dev/null
+	fi
+done
+}
+fACN_CNX_ALL2PRT () {
+indpuertor="$1"
+ci_err=true
+ci_all=true
+_bold && echo && echo "$tx_all2prthd" && _norm
+for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
+do
+	if [[ $i -ge 1 ]] && [[ $i != $indpuertor ]]; then
+		puertos=${arrPuerto[$i]}
+		nombres=${arrClienteN[$i]}
+		puertor=${arrPuerto[$indpuertor]}
+		nombrer=${arrClienteN[$indpuertor]}
+		aconnect $cnxoper $puertos $puertor 2>/dev/null
+	fi
+done
+}
+fACN_CNX_CONNECTALL() { # conectar todos los puertos MIDI entre si
+fREAD_ARRPORTS
+connectall=true
+arrConPE=()
+arrConPR=()
+arrConCE=()
+arrConCR=()
+let icuentax=0
+let icuentay=0
+ttstmp="Connect all devices with each other"
+aconnect -x 
+_bold && echo "$tx_cnctall" && echo && _norm
+for i in "${arrPuerto[@]}"
+do
+	for n in "${arrPuerto[@]}"
+	do
+		if [[ "$i" != "$n" ]] && [[ "${arrCliente[icuentax]}" != "${arrCliente[icuentay]}" ]] && [[ $icuentax -ge 1 ]] && [[ $icuentay -ge 1 ]]; then 
+			aconnect $i $n
+				if [[ $? == 0 ]]; then 
+					arrConPE+=("$i") && arrConPR+=("$n") && arrConCE+=("${arrCliente[icuentax]}") && arrConCR+=("${arrCliente[icuentay]}")
+				else
+					echo "Error en el intento de conectar ${arrCliente[icuentax]} -> ${arrCliente[icuentay]}"
+				fi
+		fi
+	let icuentay=$icuentay+1
+	done
+	let icuentay=0
+	let icuentax=$icuentax+1
+done
+}
+fACN_CNX_DISCONNECTALL () { # desconectar todos los puertos MIDI entre si
+ttstmp="Close all connexions"
+connectall=false
+_bold && echo && echo "$tx_clsall" && _norm
+aconnect -x
+}
+
+# midish front-end*******************************************************************************
 fMSH_HEADER () {
 clear
 _bold
@@ -825,7 +1103,7 @@ echo "ramiho >> Midish front-end
 	 
      1     Cargar conexiones midish (1)
      2     Cargar conexiones midish (2)
-     3     Cargar conexiones midish (3)
+     3     Cargar fichero
 	 
      4     memoria: actualizar lista de dispositivos
      5     memoria: añadir conexiones / ruteos
@@ -851,7 +1129,7 @@ if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 			[0]) fMSH_SAVEFILE;; 
 			[1]) fMSH_LOADFILE "${midishsvdfiles[1]}";; 
 			[2]) fMSH_LOADFILE "${midishsvdfiles[2]}";;  
-			[3]) fMSH_LOADFILE "${midishsvdfiles[3]}";;  
+			[3]) fFCN_SELFILE;;  
 			[4]) fMSH_ADDDEV;;  
 			[5]) fMSH_ADDCNX;; 
 			[6]) fMSH_ADDTPS;;   
@@ -859,13 +1137,12 @@ if [[ $1 != "" ]]; then  # si no (vacio)=ENTER
 			[8]) fMSH_ADDPCH;;   
 			[9]) fMSH_HEADER;;    
 			[+]) fMSH_NEWCNX;; 
-			[-]) fMSH_DEL; fCNX_DISCONNECTALL;; 
+			[-]) fMSH_DEL; fACN_CNX_DISCONNECTALL;; 
 			*) ci_err1=true;;
 		esac
 	fi
 else
 	fMSH_START
-# [[ $ci_err1 == true ]] && echo $tx_errsel && echo "Error, no setup selected" | $tts > /dev/null 2>&1 &
 fi
 }
 fMSH_FRONT () {
@@ -888,8 +1165,8 @@ done
 
 }
 fMSH_NEWCNX () { 
-_bold && echo $tx_midishfront && _norm
-echo $tx_midishfr2
+_bold && echo "$tx_midishfront" && _norm
+echo "$tx_midishfr2"
 echo
 fMSH_INPUT
 if [[ $ci_err == 'false' ]]; then
@@ -1018,7 +1295,10 @@ else
 		savedconnexions="${midishsvdfiles[$1]}"
 	fi
 	if [[ $error == false ]]; then
+	
+		fFCN_WRITEPROTECT 'off'
 		echo "$midishout" > "$savedconnexions"
+		fFCN_WRITEPROTECT 'on'
 		echo
 		echo "$tx_mdshsvd $savedconnexions"
 	else
@@ -1032,15 +1312,19 @@ fMSH_DEL > /dev/null 2>&1 &
 _bold && echo "$tx_ldcnx $savedconnexions" && _norm
 if [[ -f "$savedconnexions" ]]; then
 	midishout=$(<"$savedconnexions")
+	ttstmp=$(sed -n '/'#:'/p' "$savedconnexions")
+	ttstmp="${ttstmp/'#:'/ }"
+	echo $ttstmp
+	[[ $soundon == 'true' ]] && echo "Start midish " | $tts > /dev/null 2>&1 &
 	_norm
-	fMSH_START
+	fMSH_START "$ttstmp"
 else
 	echo "$tx_errmdshf"
 fi
 }
 fMSH_ADDCNX () {
 ci_err=false
-fLST_PORTS
+fMSH_DEVLIST
 _bold && echo && echo "$tx_mdshcnxhd" && _norm
 while [[ $ci_err == false ]]; do
 	[[ $soundon == 'true' ]] && echo "Connect input and export clients" | $tts > /dev/null 2>&1 &
@@ -1093,7 +1377,7 @@ echo "$midishout"
 }
 fMSH_ADDTPS () {
 ci_err=false
-fLST_PORTS
+fMSH_DEVLIST
 _bold && echo && echo "$tx_mdshtrphd" && _norm
 while [[ $ci_err == false ]]; do
 	[[ $soundon == 'true' ]] && echo "Transpose output" | $tts > /dev/null 2>&1 &
@@ -1105,7 +1389,6 @@ while [[ $ci_err == false ]]; do
 	elif [[ $mdevout =~ ^-?[0-9]+$ ]]; then
 		[[ $soundon == 'true' ]] && echo "Enter midi channel" | $tts > /dev/null 2>&1 &
 		read -p "$tx_mdshchout> " mchout
-		# echo
 		if [[ $mchout == '' ]]; then
 			mchout=any
 		elif [[ $mchout =~ ^-?[0-9]+$ ]] && [[ $mchout -gt 0 ]] && [[ $mchout -le 16 ]]; then
@@ -1132,7 +1415,7 @@ echo "$midishout"
 }
 fMSH_ADDVEL () {
 ci_err=false
-fLST_PORTS
+fMSH_DEVLIST
 _bold && echo && echo "$tx_mdshvelhd" && _norm
 while [[ $ci_err == false ]]; do
 	[[ $soundon == 'true' ]] && echo "Adjust output velocity" | $tts > /dev/null 2>&1 &
@@ -1144,7 +1427,6 @@ while [[ $ci_err == false ]]; do
 	elif [[ $mdevout =~ ^-?[0-9]+$ ]]; then
 		[[ $soundon == 'true' ]] && echo "Enter midi channel" | $tts > /dev/null 2>&1 &
 		read -p "$tx_mdshchout> " mchout
-		# echo
 		if [[ $mchout == '' ]]; then
 			mchout=any
 		elif [[ $mchout =~ ^-?[0-9]+$ ]] && [[ $mchout -gt 0 ]] && [[ $mchout -le 16 ]]; then
@@ -1169,7 +1451,7 @@ echo "$midishout"
 }
 fMSH_ADDPCH () {
 ci_err=false
-fLST_PORTS
+fMSH_DEVLIST
 _bold && echo && echo "$tx_mdshpchhd" && _norm
 while [[ $ci_err == false ]]; do
 	[[ $soundon == 'true' ]] && echo "Add program change" | $tts > /dev/null 2>&1 &
@@ -1181,7 +1463,6 @@ while [[ $ci_err == false ]]; do
 	elif [[ $mdevout =~ ^-?[0-9]+$ ]]; then
 		[[ $soundon == 'true' ]] && echo "Enter midi channel" | $tts > /dev/null 2>&1 &
 		read -p "$tx_mdshchout> " mchout
-		# echo
 		if [[ $mchout == '' ]]; then
 			mchout=any
 		elif [[ $mchout =~ ^-?[0-9]+$ ]] && [[ $mchout -gt 0 ]] && [[ $mchout -le 16 ]]; then
@@ -1239,7 +1520,7 @@ if [[ "$midishout" == '' ]]; then
 else
 	_bold && echo "$tx_mdshsnd 
 $midishout" && _norm
-	[[ $soundon == 'true' ]] && echo "Start midish " | $tts > /dev/null 2>&1 &
+	[[ $soundon == 'true' ]] && echo "Start midish. $1" | $tts > /dev/null 2>&1 &
 	echo "$midishout
 i" | midish -b > /dev/null &
 	mshpid=$!
@@ -1250,6 +1531,17 @@ i" | midish -b > /dev/null &
 	_norm
 	kill -SIGTERM $mshpid  > /dev/null 2>&1 &
 	[[ $soundon == 'true' ]] && echo "midish stopped" | $tts > /dev/null 2>&1 &
+fi
+}
+fMSH_DEVLIST () {
+if [[ "$midishout" == '' ]]; then
+	fLST_PORTS
+else
+	_bold && echo "$tx_lstprt" && _norm
+	ttstmp=$(sed -n -s '/'dnew'/p' "$midishout")
+	ttstmp=${ttstmp/'dnew '/ }
+	ttstmp=${ttstmp/' rw'/ }
+	echo "$ttstmp"
 fi
 }
 
@@ -1437,6 +1729,12 @@ done
 fLST_USB () { # imprime la lista de dispositivos USB conectados
 _bold && echo "$tx_lstusb" && _norm
 lsusb
+_bold && echo "Saved Networks" && _norm
+wpa_cli list_networks
+_bold && echo "Available Networks" && _norm
+wpa_cli scan_results
+_bold && echo "ip a" && _norm
+ip a
 }
 fLST_ALSADETAILS () {
 _bold && echo "$tx_lstprt" && _norm
@@ -1477,248 +1775,6 @@ else
 	ttstmp=`hostname -I`
 	ttstmp="No internet connexion. $ttstmp"
 fi
-}
-
-# CONEXIONES***********************************************************************************************
-fCNX_OPS () { # entrada para las conexiones
-cnxtyp=$1
-cnxoper=
-_bold
-if [[ $cnxtyp == 'cnx' ]]; then
-	echo "$tx_midicnx"
-	cnxoper=''
-	ttstmp="Connect two ports"
-elif [[ $cnxtyp == 'dcnx' ]]; then
-	echo "$tx_mididcnt"
-	cnxoper='-d '
-	ttstmp="Disconnect two ports"
-elif [[ $cnxtyp == 'excl' ]]; then
-	echo "$tx_midicnxex"
-	cnxoper='-e '
-	ttstmp="Connect exclusive two ports"
-else
-	ci_err=true
-fi
-[[ $soundon == 'true' ]] && echo "$ttstmp" | $tts > /dev/null 2>&1 &
-fLST_CONNEX
-_norm
-fCNX_INPUT $2 $3
-if [[ $ci_err == false ]]; then
-	echo
-	echo "aconnect $cnxoper $puertos $puertor"
-	aconnect $cnxoper $puertos $puertor
-	[[ $? != 0 ]] && echo "$tx_errcnx"
-fi
-}
-fCNX_INPUT () { #utilidad para recibir input de índices o puertos para operar aconnect. Si se usan las FUNC se envían los índices
-fREAD_ARRPORTS
-puertos=
-puertor=
-nombres=
-nombrer=
-ci_err=false
-ci_all=false
-if [[ -z "$1" ]]; then
-	_bold
-	[[ $soundon == 'true' ]] && echo "Enter first port " | $tts > /dev/null 2>&1 &
-	echo
-	echo "$tx_cnxinp1"
-	_norm
-	_verde
-	read -n 1 -p "$tx_cnxinppr1"  res1
-	_norm
-	if [[ $res1 =~ ^-?[0-9]+$ ]]; then
-		if [[ $res1 -le ${#arrPuerto[@]} ]]; then
-			puertos=${arrPuerto[res1]}
-			nombres=${arrClienteN[res1]}
-		else
-			ci_err=true
-		fi
-	elif [[ $res1 == '*' ]]; then
-		ci_all=true
-	elif [[ $res1 == '' ]]; then
-		ci_err=true
-	elif [[ $res1 == '.' ]]; then
-		read res1
-		res1=$(echo "${res1//../:}")
-		puertos=$res1
-		# nombres=${arrClienteN[res1]}
-	else # si res1 no está vacío ni empieza por un número (N) o un punto, asumimos que se están usando las FUNC del NumPad y comparamos el 3er caracter
-		read -n 1 resp2 
-		read -n 1 resp3
-		read -t 0.01 resto
-		case $resp3 in
-			[4F]) let res1=1;; # End
-			[B]) let res1=2;;  # Flecha Dn
-			[6]) let res1=3;;  # Pg Dn / Av Pag
-			[D]) let res1=4;; # Flecha Lft
-			[EG]) let res1=5;; # (5) en el centro de las flechas
-			[C]) let res1=6;; # Flecha Rgt
-			[1H]) let res1=7;; # Home
-			[A]) let res1=8;; # Flecha Up
-			[5]) let res1=9;;  # Pg Up / Re Pag
-			*) ci_err=true;;
-		esac
-		if [[ $res1 =~ ^-?[0-9]+$ ]]; then
-			puertos=${arrPuerto[res1]}
-			nombres=${arrClienteN[res1]}
-		else
-			ci_err=true
-			res1=
-		fi
-	fi
-	if [[ $ci_err == false ]]; then
-		[[ $soundon == 'true' ]] && echo "Enter second port" | $tts > /dev/null 2>&1 &
-		echo
-		_verde
-		read -n 1 -p "$tx_cnxinppr2" res2
-		_norm
-		if [[ $ci_all == 'true' ]]; then
-			if [[ $res2 == '*' ]] || [[ $res2 == '' ]]; then
-				if [[ $cnxtyp == 'cnx' ]]; then
-					fCNX_CONNECTALL
-				else
-					fCNX_DISCONNECTALL
-				fi
-			else
-				fCNX_ALL2PRT $res2
-				ci_err=true
-			fi
-		elif [[ $res2 == '*' ]]; then
-			fCNX_PRT2ALL $res1
-			ci_all=true
-			ci_err=true
-		elif [[ $res2 =~ ^-?[0-9]+$ ]]; then
-			if [[ $res1 -le ${#arrPuerto[@]} ]]; then
-				puertor=${arrPuerto[res2]}
-				nombrer=${arrClienteN[res2]}
-			else
-				ci_err=true
-			fi
-		elif [[ $res2 == '' ]]; then
-			ci_err=true
-			echo "Error"
-		elif [[ $res2 == '.' ]]; then
-			read res2
-			res2=$(echo "${res2//../:}")
-			puertor=$res2
-			nombrer=${arrClienteN[res2]}
-		else
-			read -n 1 resp2 # se guardan los primeros tres caracteres de la respuesta para buscar equivalencias
-			read -n 1 resp3
-			read -t 0.01 resto
-			case $resp3 in
-				[4F]) let res2=1;; # End
-				[B]) let res2=2;;  # Flecha Dn
-				[6]) let res2=3;;  # Pg Dn / Av Pag
-				[D]) let res2=4;; # Flecha Lft
-				[EG]) let res2=5;; # (5) en el centro de las flechas
-				[C]) let res2=6;; # Flecha Rgt
-				[1H]) let res2=7;; # Home
-				[A]) let res2=8;; # Flecha Up
-				[5]) let res2=9;;  # Pg Up / Re Pag
-				*) ci_err=true;;
-			esac
-			if [[ $res2 =~ ^-?[0-9]+$ ]]; then
-				puertor=${arrPuerto[res2]}
-				nombrer=${arrClienteN[res2]}
-			else
-				ci_err=true
-				res2=
-			fi
-		fi
-	fi
-else
-	if [[ $1 == 'simball' ]]; then
-		if [[ $2 == 'simball' ]] || [[ $2 == '' ]]; then
-			if [[ $cnxtyp == 'cnx' ]]; then
-				fCNX_CONNECTALL
-			elif [[ $cnxtyp == 'dcnx' ]]; then
-				fCNX_DISCONNECTALL
-			fi
-		else
-			fCNX_ALL2PRT $2
-		fi
-	elif [[ $2 == 'simball' ]]; then
-		fCNX_PRT2ALL $1
-	else
-		puertos=${arrPuerto[$1]}
-		nombres=${arrClienteN[$1]}
-		puertor=${arrPuerto[$2]}
-		nombrer=${arrClienteN[$2]}
-	fi
-fi
-if [[ $ci_err == true ]] && [[ $ci_all == false ]]; then
-	_bold && echo && echo "$tx_errprt" && _norm
-fi
-}
-fCNX_PRT2ALL () {
-indpuertos="$1"
-ci_err=true
-ci_all=true
-_bold && echo && echo "$tx_prt2allhd" && _norm
-for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
-do
-	if [[ $i -ge 1 ]] && [[ $i != $indpuertos ]]; then
-		puertos=${arrPuerto[$indpuertos]}
-		nombres=${arrClienteN[$indpuertos]}
-		puertor=${arrPuerto[$i]}
-		nombrer=${arrClienteN[$i]}
-		aconnect $cnxoper $puertos $puertor 2>/dev/null
-	fi
-done
-}
-fCNX_ALL2PRT () {
-indpuertor="$1"
-ci_err=true
-ci_all=true
-_bold && echo && echo "$tx_all2prthd" && _norm
-for i in "${!arrPuerto[@]}"; # por cada puerto MIDI existente
-do
-	if [[ $i -ge 1 ]] && [[ $i != $indpuertor ]]; then
-		puertos=${arrPuerto[$i]}
-		nombres=${arrClienteN[$i]}
-		puertor=${arrPuerto[$indpuertor]}
-		nombrer=${arrClienteN[$indpuertor]}
-		aconnect $cnxoper $puertos $puertor 2>/dev/null
-	fi
-done
-}
-fCNX_CONNECTALL() { # conectar todos los puertos MIDI entre si
-fREAD_ARRPORTS
-connectall=true
-arrConPE=()
-arrConPR=()
-arrConCE=()
-arrConCR=()
-let icuentax=0
-let icuentay=0
-ttstmp="Connect all devices with each other"
-aconnect -x
-_bold && echo "$tx_cnctall" && echo && _norm
-for i in "${arrPuerto[@]}"
-do
-	for n in "${arrPuerto[@]}"
-	do
-		if [[ "$i" != "$n" ]] && [[ "${arrCliente[icuentax]}" != "${arrCliente[icuentay]}" ]] && [[ $icuentax -ge 1 ]] && [[ $icuentay -ge 1 ]]; then 
-			aconnect $i $n 
-				if [[ $? == 0 ]]; then 
-					arrConPE+=("$i") && arrConPR+=("$n") && arrConCE+=("${arrCliente[icuentax]}") && arrConCR+=("${arrCliente[icuentay]}")
-				else
-					echo Error en el intento de conectar ${arrCliente[icuentax]} -> ${arrCliente[icuentay]}
-				fi
-		fi
-	let icuentay=$icuentay+1
-	done
-	let icuentay=0
-	let icuentax=$icuentax+1
-done
-}
-fCNX_DISCONNECTALL () { # desconectar todos los puertos MIDI entre si
-ttstmp="Close all connexions"
-connectall=false
-_bold && echo && echo "$tx_clsall" && _norm
-aconnect -x
 }
 
 # MONITOR*MIDI**************************************************
@@ -1916,7 +1972,6 @@ else
 fi
 
 }
-fMON_ARRTYP
 
 # SEND*MIDI***********************************************************
 fSM_FRONT () { # enviar señal midi a los puertos con sendmidi
@@ -2083,10 +2138,10 @@ done <<< `$sendmidi list`
 
 # RAMIHO*FRONT***********************************************************
 fRMH_HEADER () { # pantalla de ayuda
-_norm
-_blanco
-_bold	
+_norm && _blanco && _bold 
+[[ $soundon == 'true' ]] && echo "[$tx_sndon]" || echo "[$tx_sndoff]"
 echo "$tx_hlptermhd1"
+_norm
 }
 fRMH_FRONT () { # loop del entorno interactivo RMH
 while true; do
@@ -2100,22 +2155,22 @@ while true; do
 	echo
 	_blanco
 	if [[ $caracter1 = "" ]]; then # si borrar (Backspace) entonces
-		fCNX_OPS 'excl'
+		fACN_CNX_OPS 'excl'
 		fLST_CONNEX
 	else
 		case $caracter1 in # comprobar si el primer caracter de la respuesta coincide
 			[*]) if [[ $connectall == 'true' ]]; then
-					fCNX_DISCONNECTALL
+					fACN_CNX_DISCONNECTALL
 				else
-					fCNX_CONNECTALL
+					fACN_CNX_CONNECTALL
 					fLST_CONNEX
 				fi;;
 			[/q]) fRMH_EXIT;;
-			[+]) fCNX_OPS 'cnx'
+			[+]) fACN_CNX_OPS 'cnx'
 				fLST_CONNEX;; 
-			[-]) fCNX_OPS 'dcnx'
+			[-]) fACN_CNX_OPS 'dcnx'
 				fLST_CONNEX;;
-			[..,]) fCNX_DISCONNECTALL;;
+			[..,]) fACN_CNX_DISCONNECTALL;;
 			[0]) fRMH_ACT 0;;
 			[1]) fRMH_ACT 1;;
 			[2]) fRMH_ACT 2;;
@@ -2130,9 +2185,9 @@ while true; do
 				errorc=true;;
 		esac
 		case $caracter3 in # para teclas especiales como flechas, Inicio, Fin, etc. comprobamos el tercer caracter guardado
-			[2]) fCNX_CONNECTALL
+			[2]) fACN_CNX_CONNECTALL
 				fLST_CONNEX;; # Ins
-			[3]) fCNX_DISCONNECTALL;;  # Del
+			[3]) fACN_CNX_DISCONNECTALL;;  # Del
 			[4F]) fREAD_PORTINFO 1;; # End
 			[B]) fREAD_PORTINFO 2;;  # Flecha Dn
 			[6]) fREAD_PORTINFO 3;;  # Pg Dn / Av Pag
@@ -2149,7 +2204,11 @@ done
 }
 fRMH_ACT () {
 case $1 in  
-	[0]) fFCN_FRONT;; 
+	[0]) if [[ -z "$2" ]]; then
+			fFCN_FRONT
+		else
+			fFCN_ACT "$2"
+		fi;; 
 	[1]) if [[ $soundon == 'true' ]]; then
 			fTTS_DETAILS && echo "$ttstmp" | $tts > /dev/null 2>&1 &
 		else
@@ -2175,13 +2234,33 @@ case $1 in
 		else
 			fMSH_ACT
 		fi;;  
-	[9]) fRMH_NUEVE;;
+	[9]) dosnueve=
+		_verde
+		_bold
+		read -n 1 -t 1 -p "$tx_frshhlp" dosnueve
+			_blanco
+		if [[ $dosnueve -eq 9 ]]; then
+			clear
+			fTTS_IP && echo "$ttstmp"
+			fRMH_HEADER
+			[[ $soundon == 'true' ]] && echo "$ttstmp" | $tts > /dev/null 2>&1 && fTTS_HELP && echo "$ttstmp" | $tts > /dev/null 2>&1 &
+		elif [[ $dosnueve -eq 8 ]]; then
+			fCONF_MUTE 
+			[[ $soundon == 'true' ]] && echo "$ttstmp" | $tts > /dev/null 2>&1 &
+		elif [[ $dosnueve -eq 7 ]]; then
+			fCONF_LOCALE
+		elif [[ $dosnueve -eq 6 ]]; then
+			fCONF_LOCALE
+		else
+			clear
+			fRMH_HEADER
+		fi;;
 	[*]) if [[ $connectall == 'true' ]]; then
-				fCNX_DISCONNECTALL
-			else
-				fCNX_CONNECTALL
-				fLST_CONNEX
-			fi;;     
+			fACN_CNX_DISCONNECTALL
+		else
+			fACN_CNX_CONNECTALL
+			fLST_CONNEX
+		fi;;     
 	*) ci_err1=true;;
 esac
 }
@@ -2195,27 +2274,6 @@ clear
 fRMH_HEADER
 fLST_CONNEX
 fRMH_FRONT
-}
-fRMH_NUEVE () {
-dosnueve=
-_verde
-_bold
-read -n 1 -t 1 -p "$tx_frshhlp" dosnueve
-	_blanco
-if [[ $dosnueve -eq 9 ]]; then
-	clear
-	fTTS_IP && echo "$ttstmp"
-	fRMH_HEADER
-	[[ $soundon == 'true' ]] && echo "$ttstmp" | $tts > /dev/null 2>&1 && fTTS_HELP && echo "$ttstmp" | $tts > /dev/null 2>&1 &
-elif [[ $dosnueve -eq 8 ]]; then
-	fCONF_MUTE 
-	[[ $soundon == 'true' ]] && echo "$ttstmp" | $tts > /dev/null 2>&1 &
-elif [[ $dosnueve -eq 7 ]]; then
-	fCONF_LOCALE
-else
-	clear
-	fRMH_HEADER
-fi
 }
 fRMH_EXIT () { # menu para salir
 [[ $soundon == 'true' ]] && echo "slash to exit" | $tts > /dev/null 2>&1 &
@@ -2234,13 +2292,32 @@ fi
 _blanco
 echo
 }
+fRMH_INI () {
+fCONF_INIT
+fCONF_FILES
+fMON_ARRTYP
+}
+fRMH_INI
 
 # CLI
 if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
 	for arg in "$@"; do 
 		if [[ $arg == 'mute' ]]; then
-				soundon='false'
-				fRMH_START
+			soundon='false'
+		elif [[ $arg == 'hl' ]]; then
+			soundon='true'
+		elif [[ $arg == 'intf' ]]; then
+			fRMH_START
+		elif [[ $arg == 'wp' ]]; then
+			switchwp='true'
+		elif [[ $arg == 'ro' ]]; then
+			switchwp='false'
+			fFCN_WPON
+		elif [[ $arg == 'rw' ]]; then
+			switchwp='false'
+			fFCN_WPOFF
+		elif [[ $arg == 'new' ]]; then
+			fTTS_NEW
 		elif [[ $arg == +* ]]; then
 			pt1=
 			pt2=
@@ -2249,37 +2326,39 @@ if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
 			else
 				pt1=${arg:1:1}				
 			fi
-			if [[ ${arg:2:1} == '*' ]]; then
+			if [[ ${arg:1:1} == '*' ]] && [[ ${arg:2:1} == '' ]]; then
+				fCONNECTALL
+			elif [[ ${arg:2:1} == '*' ]]; then
 				pt2='simball'
 			else
 				pt2=${arg:2:1}				
 			fi
-			fCNX_OPS 'cnx' $pt1 $pt2
+			fACN_CNX_OPS 'cnx' "$pt1" "$pt2"
 			fLST_CONNEX
 		elif [[ $arg == -* ]]; then
 			pt1=
 			pt2=
-			pt1=${arg:1:1}
-			pt2=${arg:2:1}
-			fCNX_OPS 'dcnx' "$pt1 $pt2"
+			if [[ ${arg:1:1} == '*' ]]; then # si no expande el * y no funciona...
+				pt1='simball'
+			else
+				pt1=${arg:1:1}				
+			fi
+			if [[ ${arg:1:1} == '*' ]] && [[ ${arg:2:1} == '' ]]; then
+				fDISCONNECTALL
+			elif [[ ${arg:2:1} == '*' ]]; then
+				pt2='simball'
+			else
+				pt2=${arg:2:1}				
+			fi
+			fACN_CNX_OPS 'dcnx' "$pt1" "$pt2"
 			fLST_CONNEX
 		elif [[ $arg == '.' ]] || [[ $arg == ',' ]]; then
-			fCNX_DISCONNECTALL
+			fACN_CNX_DISCONNECTALL
 			fLST_CONNEX
 		elif [[ $arg == 00* ]]; then
-			inumcli=${arg:2}
-			if [[ -z "$inumcli" ]]; then
-				fFCN_SELFILE
-			else
-				fFCN_SELFILE "$inumcli"
-			fi		
+			fFCN_SELFILE "${arg:2}"
 		elif [[ $arg == 0* ]]; then
-			inumcli=${arg:1}
-			if [[ -z "$inumcli" ]]; then
-				fFCN_FRONT
-			else
-				fFCN_ACT "$inumcli"
-			fi		
+			fRMH_ACT 0 "${arg:1}"	
 		elif [[ $arg == 1 ]]; then
 			fRMH_ACT 1
 		elif [[ $arg == 2 ]]; then
@@ -2287,33 +2366,31 @@ if [[ $# -ge 1 ]]; then # si se ejecutó con argumentos
 		elif [[ $arg == 3 ]]; then
 			fRMH_ACT 3
 		elif [[ $arg == 4* ]]; then
-			inumcli=${arg:1}
-			fRMH_ACT 4 $inumcli
+			fRMH_ACT 4 "${arg:1}"
 		elif [[ $arg == 5 ]]; then
 			fRMH_ACT 5
 		elif [[ $arg == 6* ]] || [[ $arg == '/'* ]]; then
-			inumcli=${arg:1}
-			fREAD_PORTINFO $inumcli
+			fREAD_PORTINFO "${arg:1}"
 		elif [[ $arg == 7* ]]; then
-			inumcli=${arg:1}
-			fRMH_ACT 7 $inumcli
+			fRMH_ACT 7 "${arg:1}"
 		elif [[ $arg == 8* ]]; then
-			inumcli=${arg:1}
-			fRMH_ACT 8 $inumcli
+			fRMH_ACT 8 "${arg:1}"
 		elif [[ $arg == 99 ]]; then
 			soundon='true'
 			fTTS_IP
 			echo "$ttstmp"
 			echo "$ttstmp" | $tts > /dev/null 2>&1 &
-		elif [[ $arg == 98 ]] || [[ $arg == 'speak' ]]; then
+		elif [[ $arg == 98 ]]; then
 			soundon='true'
 			fRMH_START
 		elif [[ $arg == 97 ]]; then
 			fLOCALE_ES
-			fRMH_START
+		elif [[ $arg == 96 ]]; then
+			switchwp='true'
+		elif [[ $arg == 91 ]]; then
+			switchwp='true'
+			# fRMH_START
 		elif [[ $arg == 9 ]]; then
-			# wpa_cli list_networks
-			# wpa_cli scan_results
 			# echo "IP:"
 			hostname -I
 			echo "$txhlpcli"
