@@ -1537,11 +1537,21 @@ fMSH_DEVLIST () {
 if [[ "$midishout" == '' ]]; then
 	fLST_PORTS
 else
-	_bold && echo "$tx_lstprt" && _norm
-	ttstmp=$(sed -n -s '/'dnew'/p' "$midishout")
-	ttstmp=${ttstmp/'dnew '/ }
-	ttstmp=${ttstmp/' rw'/ }
-	echo "$ttstmp"
+	listadev=
+	# ttstmp=$(sed -n -s '/'dnew'/p' "$midishout")
+	# ttstmp=${ttstmp/'dnew '/ }
+	# ttstmp=${ttstmp/' rw'/ }
+	# echo "$ttstmp"
+	while IFS= read -r line; do
+		if [[ "$line" == *dnew* ]]; then
+			ttstmp=${line/dnew/''}
+			ttstmp=${ttstmp/rw/''}
+			# ttstmp=${ttstmp/"/''}
+			listadev="$listadev
+$ttstmp"
+		fi	
+	done <<< "$midishout"
+	_bold && echo "$tx_lstprt $listadev" && _norm
 fi
 }
 
