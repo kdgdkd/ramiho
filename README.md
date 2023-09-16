@@ -68,7 +68,7 @@ ramiho generates a dynamic list of available MIDI ports from connected devices, 
 - **-\*4** will disconnect every other port from port number 4    
 
 #### using * 
-ramiho accepts using **\*** as a symbol for "every other device" when connecting / disconnecting. On the terminal   
+ramiho accepts using **\*** as a symbol for "every other port/device" when connecting & disconnecting. On the terminal   
 - **+2\*** will connect port number 2 to every other port   
 - **+\*3** will connect every other port to port number 3
 - **-3\*** will close connexions from port number 3 to any other port (* is a wildcard)   
