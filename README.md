@@ -38,7 +38,7 @@ The standard setup for ramiho would be on a headless Raspberry Pi, connected to 
 - define a static IP address (**sudo nano /etc/dhcpcd.conf**)
 - you may want to be able to turn the device on and off with a power switch without corrupting the SD card (in Raspberry Pi OS, the File System Overlay in raspi-config, or you may prefer trying [rpi-readonly](https://gitlab.com/larsfp/rpi-readonly))   
 
-Most of these steps are well documented somewhere. If you run ramiho on a desktop or laptop you could do very well without all of this fuzz.     
+These steps are well documented, in case of doubts you should find all the needed support from your preferred search engine. If you run ramiho on a desktop or laptop you could do very well without all of this fuzz.     
 
 
 ## Customization
