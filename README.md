@@ -23,7 +23,7 @@ ramiho's main features are:
 ## Dependencies
 ramiho is written in bash, and only requires ALSA for MIDI connexion management. I guess it should work on most Linux distributions, including early Raspberry's. But don't take my word.    
 For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools provide a filtered monitor and the send midi test. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
-For advanced connexion configurations (like routing MIDI channels) ramiho uses [midish](https://midish.org), by Alexandre Ratchov.   
+For advanced connexion configurations (like routing and and splitting and merging MIDI channels) ramiho uses [midish](https://midish.org), by Alexandre Ratchov.   
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
 
