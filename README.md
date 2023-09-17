@@ -7,7 +7,7 @@ For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgd
 ## Features
 
 ramiho is written in bash, and was conceived to ease MIDI connexion management on a headless Raspberry Pi.   
-It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). This will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI keyboard to send notes to a synthesizer.   
+It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Neuma's project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI keyboard to send notes to a synthesizer.   
 My needs are far more complex, so I wrote ramiho as an accesible front-end for aconnect to sort-out MIDI routing issues.   
 
 
