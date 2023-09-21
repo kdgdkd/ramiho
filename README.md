@@ -1,6 +1,6 @@
 # ramiho - Raspberry Pi Midi Host manager
 
-ramiho is an interactive command-line interface managing MIDI connexions on your Raspberry Pi.   
+ramiho is a command-line interface designed to simplify MIDI connection management on a headless Raspberry Pi.   
   
 For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgdkd/).
 
@@ -8,7 +8,7 @@ For detailed instructions in Spanish, visit [kdg/dkd](http://edpanfleto.com/kdgd
 
 ramiho was conceived to ease MIDI connexion management on a headless Raspberry Pi. It is written in bash.   
 It builds on Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Neuma's project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI keyboard to send notes to a synthesizer.   
-My needs are far more complex, so I wrote ramiho as an accesible front-end for aconnect to sort-out MIDI routing issues.   
+My needs are far more complex, so I wrote ramiho as an accessible front-end for aconnect to sort-out MIDI routing issues.   
 
 
 ramiho's main features are:
@@ -39,7 +39,7 @@ The standard setup for ramiho would be on a headless Raspberry Pi, connected to 
 - define a static IP address (**sudo nano /etc/dhcpcd.conf**)
 - you may want to be able to turn the device on and off with a power switch without corrupting the SD card (in Raspberry Pi OS, the File System Overlay in raspi-config, or you may prefer trying [rpi-readonly](https://gitlab.com/larsfp/rpi-readonly))   
 
-These steps are well documented, in case of doubts you should find all the needed support from your preferred search engine. If you run ramiho on a desktop or laptop you could do very well without all of this fuzz.     
+These steps are well documented, in case of doubts you should find all the needed support from your preferred search engine. If you run ramiho on a desktop or laptop you could do very well without all of this fuss.     
 
 
 ## Customization
@@ -118,11 +118,11 @@ The front-end allows defining connexions not only between ports, but also betwee
 You can work on the last connexion that you defined or loaded, adding routings, velocity adjustments, send program change signal... And when you are happy, you can save the connexion to be able to access it in the future. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu. 
 
 ## Conclusion
-ramiho solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used sets of connexions, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
+ramiho solves issues that we, as a band (**PUNKT25**), found when trying to properly configure our DAW-less techno setup. Setting up MIDI connexions between devices, or loading previously used connexion setups, is now easily done with ramiho. My group-members, who wouldn't care about aconnecting anything on a command line, now operate ramiho on ssh clients on their own phones. This brings me a lot of joy. But I think I might be thrilled if I ever learn that this code is helping other people make music, so do not doubt getting in touch if you come to use it. 
 
 ## Contributing
 
-I am stubborn, but I am no programmer. And I am a newbie on GitHub and sharing code. This script is likely to contain a significant amount of bugs, and most of it could be polished and modified (do I really need 1,000 variables?). Comments, suggestions, and pull requests are welcome. 
+I am stubborn, but I am no programmer. And I am a newbie on GitHub and sharing code. This script is likely to contain a significant amount of bugs, and most of it could be polished and modified (do I really need 1,000 variables?). Comments, suggestions, bug reports and pull requests are welcome. 
 
 
 ## License
