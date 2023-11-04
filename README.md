@@ -31,15 +31,6 @@ And if you wish ramiho to speak back, you will need a text-to-sound engine; I us
 ## Installation
 Copy the files and directories in this repository to your user directory (git clone https://github.com/kdgdkd/ramiho). Make sure that the permissions are right, ramiho is executable and can access favcnx files. You may also install the additional programs mentioned on the previous section.   
 
-**Setting-up a headless Raspberry Pi**  
-The standard setup for ramiho would be on a headless Raspberry Pi, connected to a WIFI network and operated through an SSH client... and with a number of MIDI devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
-- create a useful alias to acess ramiho (**nano /home/pi/.bash_aliases**); mine is **111**, so I can launch it with an external numeric pad 
-- enable ssh connexions in your Raspberry Pi (**sudo raspi-config**)
-- auto-connect your Raspberry Pi to WIFI network (**sudo nano /etc/wpa_supplicant/wpa_supplicant.conf**)
-- define a static IP address (**sudo nano /etc/dhcpcd.conf**)
-- you may want to be able to turn the device on and off with a power switch without corrupting the SD card (in Raspberry Pi OS, the File System Overlay in raspi-config, or you may prefer trying [rpi-readonly](https://gitlab.com/larsfp/rpi-readonly))   
-
-These steps are well documented, in case of doubts you should find all the needed support from your preferred search engine. If you run ramiho on a desktop or laptop you could do very well without all of this fuss.     
 
 
 ## Customization
