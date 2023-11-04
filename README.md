@@ -29,7 +29,7 @@ And if you wish ramiho to speak back, you will need a text-to-sound engine; I us
 
 
 ## Installation
-Copy the files and directories in this repository to your user directory (typically /home/pi/ramiho/). Make sure that the permissions are right, ramiho is executable and can access favcnx files. You may also install the additional programs mentioned on the previous section.   
+Copy the files and directories in this repository to your user directory (git clone https://github.com/kdgdkd/ramiho). Make sure that the permissions are right, ramiho is executable and can access favcnx files. You may also install the additional programs mentioned on the previous section.   
 
 **Setting-up a headless Raspberry Pi**  
 The standard setup for ramiho would be on a headless Raspberry Pi, connected to a WIFI network and operated through an SSH client... and with a number of MIDI devices connected to it's USB ports. If this is your case, you may consider taking the following steps:
