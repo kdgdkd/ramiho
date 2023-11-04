@@ -113,7 +113,7 @@ ramiho solves issues that we, as a band (**PUNKT25**), found when trying to prop
 
 ## Contributing
 
-I am stubborn, but I am no programmer. And I am a newbie on GitHub and sharing code. This script is likely to contain a significant amount of bugs, and most of it could be polished and modified (do I really need 1,000 variables?). Comments, suggestions, bug reports and pull requests are welcome. 
+Comments, suggestions, bug reports and pull requests are welcome. 
 
 
 ## License
