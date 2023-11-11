@@ -68,10 +68,7 @@ ramiho accepts using **\*** as a symbol for "every other port/device" when conne
 When ramiho is launched without arguments, it will load ramiho's terminal interface. This is the main interface for ramiho. You will see the Help header with the list of available commands, and the list of MIDI ports and connexions. In English, it should look similar to this:    
 <img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png" alt="ramiho_terminal" height="500"/>  
 
-There is already one connexion set, but you'd like to connect device number 2 to device number 4; enter **+24** [like this](https://edpanfleto.com/kdgdkd/git/ramiho_connect2.png "ramiho connect" ).   
-If you are happy with the current connexions and want to save them for later use, enter **0** to open the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) submenu; mine is in Spanish.  
-Now enter **03** to [save connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxsave.png "Save Connexions" ) into file svdcnx3.  
-Next time you enter ramiho, you'll just need to send **0** to enter the Favorite Connexions submenu, and then **3** to [load connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnxload.png "Load Connexions" ) file svdcnx3.
+
 
 ### with command line
 You can access all of ramiho's features through the command line interface, by adding arguments after the ramiho command. Commands mirror the terminal interface's; to show all available commands type
