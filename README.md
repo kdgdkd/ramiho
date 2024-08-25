@@ -90,7 +90,7 @@ soundon='true'
 ```  
 You can also turn sound on and off by sending **98** in the main interface.   
 
-If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), you may want to deactivate BloqNum, so the buttons send functions (like arrows, END or PgDn) instead of numbers. For ramiho, these functions represent devices 1 to 9 (the number in the same button); so if you press PgDn button (number 3), you'll hear the name of the third device in the list. Operators dealing with connexions, like + and - work just the same. 
+If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/git/numpad.png), you may want to deactivate BloqNum, so the buttons send functions (like arrows, END or PgDn) instead of numbers. For ramiho, these functions represent devices 1 to 9 (the number in the same button); so if you press PgDn button (number 3), you'll hear the name of the third device in the list. Operators dealing with connexions, like + and - work just the same. 
 
 ### testing tools
 Let's say you connect two MIDI devices with ramiho, but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?"  
