@@ -1,4 +1,4 @@
-# ramiho - Raspberry Pi Midi Host manager
+# ramiho - Midi Host manager
 
 ramiho is a command-line interface helping with ALSA MIDI connection management.  
 
