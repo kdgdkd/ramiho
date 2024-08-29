@@ -32,11 +32,13 @@ Copy the files and directories in this repository to your user directory (git cl
 ## Usage
 
 ### with console interface
-When ramiho is run without arguments, it will load ramiho's console interface. You will see the Help header with the list of available commands, and the list of MIDI ports and connexions. In English, it should look similar to this:    
+When ramiho is run without arguments, it will load ramiho's console interface. In English, it should look similar to this:    
 <img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png" alt="ramiho_terminal" height="500"/>  
+  
+The top part is the Help header shows the list of available commands, and below is the list of current MIDI ports and connexions.  
+Commands entered in the prompt will open new menus (favorite connexions, debugging), start connexion dialogs or provide information. 
 
-
-#### setting up connexions 
+### setting up connexions 
 ramiho generates a dynamic list of available MIDI ports from connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
 - press **1** to see the list of ports and connexions   
 - [**+14**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) will send the MIDI signal from port number 1 to port number 4    
@@ -48,16 +50,6 @@ ramiho accepts using **\*** as a symbol for "every other port/device" when conne
 - **-3\*** will close connexions from port number 3 to any other port
 
 
-### with command line
-You can also access all of ramiho's features through the command line interface, without opening the console interface, by adding arguments after the ramiho command.  
-Commands mirror the console interface's; to show all available commands type
-```bash
-ramiho 9
-```  
-and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png).   
-Arguments can be used to access ramiho's functionalities directly; for example, **ramiho 1** will show the current devices and connexions, and **ramiho +** will open the dialog to create a new connexion.  
-You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, say **ramiho +24**, ramiho will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** will close the previous connexion.   
-You can also load your Favorite Connexions with a single command. Enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fFAV_ACT (check Customization above).
 
 ### testing tools
 Let's say you connect two MIDI devices with ramiho, but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?"  
@@ -73,9 +65,29 @@ The front-end allows defining connexions not only between ports, but also betwee
 You can work on the last connexion that you defined or loaded, adding routings, velocity adjustments, send program change signal... And when you are happy, you can save the connexion to be able to access it in the future. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu.  
 
 
+### using ramiho from the  command line
+You can also access all of ramiho's commands from the CLI, without opening the console interface, by adding arguments after the ramiho command.  
+Commands mirror the console interface's; to show all available commands type
+```bash
+ramiho 9
+```  
+and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png).   
+Arguments can be used to access ramiho's functionalities directly; for example, **ramiho 1** will show the current devices and connexions, and **ramiho +** will open the dialog to create a new connexion.  
+You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, say **ramiho +24**, ramiho will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** will close the previous connexion.   
+You can combine commands into bash aliases, or simply load one of your Favorite Connexions: enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fFAV_ACT (check Customization section).
 
-### offline and headless
-ramiho was originally conceived to work from a headless, offline Raspberry Pi, working as a USB MIDI host, operated with an external numeric pad, and providing audio feedback through a small speaker connected to the mini-jack output. That is why all the functionalities of ramiho can be accessed by using only numbers and math operators, and why it speaks. The "visual" command line interface is best if your computer has a screen, or if it is online and can be accessed with SSH (for example). But otherwise, branch a speaker and...    
+### Connexions autosave
+When you exit ramiho, the current alsa or midish connexions are saved in the favorite connexions folder. When opening ramiho, the program will automatically try to load those same connexions. This would come very handy if you wanted to work with a...
+
+
+### Raspberry Pi MIDI HOST
+ramiho, as indicated by the name, was originally conceived to run on a headless, offline Raspberry Pi 3b, operated with an external numeric pad, and providing audio feedback through a small speaker connected to the mini-jack output. That is why all the functionalities of ramiho can be accessed by using only numbers and math operators, and why it speaks.  
+Running ramiho on a headless Raspberry Pi will turn it into a smart USB MIDI HOST. You would need to connect the Raspberry Pi to the network and enable SSH so you can access the CLI or ramiho's console interface (sorry what¿) from another device.
+
+
+#### running offline
+
+ You could also branch a speaker and run it offline.    
 
 First, you will need a text-to-sound engine; there's espeak, I like festival. Text will be piped into the tts engine ($tts variable in fCONF_INIT). To configure a different tts engine and to activate sound by default, edit these lines in the script's fCONFIG function:  
 ```bash
@@ -100,7 +112,7 @@ In ramiho you can save your preferred connexion setups, using the [Favorite Conn
 ramiho uses four ways of saving connexions: 
 ALSA connexions
 - embedded in ramiho's code under three fFAV_x functions, as lists of aconnect commands
-- aconsvd files under favcnx directory, as lists of aconnect commands; these files are also used to save current aconnect configurations, so they may get overwritten
+- aconsvd files under favcnx directory, as lists of aconnect commands; these files are also used to save current aconnect configurations and may get overwritten
 midish connexions
 - mdshcnx files under favcnx directory, that allow for advanced routing configuration using midish   
 - mdshsvd files under favcnx directory, as midish shell files; there are used to save current midish configurations and may get overwritten   
