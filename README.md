@@ -76,7 +76,7 @@ Arguments can be used to access ramiho's functionalities directly; for example, 
 You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, say **ramiho +24**, ramiho will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** will close the previous connexion.   
 You can combine commands into bash aliases, or simply load one of your Favorite Connexions: enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fFAV_ACT (check Customization section).
 
-### Connexions autosave
+### connexions autosave/autoload
 When you exit ramiho, the current alsa or midish connexions are saved in the favorite connexions folder. When opening ramiho, the program will automatically try to load those same connexions. This would come very handy if you wanted to work with a...
 
 
