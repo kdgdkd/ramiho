@@ -20,7 +20,7 @@ ramiho's main features are:
 ramiho is written in bash, and should work on any Linux distributions using ALSA.   
 
 [Optional]  
-For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools provide are used as a filtered monitor and for testing the connexions. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
+For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools are used as a filtered monitor and for testing the connexions. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
 For advanced connexion configurations (like routing and and splitting and merging MIDI channels) ramiho uses [midish](https://midish.org), by Alexandre Ratchov.   
 And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
 
@@ -35,8 +35,7 @@ Copy the files and directories in this repository to your user directory (git cl
 When ramiho is run without arguments, it will load ramiho's console interface. In English, it should look similar to this:    
 <img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png" alt="ramiho_terminal" height="500"/>  
   
-The top part is the Help header shows the list of available commands, and below is the list of current MIDI ports and connexions.  
-Commands entered in the prompt will open new menus (favorite connexions, debugging), start connexion dialogs or provide information. 
+The top part is the Help header showing the list of available commands, and below is the list of current MIDI ports and connexions. Commands entered in the prompt will open new menus (favorite connexions, debugging), start connexion dialogs or provide information. 
 
 ### setting up connexions 
 ramiho generates a dynamic list of available MIDI ports from connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
@@ -60,9 +59,9 @@ ramiho proposes two tools to help testing input and output MIDI ports on your de
 If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI. Then, you may want to try with Midish.  
 
 ### using Midish   
-[Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. The Midish menu in ramiho provides a front-end for Midish's MIDI routing, and saving/loading of existing or customized connexions.    
-The front-end allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel. And you can choose to transpose the notes! For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5 a full octave below, so you would have a bass and a sub-bass, like in [this example](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png).     
-You can work on the last connexion that you defined or loaded, adding routings, velocity adjustments, send program change signal... And when you are happy, you can save the connexion to be able to access it in the future. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu.  
+[Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. The Midish menu in ramiho provides a simple front-end for Midish's MIDI routing, and saving/loading of existing or customized connexions.    
+The midish interface allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel. And you can choose to transpose the notes! For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5 a full octave below, so you would have a bass and a sub-bass, like in [this example](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png).     
+You can work on the last connexion that you defined or loaded, adding routings, velocity adjustments, send program change signal... And when you are happy, you can save the connexion so it will be easily loaded in the future. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu.  
 
 
 ### using ramiho from the  command line
@@ -81,14 +80,13 @@ When you exit ramiho, the current alsa or midish connexions are saved in the fav
 
 
 ### Raspberry Pi MIDI HOST
-ramiho, as indicated by the name, was originally conceived to run on a headless, offline Raspberry Pi 3b, operated with an external numeric pad, and providing audio feedback through a small speaker connected to the mini-jack output. That is why all the functionalities of ramiho can be accessed by using only numbers and math operators, and why it speaks.  
+ramiho, as suggested by it's name, was originally conceived to run on a headless, offline Raspberry Pi 3b, operated with an external numeric pad, and providing audio feedback through a small speaker connected to the mini-jack output. That is why all the functionalities of ramiho can be accessed by using only numbers and math operators, and why it speaks.  
 Running ramiho on a headless Raspberry Pi will turn it into a smart USB MIDI HOST. You would need to connect the Raspberry Pi to the network and enable SSH so you can access the CLI or ramiho's console interface (sorry what¿) from another device.
 
 
 #### running offline
 
  You could also branch a speaker and run it offline.    
-
 First, you will need a text-to-sound engine; there's espeak, I like festival. Text will be piped into the tts engine ($tts variable in fCONF_INIT). To configure a different tts engine and to activate sound by default, edit these lines in the script's fCONFIG function:  
 ```bash
 tts="festival --tts" 
