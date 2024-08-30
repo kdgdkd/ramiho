@@ -1,17 +1,16 @@
 # ramiho - Midi Host manager
 
-ramiho is a command-line interface helping with ALSA MIDI connection management.  
+ramiho is a command-line interface managing ALSA MIDI connexions.  
 
 [Inpired by Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Neuma's project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI keyboard to send notes to a virtual or hardware synthesizer.] 
 
 ## Features
 
 ramiho's main features are:
-- simple, lightweight cli to manage MIDI connexions between devices
+- simple, lightweight cli using ALSA to manage MIDI connexions between devices
 - connexion testing tools (MIDI monitors and SendMidi)
-- easily save and load your favorite connexion setups 
-- when opening ramiho, it will load the connexions from your last session (should work if the same MIDI devices are connected)  
-- interface for midish connexions, allowing for MIDI routings per channel, merging, splitting... 
+- easily save and load your favorite connexion setups  
+- simple interface for midish, allowing for MIDI routings per channel, merging, splitting... 
 - all operations are accessible using only the [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png) (numbers and mathematical operators)  
 - it talks, it may be alive... (useful if you are using a headless computer)  
   
@@ -20,13 +19,13 @@ ramiho's main features are:
 ramiho is written in bash, and should work on any Linux distributions using ALSA.   
 
 [Optional]  
-For additional testing functionalities, ramiho uses [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/ReceiveMIDI), both by Geert Bevin. These tools are used as a filtered monitor and for testing the connexions. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
-For advanced connexion configurations (like routing and and splitting and merging MIDI channels) ramiho uses [midish](https://midish.org), by Alexandre Ratchov.   
-And if you wish ramiho to speak back, you will need a text-to-sound engine; I use [festival](http://festvox.org/festival/) (**sudo apt-get install festival**).
+For additional testing functionalities, ramiho uses two applications by Geert Bevin. [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) is used as for a filtered monitor, and [SendMidi](https://github.com/gbevin/ReceiveMIDI) to test output connexions. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
+For advanced connexion configurations (like routing, splitting and merging MIDI channels) ramiho uses [midish](https://midish.org), by Alexandre Ratchov.   
+ramiho speaks, but you will need a text-to-sound engine. It works with [festival](http://festvox.org/festival/), and probably with [eSpeak](https://espeak.sourceforge.net/).
 
 
 ## Installation
-Copy the files and directories in this repository to your user directory (git clone https://github.com/kdgdkd/ramiho). Make sure that the permissions are right, ramiho is executable and can access favcnx files. You may also define an alias, and install the optional software from the previous section.   
+Copy the files and directories in this repository to your user directory (git clone https://github.com/kdgdkd/ramiho). Make sure that the permissions are right, ramiho is executable and can access favcnx files. You may want to define an alias, and install the optional software from the previous section.   
 
 
 ## Usage
@@ -38,9 +37,13 @@ When ramiho is run without arguments, it will load ramiho's console interface. I
 The top part is the Help header showing the list of available commands, and below is the list of current MIDI ports and connexions. Commands entered in the prompt will open new menus (favorite connexions, debugging), start connexion dialogs or provide information. 
 
 ### setting up connexions 
-ramiho generates a dynamic list of available MIDI ports from connected devices, and allows to operate (connect, disconnect, etc) referring only to their position in the list. This results in very lean commands; for example,   
+ramiho generates a numbered list of available MIDI ports from connected devices, and allows to use ALSA's aconnect with very simple commands. 
 - press **1** to see the list of ports and connexions   
-- [**+14**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) will send the MIDI signal from port number 1 to port number 4    
+- [**+14**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) to connect  port number 1 to port number 4   
+<img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png" alt="ramiho_connect"  height="250"/> 
+- press **4** to connect every port to any other port 
+- press **.** (dot) to break all existing connexions, or **-12** to break only the connexion from port number 1 to port number 2
+
 
 #### using * 
 ramiho accepts using **\*** as a symbol for "every other port/device" when connecting & disconnecting. On the terminal   
@@ -51,12 +54,12 @@ ramiho accepts using **\*** as a symbol for "every other port/device" when conne
 
 
 ### testing tools
-Let's say you connect two MIDI devices with ramiho, but it does not work, the information does not seem to flow, you get no sound. As always, this begs the question "what MIDI channel are you using?"  
+Let's say you connect two MIDI devices with ramiho, but it does not work, the information does not seem to flow, you get no sound. 8 times out of 10 you are not on the same channel.  
 ramiho proposes two tools to help testing input and output MIDI ports on your devices:   
-- MIDI monitor - it tests the sending device. It will print MIDI information (like the channel) coming from the sending ports. The first monitor uses ALSA's aseqdump; for the filtered monitors you'll need [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI). In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
-- Send MIDI - it tests the receiving device. Use ramiho's front-end for [SendMidi](https://github.com/gbevin/ReceiveMIDI) to send notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
+- MIDI monitor - it tests the sending device. It will print MIDI information (like the channel) coming from the sending ports. The first monitor uses ALSA's aseqdump; for the filtered monitors you'll need [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI). In the [example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
+- Send MIDI - it tests the receiving device. Use ramiho's interface for [SendMidi](https://github.com/gbevin/ReceiveMIDI) to send notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
 
-If these tests fail, check the cables and whether the hardware is properly configured to send/receive MIDI. Then, you may want to try with Midish.  
+ 
 
 ### using Midish   
 [Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. The Midish menu in ramiho provides a simple front-end for Midish's MIDI routing, and saving/loading of existing or customized connexions.    
@@ -79,25 +82,29 @@ You can combine commands into bash aliases, or simply load one of your Favorite 
 When you exit ramiho, the current alsa or midish connexions are saved in the favorite connexions folder. When opening ramiho, the program will automatically try to load those same connexions. This would come very handy if you wanted to work with a...
 
 
-### Raspberry Pi MIDI HOST
-ramiho, as suggested by it's name, was originally conceived to run on a headless, offline Raspberry Pi 3b, operated with an external numeric pad, and providing audio feedback through a small speaker connected to the mini-jack output. That is why all the functionalities of ramiho can be accessed by using only numbers and math operators, and why it speaks.  
+### RaspberryPi MIDI HOST
+ramiho, as it's name only partially suggests, was originally conceived to run on a headless, offline Raspberry Pi 3b, operated with an external numeric pad, and providing audio feedback through a small speaker connected to the mini-jack output. That is why all the commands require only numbers and math operators, and why it speaks.  
+
+
 Running ramiho on a headless Raspberry Pi will turn it into a smart USB MIDI HOST. You would need to connect the Raspberry Pi to the network and enable SSH so you can access the CLI or ramiho's console interface (sorry what¿) from another device.
 
 
 #### running offline
 
- You could also branch a speaker and run it offline.    
-First, you will need a text-to-sound engine; there's espeak, I like festival. Text will be piped into the tts engine ($tts variable in fCONF_INIT). To configure a different tts engine and to activate sound by default, edit these lines in the script's fCONFIG function:  
+Or you could also branch a speaker and run it offline!    
+The audio feedback is generated by a text-to-sound engine(I like festival). 
+ To configure a different tts engine and to activate sound by default, edit these lines in the script's fCONFIG function:  
 ```bash
 tts="festival --tts" 
 soundon='true'
 ```  
 You can also turn sound on and off by sending **98** in the main interface.   
 
-If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/git/numpad.png), you may want to deactivate BloqNum, so the buttons send functions (like arrows, END or PgDn) instead of numbers. For ramiho, these functions represent devices 1 to 9 (the number in the same button); so if you press PgDn button (number 3), you'll hear the name of the third device in the list. Operators dealing with connexions, like + and - work just the same. 
+If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/git/numpad.png), clic BloqNum to enter 'device mode'. The buttons will send functions (like arrows, END or PgDn) instead of numbers, and ramiho will read aloud the name por ports 1 to 9 (the number in the same button). So if you press AvPag button (number 3), you'll hear the name of the third device in the list. You can use operators, like + and -, to connect the ports in this mode guided only by ramiho's voice. 
 
 
 ## Customization
+
 ramiho works as an ALSA connexion interface and MIDI monitor out of the box, without any tralala. But there are a number of defaults that can be customized to the user's own preferences... which is half of the fun of using open-source software! Some of the changes require that you open ramiho on a text editor and look for the relevant function; it shouldn't be difficult to figure out (otherwise, please shout).   
 
 
