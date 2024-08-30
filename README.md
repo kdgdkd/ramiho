@@ -2,7 +2,6 @@
 
 ramiho is a command-line interface managing ALSA MIDI connexions.  
 
-[Inpired by Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Neuma's project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI keyboard to send notes to a virtual or hardware synthesizer.] 
 
 ## Features
 
@@ -122,12 +121,25 @@ midish connexions
 - mdshcnx files under favcnx directory, that allow for advanced routing configuration using midish   
 - mdshsvd files under favcnx directory, as midish shell files; there are used to save current midish configurations and may get overwritten   
 
-After saving your preferred connexions on any of these ways, you may want adapt the header of the menu (under fFAV_HEADER) with a description of the connexions you've set up, and link them with commands (fFAV_ACT). 
+Also, if you are decided on some on your preferred connexions, you may want adapt the header of the menu (under fFAV_HEADER) with a description of these, and link them with commands (fFAV_ACT). 
 
 
+## Thanks! 
 
-## Conclusion
-ramiho is done with love, but little skill. It is a tool that I did for myself, and has been evolving for years depending on the moment's needs or dreams. It works well, but it probably tries to do too many things, and the code is a bit of a mess. Any comments, suggestions, bug reports and pull requests are welcome.  
+ramiho was inpired by Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI Host](https://neuma.studio/rpi-midi-complete.html). Neuma's project will automatically connect all MIDI devices on the Raspberry Pi between themselves, which is all you need for simple setups like getting a MIDI keyboard to send notes to a virtual or hardware synthesizer.
+
+
+[midish](https://midish.org), by Alexandre Ratchov, is a very powerful tool that does much more than advanced MIDI routing.  ramiho speaks midish because I use it for some of my own favorite setups (it turns 'dumb' USB MIDI controllers alive!). 
+
+
+[ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/SendMIDI), by Geert Bevin, are exhaustive and now have a beautiful GUI. Although the cli is what ramiho needed.
+
+[festival](http://festvox.org/festival/) is the best thing ever, super thanks.
+
+## 
+ramiho is the result more of stubborness than skill. It is a tool that I use extensively, and has been evolving for years depending on the moment's interests or needs. It works, but it probably tries to do too many things, and the code is a bit of a mess. 
+
+Any comments, suggestions, bug reports or collaborations are welcome.  
 
 
 ## License
