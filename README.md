@@ -30,7 +30,9 @@ Copy the files and directories in this repository to your user directory (git cl
 ## Usage
 
 ### with console interface
-When ramiho is run without arguments, it will load ramiho's console interface. In English, it should look similar to this:    
+Run ramiho without arguments to open the console, with a prompt on which you can enter your commands. When loading, ramiho will show the Help header and he list of available ports and existing connexions. 
+
+Help looks like this, in English:    
 <img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png?" alt="ramiho_terminal" height="564"/>  
   
 The top part is the Help header showing the list of available commands, and below is the list of current MIDI ports and connexions. Commands entered in the prompt will open new menus (favorite connexions, debugging), start connexion dialogs or provide information. 
@@ -38,10 +40,10 @@ The top part is the Help header showing the list of available commands, and belo
 ### setting up connexions 
 ramiho generates a numbered list of available MIDI ports from connected devices, and allows to use ALSA's aconnect with very simple commands. 
 - press **1** to see the list of ports and connexions   
-- **+14** to connect  port number 1 to port number 4   
+- **+23** to connect  port number 2 to port number 3   
 <img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png?" alt="ramiho_connect"  height="406"/> 
-- press **4** to connect every port to any other port  
-- press **.** (dot) to break all existing connexions, or **-12** to break only the connexion from port number 1 to port number 2
+- press **\*** to connect every port to any other port, and **\*** again to toggle back to no connexions  
+- you can also press **.** (dot) to break all existing connexions, or **-12** to break only the connexion from port number 1 to port number 2
 
 
 #### using * 
@@ -51,6 +53,11 @@ ramiho accepts using **\*** as a symbol for "every other port/device" when conne
 - **-3\*** will close connexions from port number 3 to any other port
 
 
+### using Midish   
+[Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. The Midish menu in ramiho provides a simple interface for Midish's MIDI routing, also allowing saving and loading your customized connexions.    
+The midish interface allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel. And you can choose to transpose the notes! For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5 a full octave below, so you would have a bass and a sub-bass, like [here](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png).     
+You can work on the last connexion that you defined or loaded, adding routings, velocity adjustments, send program change signal... And when you are happy, you can save the connexion so it will be easily loaded in the future. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu.  
+
 
 ### testing tools
 You connect two MIDI devices with ramiho, but it does not work, the information does not seem to flow, you don't get any sound. 8 times out of 10 you are not on the same channel.  
@@ -59,11 +66,6 @@ ramiho proposes two tools to help testing input and output MIDI ports on your de
 - Send MIDI - tests the receiving connexion. With the [SendMidi](https://github.com/gbevin/ReceiveMIDI) menu, ramiho can send notes directly to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
 
  
-
-### using Midish   
-[Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. The Midish menu in ramiho provides a simple interface for Midish's MIDI routing, also allowing saving and loading your customized connexions.    
-The midish interface allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel. And you can choose to transpose the notes! For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5 a full octave below, so you would have a bass and a sub-bass, like [here](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png).     
-You can work on the last connexion that you defined or loaded, adding routings, velocity adjustments, send program change signal... And when you are happy, you can save the connexion so it will be easily loaded in the future. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu.  
 
 
 ### using ramiho from the  command line
