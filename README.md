@@ -37,12 +37,12 @@ ramiho speaks, but you will need a text-to-sound engine. It works with [festival
 ### with console interface
 Run ramiho without arguments to open the console, with a prompt on which you can enter your commands. When loading, ramiho will show the Help header and he list of available ports and existing connexions. 
 
-Help looks like this, in English:    
+THe console command menu looks like this, in English:    
 <img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png?" alt="ramiho_terminal" height="564"/>  
   
 The top part is the Help header showing the list of available commands, and below is the list of current MIDI ports and connexions. Commands entered in the prompt will open new menus (favorite connexions, debugging), start connexion dialogs or provide information. 
 
-### setting up connexions 
+### setting up ALSA connexions 
 ramiho generates a numbered list of available MIDI ports from connected devices, and allows to use ALSA's aconnect with very simple commands. 
 - press **1** to see the list of ports and connexions   
 - **+23** to connect  port number 2 to port number 3   
