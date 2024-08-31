@@ -1,6 +1,6 @@
 # ramiho - Midi Host manager
 
-ramiho is a simple command-line interface managing ALSA MIDI connexions.  
+ramiho is a simple command-line interface managing ALSA MIDI connexions.   
 
 
 ## Features
@@ -14,17 +14,22 @@ ramiho's main features are:
 - it talks, it may be alive... (useful if you are using a headless computer)  
   
 
-## Dependencies
+
+## Installation
 ramiho is written in bash, I guess it would work on any Linux distributions using ALSA.   
+Clone the repository, navigate to the directory, and make the script executable 
+```bash
+git clone https://github.com/kdgdkd/ramiho.git
+cd ramiho
+chmod +x ramiho
+```
+You may want to add it to PATH or simply create an alias.  
 
 [Optional]  
 For advanced connexion configurations (like routing, splitting and merging MIDI channels) ramiho uses [midish](https://midish.org), by Alexandre Ratchov.   
 For additional testing functionalities, ramiho uses two applications by Geert Bevin. [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) is used as for a filtered monitor, and [SendMidi](https://github.com/gbevin/ReceiveMIDI) to test output connexions. The default location for these executables is ramiho's srmidi directory, but you may define any other location (or alias) in the fCONF function.   
 ramiho speaks, but you will need a text-to-sound engine. It works with [festival](http://festvox.org/festival/) by default, but can be changed to [eSpeak](https://espeak.sourceforge.net/).
 
-
-## Installation
-Copy the files and directories in this repository to your user directory (git clone https://github.com/kdgdkd/ramiho). Make sure that the permissions are right, ramiho is executable and can access favcnx files. You may want to define an alias, and install the optional software from the previous section.   
 
 
 ## Usage
