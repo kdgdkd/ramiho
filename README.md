@@ -74,7 +74,7 @@ Commands mirror the console interface's; to show all available commands type
 ```bash
 ramiho 9
 ```  
-and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png?).   
+and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png?) list of available commands.   
 Arguments can be used to access ramiho's functionalities directly; for example, **ramiho 1** will show the current devices and connexions, and **ramiho +** will open the dialog to create a new connexion.  
 You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, say **ramiho +24**, ramiho will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** will close the previous connexion.   
 You can combine commands into bash aliases, or simply load one of your Favorite Connexions: enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fFAV_ACT (check Customization section).
@@ -134,7 +134,7 @@ ramiho was inpired by Neuma Studio's project [Raspberry Pi as USB/Bluetooth MIDI
 [midish](https://midish.org), by Alexandre Ratchov, is a very powerful tool that does much more than advanced MIDI routing.  ramiho speaks midish because I use it for some of my own favorite setups (it turns 'dumb' USB MIDI controllers alive!). 
 
 
-[ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/SendMIDI), by Geert Bevin, are exhaustive and now have a beautiful GUI. Although the cli is what ramiho needed.
+[ReceiveMidi](https://github.com/gbevin/ReceiveMIDI) and [SendMidi](https://github.com/gbevin/SendMIDI), by Geert Bevin, are exhaustive and now have a beautiful GUI.
 
 [festival](http://festvox.org/festival/) is the best thing ever, super thanks.
 
