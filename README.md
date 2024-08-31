@@ -8,16 +8,16 @@ ramiho is a simple command-line interface managing ALSA MIDI connexions.
 ramiho's main features are:
 - simple, lightweight cli using ALSA to manage MIDI connexions between devices
 - very concise commands, using only the [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), easing operations from a mobile phone ssh client  
-- connexion testing tools (MIDI monitors and SendMidi)
 - easily save and load your favorite connexion setups  
+- connexion testing tools (MIDI monitors and SendMidi)  
 - simple interface for midish, allowing for MIDI routings per channel, merging, splitting... 
-- it talks, useful if you are using an offline headless computer  
+- it talks 
   
 
 
 ## Installation
 ramiho is written in bash, and should work on any Linux distributions using ALSA.   
-Clone the repository, navigate to the directory, and make the script executable 
+Clone the repository, navigate to the directory, and make the script executable: 
 ```bash
 git clone https://github.com/kdgdkd/ramiho.git
 cd ramiho
