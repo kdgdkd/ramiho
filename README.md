@@ -38,9 +38,9 @@ The top part is the Help header showing the list of available commands, and belo
 ### setting up connexions 
 ramiho generates a numbered list of available MIDI ports from connected devices, and allows to use ALSA's aconnect with very simple commands. 
 - press **1** to see the list of ports and connexions   
-- [**+14**](https://edpanfleto.com/kdgdkd/git/ramiho_connect.png) to connect  port number 1 to port number 4   
+- **+14** to connect  port number 1 to port number 4   
 <img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png" alt="ramiho_connect"  height="250"/> 
-- press **4** to connect every port to any other port 
+- press **4** to connect every port to any other port  
 - press **.** (dot) to break all existing connexions, or **-12** to break only the connexion from port number 1 to port number 2
 
 
@@ -53,16 +53,16 @@ ramiho accepts using **\*** as a symbol for "every other port/device" when conne
 
 
 ### testing tools
-Let's say you connect two MIDI devices with ramiho, but it does not work, the information does not seem to flow, you get no sound. 8 times out of 10 you are not on the same channel.  
+You connect two MIDI devices with ramiho, but it does not work, the information does not seem to flow, you don't get any sound. 8 times out of 10 you are not on the same channel.  
 ramiho proposes two tools to help testing input and output MIDI ports on your devices:   
-- MIDI monitor - it tests the sending device. It will print MIDI information (like the channel) coming from the sending ports. The first monitor uses ALSA's aseqdump; for the filtered monitors you'll need [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI). In the [example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
-- Send MIDI - it tests the receiving device. Use ramiho's interface for [SendMidi](https://github.com/gbevin/ReceiveMIDI) to send notes directly from the Raspberry Pi to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
+- MIDI monitor - tests the sending device. It will print MIDI information (like the channel, note) coming from the sending ports. The basic monitor uses aseqdump; for the filtered monitors you'll need [ReceiveMidi](https://github.com/gbevin/ReceiveMIDI). In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_monitor.png) ramiho monitors the first port for incoming Control Change signals, and prints the result.      
+- Send MIDI - tests the receiving connexion. With the [SendMidi](https://github.com/gbevin/ReceiveMIDI) menu, ramiho can send notes directly to your receiving device. In [this example](https://edpanfleto.com/kdgdkd/git/ramiho_sendmidi.png) ramiho sends note 48, on channel 3, to the fourth device in the list (the 'sound' port of a synth).    
 
  
 
 ### using Midish   
-[Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. The Midish menu in ramiho provides a simple front-end for Midish's MIDI routing, and saving/loading of existing or customized connexions.    
-The midish interface allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel. And you can choose to transpose the notes! For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5 a full octave below, so you would have a bass and a sub-bass, like in [this example](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png).     
+[Midish](https://midish.org/) is a powerful command-line MIDI sequencer/filter by Alexandre Ratchov. It provides advanced MIDI manipulation tools (routing channels, remapping CCs, transposing...), and it also records and plays MIDI. The Midish menu in ramiho provides a simple interface for Midish's MIDI routing, also allowing saving and loading your customized connexions.    
+The midish interface allows defining connexions not only between ports, but also between channels. You can redirect the MIDI signal coming from one port on a particular channel to any other port, on any MIDI channel. And you can choose to transpose the notes! For example, you could send the output from a MIDI keyboard on channel 1 to a synth that is reading MIDI channel 4 AND to a second synth reading channel 5 a full octave below, so you would have a bass and a sub-bass, like [here](https://edpanfleto.com/kdgdkd/git/ramiho_midishrouting.png).     
 You can work on the last connexion that you defined or loaded, adding routings, velocity adjustments, send program change signal... And when you are happy, you can save the connexion so it will be easily loaded in the future. Or you can define more complex connexions and filters within the mdshcnx files in ramiho's favcnx directory. All of these files are directly accessible from the Midish menu.  
 
 
@@ -85,7 +85,7 @@ When you exit ramiho, the current alsa or midish connexions are saved in the fav
 ramiho, as it's name only partially suggests, was originally conceived to run on a headless, offline Raspberry Pi 3b, operated with an external numeric pad, and providing audio feedback through a small speaker connected to the mini-jack output. That is why all the commands require only numbers and math operators, and why it speaks.  
 
 
-Running ramiho on a headless Raspberry Pi will turn it into a smart USB MIDI HOST. You would need to connect the Raspberry Pi to the network and enable SSH so you can access the CLI or ramiho's console interface (sorry what¿) from another device.
+Running ramiho on a headless Raspberry Pi will turn it into a smart USB MIDI HOST. You would need to connect the Raspberry Pi to the network and enable SSH so you can access the CLI or ramiho's interface from another device.
 
 
 #### running offline
