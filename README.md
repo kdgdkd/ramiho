@@ -31,7 +31,7 @@ Copy the files and directories in this repository to your user directory (git cl
 
 ### with console interface
 When ramiho is run without arguments, it will load ramiho's console interface. In English, it should look similar to this:    
-<img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png" alt="ramiho_terminal" height="500"/>  
+<img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png?" alt="ramiho_terminal" height="500"/>  
   
 The top part is the Help header showing the list of available commands, and below is the list of current MIDI ports and connexions. Commands entered in the prompt will open new menus (favorite connexions, debugging), start connexion dialogs or provide information. 
 
@@ -39,7 +39,7 @@ The top part is the Help header showing the list of available commands, and belo
 ramiho generates a numbered list of available MIDI ports from connected devices, and allows to use ALSA's aconnect with very simple commands. 
 - press **1** to see the list of ports and connexions   
 - **+14** to connect  port number 1 to port number 4   
-<img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png" alt="ramiho_connect"  height="250"/> 
+<img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png?" alt="ramiho_connect"  height="250"/> 
 - press **4** to connect every port to any other port  
 - press **.** (dot) to break all existing connexions, or **-12** to break only the connexion from port number 1 to port number 2
 
@@ -72,7 +72,7 @@ Commands mirror the console interface's; to show all available commands type
 ```bash
 ramiho 9
 ```  
-and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png).   
+and ramiho will print [this](https://edpanfleto.com/kdgdkd/git/ramiho_cli_en.png?).   
 Arguments can be used to access ramiho's functionalities directly; for example, **ramiho 1** will show the current devices and connexions, and **ramiho +** will open the dialog to create a new connexion.  
 You can open and close connexions from the cli with single commands. If you follow **ramiho +** with two numbers, say **ramiho +24**, ramiho will connect port number 2 to port number 4 without opening any dialog. In a similar way, **ramiho -24** will close the previous connexion.   
 You can combine commands into bash aliases, or simply load one of your Favorite Connexions: enter **ramiho \*n**, with n being a number from 1 to 9, to load presets as defined in fFAV_ACT (check Customization section).
@@ -111,7 +111,7 @@ ramiho works as an ALSA connexion interface and MIDI monitor out of the box, wit
 ramiho comes with Spanish and English interfaces. Choose which locale to use by default within the fCONF function (change fLOCALE_EN for fLOCALE_ES to turn the interface to Spanish). You can also switch between them by entering **97** in ramiho's interface. 
 
 **Favorite Connexions**  
-In ramiho you can save your preferred connexion setups, using the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png "Favorite Connexions" ) & the midish submenus. 
+In ramiho you can save your preferred connexion setups, using the [Favorite Connexions](https://edpanfleto.com/kdgdkd/git/ramiho_favcnx.png? "Favorite Connexions" ) & the midish submenus. 
 
 ramiho uses four ways of saving connexions: 
 ALSA connexions
