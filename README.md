@@ -1,22 +1,22 @@
 # ramiho - Midi Host manager
 
-ramiho is a simple command-line interface managing ALSA MIDI connexions.   
+ramiho is a simple command-line interface managing ALSA MIDI connexions.     
 
 
 ## Features
 
 ramiho's main features are:
 - simple, lightweight cli using ALSA to manage MIDI connexions between devices
+- very concise commands, using only the [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png), easing operations from a mobile phone ssh client  
 - connexion testing tools (MIDI monitors and SendMidi)
 - easily save and load your favorite connexion setups  
 - simple interface for midish, allowing for MIDI routings per channel, merging, splitting... 
-- all operations are accessible using only the [numeric pad](http://edpanfleto.com/kdgdkd/assets/numpad.png) (numbers and mathematical operators)  
-- it talks, it may be alive... (useful if you are using a headless computer)  
+- it talks, useful if you are using an offline headless computer  
   
 
 
 ## Installation
-ramiho is written in bash, I guess it would work on any Linux distributions using ALSA.   
+ramiho is written in bash, and should work on any Linux distributions using ALSA.   
 Clone the repository, navigate to the directory, and make the script executable 
 ```bash
 git clone https://github.com/kdgdkd/ramiho.git
@@ -106,7 +106,7 @@ soundon='true'
 ```  
 You can also turn sound on and off by sending **98** in the main interface.   
 
-If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/git/numpad.png), clic BloqNum to enter 'device mode'. The buttons will send functions (like arrows, END or PgDn) instead of numbers, and ramiho will read aloud the name por ports 1 to 9 (the number in the same button). So if you press AvPag button (number 3), you'll hear the name of the third device in the list. You can use operators, like + and -, to connect the ports in this mode guided only by ramiho's voice. 
+If you are using an external [numeric pad](http://edpanfleto.com/kdgdkd/git/numpad.png), click BloqNum to enter 'device mode'. The buttons will send functions (like arrows, END or PgDn) instead of numbers, and ramiho will read aloud the name por ports 1 to 9 (the number in the same button). So if you press AvPag button (number 3), you'll hear the name of the third device in the list. You can use operators, like + and -, to connect the ports in this mode guided only by ramiho's voice. 
 
 
 ## Customization
