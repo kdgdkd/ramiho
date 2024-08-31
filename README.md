@@ -31,7 +31,7 @@ Copy the files and directories in this repository to your user directory (git cl
 
 ### with console interface
 When ramiho is run without arguments, it will load ramiho's console interface. In English, it should look similar to this:    
-<img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png?" alt="ramiho_terminal" height="500"/>  
+<img src="https://edpanfleto.com/kdgdkd/git/ramiho_terminal.png?" alt="ramiho_terminal" height="564"/>  
   
 The top part is the Help header showing the list of available commands, and below is the list of current MIDI ports and connexions. Commands entered in the prompt will open new menus (favorite connexions, debugging), start connexion dialogs or provide information. 
 
@@ -39,7 +39,7 @@ The top part is the Help header showing the list of available commands, and belo
 ramiho generates a numbered list of available MIDI ports from connected devices, and allows to use ALSA's aconnect with very simple commands. 
 - press **1** to see the list of ports and connexions   
 - **+14** to connect  port number 1 to port number 4   
-<img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png?" alt="ramiho_connect"  height="250"/> 
+<img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png?" alt="ramiho_connect"  height="406"/> 
 - press **4** to connect every port to any other port  
 - press **.** (dot) to break all existing connexions, or **-12** to break only the connexion from port number 1 to port number 2
 
