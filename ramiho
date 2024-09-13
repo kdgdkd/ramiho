@@ -1,4 +1,12 @@
 #!/bin/bash
+#                            )      
+#  (       )     )    (   ( /(      
+#  )(   ( /(    (     )\  )\())  (  
+# (()\  )(_))   )\  '((_)((_)\   )\ 
+#  ((_)((_)_  _((_))  (_)| |(_) ((_)
+# | '_|/ _` || '  \() | || ' \ / _ \
+# |_|  \__,_||_|_|_|  |_||_||_|\___/
+#
 # ramiho - raspi midi host
 # Cliente de Teclado Numérico Raspi MIDI host
 # kdg/dkd - kódigo diskordia en edpanfleto.com/kdgdkd/
