@@ -46,7 +46,9 @@ Commands entered in the prompt will open new menus (favorite connexions, debuggi
 ramiho generates a numbered list of available MIDI ports from connected devices, and allows to use ALSA's aconnect with very simple commands. 
 - press **1** to see the list of ports and connexions   
 - **+23** to connect  port number 2 to port number 3   
-<img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png?" alt="ramiho_connect"  height="406"/> 
+<img src="https://edpanfleto.com/kdgdkd/git/ramiho_connect.png?" alt="ramiho_connect"  height="406"/>
+
+
 - press **\*** to connect every port to any other port, and **\*** again to toggle back to no connexions  
 - you can also press **.** (dot) to break all existing connexions, or **-12** to break only the connexion from port number 1 to port number 2
 
