@@ -32,7 +32,12 @@ ramiho speaks, but you will need a text-to-sound engine.
 
 
 ## Usage  
-You can launch ramiho from the terminal to enter the terminal interface, with a command help header. You can operate only entering numbers or math operators. For example entering '**+24**' will open the connexion dialog and link the MIDI output of port number 2 to the input in port number 4. The command '**04**' will open the favorite connexions menu, and load a connexion setup you saved as favorite setup number 4.  
+You can launch ramiho from the terminal to enter the terminal interface, with a command help header. Like this:
+
+<img src="https://edpanfleto.com/kdgdkd/ramiho/ramiho_terminal.png?" alt="ramiho_terminal" height="564"/>  
+
+You can operate only entering numbers or math operators. For example entering '**+24**' will open the connexion dialog and link the MIDI output of port number 2 to the input in port number 4. The command '**04**' will open the favorite connexions menu, and load a connexion setup you saved as favorite setup number 4.  
+
 You can also use ramiho from the cli, without entering the interface. The same commands apply. So  
 **~$ ramiho \***  
 will connect every MIDI device detected in the computer, to every other device.
